@@ -1,4 +1,4 @@
 spring:
-  name: invoice-managment-stg
+  name: invoice-service-stg
   profiles:
     active: local

@@ -1,5 +1,5 @@
 spring:
-  name: invoice-managment-local
+  name: invoice-service-local
   datasource:
     platform: mysql
     type: com.zaxxer.hikari.HikariDataSource
@@ -11,7 +11,7 @@ spring:
       minimumIdle: 5
       maximumPoolSize: 10
       idleTimeout: 30000
-      poolName: invoice-managment-pool-local
+      poolName: invoice-service-pool-local
       maxLifetime: 100000 
       connectionTimeout: 20000 
   jpa:
@@ -26,11 +26,11 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 server:
   servlet:
-    context-path: /invoice-managment-local  
+    context-path: /invoice-service-local  
   port: 2061
   
 logging:
-  file.name: logs/invoice-management.log
+  file.name: logs/invoice-service.log
   pattern:
     console: "%d %-5level [%thread] %logger : %msg%n"
     file: "%d %-5level [%thread] %logger : %msg%n"

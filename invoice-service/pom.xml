@@ -7,4 +7,11 @@
   </parent>
   <artifactId>invoice-service</artifactId>
   <name>invoice-service</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.amstech</groupId>
+  		<artifactId>CollageSystem</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
 </project>
