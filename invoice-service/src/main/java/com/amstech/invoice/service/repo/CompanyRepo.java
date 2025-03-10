@@ -1,17 +1,15 @@
 package com.amstech.invoice.service.repo;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
-import org.hibernate.query.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
+
 
 @Repository
 public interface CompanyRepo extends JpaRepository<Company, Integer> {
@@ -41,29 +39,16 @@ public interface CompanyRepo extends JpaRepository<Company, Integer> {
 	    Company findById(@Param("id") int id,@Param("address") String address,@Param("businessTypesId") int businessTypesId,@Param("companyPhone") String companyPhone,@Param("email") String email,@Param("logo") String logo,@Param("password") String password,@Param("taxPayer") String taxPayer,@Param("website") String website);
 	
 	    
-//	    @Modifying
-//	    @Query("UPDATE Company c SET c.isDeleted = true WHERE c.id = :id")
-//	    void softDeleteCompany(@Param("id") int id);
+
 	    @Modifying
 	    @Query("UPDATE Company c SET c.isDeleted = 1 WHERE c.id = :id")
 	    void softDeleteCompany(@Param("id") int id);
 
-	    
-//	    @Query("SELECT COUNT(c) FROM Company c")  
-//	    long countAllCompany();
-
-		
-		 @Query("SELECT c FROM Company c") 
-		    List<Company> findAll();
-//		 Page findAll(Pageable pageable);
-		// Page findAll(Pageable pageable);
+	   
+		 
 		 @Query("SELECT c FROM Company c WHERE c.isDeleted = 0") 
-		 Page findAll(Pageable pageable);
+		 List<Company> findAllCompany(Pageable pageable);
 		    
-//		    @Query("SELECT COUNT(c) FROM Company c WHERE c.isDeleted = false")
-//		    long countAllCompanies();
-//		 @Query("SELECT COUNT(c) FROM Company c WHERE c.isDeleted = 0")
-//		 long countAllCompanies();
 		 
 		 @Query("SELECT COUNT(c) FROM Company c WHERE c.isDeleted = 0")
 		 long countAllCompany();

@@ -4,14 +4,15 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.amstech.invoice.service.converter.entity.CompanyModelToEntityConverter;
+import com.amstech.invoice.service.converter.model.CompanyEntityToModelConverter;
 import com.amstech.invoice.service.entity.BusinessTypes;
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
@@ -25,11 +26,9 @@ import com.amstech.invoice.service.request.model.CompanyUpdateRequestModel;
 import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.CompanyResponseModel;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,20 +42,22 @@ public class CompanyService {
 	
 	@Autowired
 	private CompanyRepo companyRepo;
-	@Autowired
-	private CurrencyRepo currencyRepo;
+
 	@Autowired
 	private BusinessTypesRepo businessTypesRepo;
 	
+	@Autowired
+	private CompanyModelToEntityConverter companyModelToEntityConverter;
+	
+	@Autowired
+	private CompanyEntityToModelConverter companyEntityToModelConverter;
+	
 	    private static final Logger logger = LoggerFactory.getLogger(CompanyService.class);
-
-	    public void signup(CompanySignupRequestModel companySignupRequestModel) throws Exception {
-	        logger.info("Starting company signup process for email: {}", companySignupRequestModel.getEmail());
-
-	        
-	       
-
-	        Optional<BusinessTypes> businessTypesOptional = businessTypesRepo.findById(companySignupRequestModel.getBusinessTypesId());
+	    
+ public CompanyResponseModel signup(CompanySignupRequestModel companySignupRequestModel) throws Exception {
+	    	
+	 Optional<BusinessTypes> businessTypesOptional = businessTypesRepo.findById(companySignupRequestModel.getBusinessTypesId());
+	 
 	        if (!businessTypesOptional.isPresent()) {
 	            logger.error("Business Type does not exist for ID: {}", companySignupRequestModel.getBusinessTypesId());
 	            throw new Exception("Business Type does not exist.");
@@ -72,36 +73,18 @@ public class CompanyService {
 	            throw new Exception("Company phone number already exists. Please try another number.");
 	        }
 	      
-		 
-	        Company company = new Company();
-	        company.setEmail(companySignupRequestModel.getEmail());
-	        company.setName(companySignupRequestModel.getName());
-	        company.setPassword(companySignupRequestModel.getPassword());
-	        company.setAddress(companySignupRequestModel.getAddress());
-	        company.setAdminUserName(companySignupRequestModel.getAdminUserName());
-	        company.setBusinessTypesId(companySignupRequestModel.getBusinessTypesId());
-	        company.setCinNo(companySignupRequestModel.getCinNo());
-	        company.setClientId(companySignupRequestModel.getClientId());
-	        company.setCompanyPhone(companySignupRequestModel.getCompanyPhone());
-	        company.setWebsite(companySignupRequestModel.getWebsite());
-	        company.setLogo(companySignupRequestModel.getLogo());
-	        company.setRegistrationNo(companySignupRequestModel.getRegistrationNo());
-	        company.setTaxIdentificationNumber(companySignupRequestModel.getTaxIdentificationNumber());
-	        company.setTaxPayer(companySignupRequestModel.getTaxPayer());
-	        company.setCreatedAt(Timestamp.from(Instant.now())); 
-	        //company.setUpdatedAt(Timestamp.from(Instant.now()));
-	        company.setEmailUpdate(true);
-	        company.setIsEmailVerified((byte) 1);
-	      //  company.setIsDeleted((byte) 0);
-	       // company.setRestore(1);
-	        
-
+		 	        
+	        Company company = companyModelToEntityConverter.getSaveConvert(companySignupRequestModel);
 	        Company savedCompany = companyRepo.save(company);
-	        logger.info("Company successfully registered with ID: {}", savedCompany.getId());
+	        CompanyResponseModel companyResponseModel = new CompanyResponseModel();
+	       
+	        return companyEntityToModelConverter.getfindById(savedCompany);
+
 	    }
 
-	    public void login(CompanyLoginRequestModel companyLoginRequestModel) throws Exception {
-	        logger.info("Attempting login for admin: {}", companyLoginRequestModel.getAdminUsername());
+
+	    public CompanyResponseModel login(CompanyLoginRequestModel companyLoginRequestModel) throws Exception {
+	        
 	        Company company = companyRepo.findByAdminUserNameAndPassword(
 	            companyLoginRequestModel.getAdminUsername(),
 	            companyLoginRequestModel.getPassword()
@@ -116,12 +99,12 @@ public class CompanyService {
 	            logger.warn("Attempt to login into deactivated account: {}", companyLoginRequestModel.getAdminUsername());
 	            throw new Exception("This company account is deactivated.");
 	        }
-	        logger.info("Login successful for admin: {}", companyLoginRequestModel.getAdminUsername());
+	        return companyEntityToModelConverter.getfindById(company);
 	    }
 
 	    public void softDeleteById(Integer id) throws Exception {
-	        logger.info("Initiating soft delete for company ID: {}", id);
-	        Optional<Company> companyOptional = companyRepo.findById(id);
+	       
+	    	Optional<Company> companyOptional = companyRepo.findById(id);
 	        
 	        if (!companyOptional.isPresent()) {
 	            logger.error("Attempted to delete non-existing company ID: {}", id);
@@ -134,10 +117,10 @@ public class CompanyService {
 	            throw new Exception("Company already deleted.");
 	        }
 
-	        company.setIsDeleted((byte) 1);  // false means 0 (not deleted)
-	        companyRepo.save(company);
-	        logger.info("Company ID {} successfully soft deleted.", id);
+	        company.setIsDeleted((byte) 1); 
+	        company.setUpdatedAt(Timestamp.from(Instant.now()));
 
+	        companyRepo.save(company);
 	    }
 	
 	    
@@ -156,12 +139,11 @@ public class CompanyService {
 	
 
 
-	    public void updateCompany(CompanyUpdateRequestModel companyUpdateRequestModel) throws Exception {
-	        logger.info("Updating company with ID: {}", companyUpdateRequestModel.getId());
+	    public CompanyResponseModel updatecompany(CompanyUpdateRequestModel companyUpdateRequestModel) throws Exception {
 
 	        Optional<Company> companyOptional = companyRepo.findById(companyUpdateRequestModel.getId());
 	        if (!companyOptional.isPresent()) {
-	            logger.error("Company with ID {} does not exist.", companyUpdateRequestModel.getId());
+
 	            throw new Exception("Company does not exist.");
 	        }
 
@@ -220,75 +202,29 @@ public class CompanyService {
 	            company.setWebsite(companyUpdateRequestModel.getWebsite());
 	        }
 
-	        companyRepo.save(company);
-	        logger.info("Successfully updated company with ID: {}", company.getId());
+	     Company savedCompany=   companyRepo.save(company);
+	        return companyEntityToModelConverter.getfindById(savedCompany);
 	    }
-
-	    public CompanyResponseModel findByCompanyId(Integer companyId) throws Exception {
-	        logger.info("Fetching details for company ID: {}", companyId);
-
-	        Optional<Company> companyOptional = companyRepo.findById(companyId);
+	    
+	  public CompanyResponseModel findByCompanyId(Integer companyId) throws Exception {
+	       
+	    	Optional<Company> companyOptional = companyRepo.findById(companyId);
 	        if (!companyOptional.isPresent()) {
 	            logger.error("Company with ID {} does not exist.", companyId);
 	            throw new Exception("Company does not exist.");
 	        }
 
 	        Company company = companyOptional.get();
-	        CompanyResponseModel responseModel = new CompanyResponseModel();
-
-	        responseModel.setId(company.getId());
-	        responseModel.setName(company.getName());
-	        responseModel.setCinNo(company.getCinNo());
-	        responseModel.setRegistrationNo(company.getRegistrationNo());
-	        responseModel.setEmail(company.getEmail());
-	        responseModel.setCompanyPhone(company.getCompanyPhone());
-	        responseModel.setWebsite(company.getWebsite());
-	        responseModel.setAddress(company.getAddress());
-	        responseModel.setBusinessTypesId(company.getBusinessTypesId());
-	      
-	        responseModel.setTaxIdentificationNumber(company.getTaxIdentificationNumber());
-	        responseModel.setTaxPayer(company.getTaxPayer());
-	        responseModel.setLogo(company.getLogo());
-	       // responseModel.setIsDeleted(company.getIsDeleted() == 1);  // Convert byte (0/1) to Boolean
-	        responseModel.setUpdatedAt(Timestamp.from(Instant.now()));
-
-	        logger.info("Successfully fetched details for company ID: {}", companyId);
-	        return responseModel;
+	        if(company.getIsDeleted() == 1) {
+	       throw new Exception("Your account has been deactivated. Please contact the administrator for assistance.");
+	        }
+	        return companyEntityToModelConverter.getfindById(company);
 	    }	
 	    
+
 	    public List<CompanyResponseModel> findAllCompanies(Integer page, Integer size) throws Exception {
-	        logger.info("Fetching all active companies.");
-
-	        // Fetch only active companies
-	        Page<Company> companyPage = companyRepo.findAll(PageRequest.of(page, size));
-
-	        List<CompanyResponseModel> companyResponseModels = new ArrayList<>();
-
-	        for (Company company : companyPage.getContent()) {
-	            CompanyResponseModel responseModel = new CompanyResponseModel();
-	            responseModel.setId(company.getId());
-	            responseModel.setName(company.getName());
-	            responseModel.setCinNo(company.getCinNo());
-	            responseModel.setRegistrationNo(company.getRegistrationNo());
-	            responseModel.setEmail(company.getEmail());
-	            responseModel.setCompanyPhone(company.getCompanyPhone());
-	            responseModel.setWebsite(company.getWebsite());
-	            responseModel.setAddress(company.getAddress());
-	            responseModel.setBusinessTypesId(company.getBusinessTypesId());
-	            responseModel.setTaxIdentificationNumber(company.getTaxIdentificationNumber());
-	            responseModel.setTaxPayer(company.getTaxPayer());
-	            responseModel.setLogo(company.getLogo());
-
-	            // Corrected: Convert byte to boolean
-	            responseModel.setIsDeleted(company.getIsDeleted() != (byte) 0);
-	            responseModel.setUpdatedAt(Timestamp.from(Instant.now()));
-	            //responseModel.setUpdatedAt(company.getUpdatedAt());
-
-	            companyResponseModels.add(responseModel);
-	        }
-
-	        logger.info("Total active companies fetched: {}", companyResponseModels.size());
-	        return companyResponseModels;
+	    	 List<Company> companyList = companyRepo.findAllCompany(PageRequest.of(page, size));
+	        return companyEntityToModelConverter.getFindAllConvert(companyList);
 	    }
 
 	    public long countAllCompany() throws Exception {
@@ -297,40 +233,4 @@ public class CompanyService {
 }
 		
 	    
-//	    public List<CompanyResponseModel> findAllCompanies(Integer page , Integer size) throws Exception {
-//	        logger.info("Fetching all company details");
-//	        
-//	        List<Company> companies = companyRepo.findAll();
-//	       
-//	        List<CompanyResponseModel> responseModels = new ArrayList<>(); 
-//	        
-//	        for (Company company : companies) {
-//	     		   if(company.isDeleted() == true) {
-//	     		    	 throw new Exception("Company is not active");
-//	     		   }
-//	            CompanyResponseModel responseModel = new CompanyResponseModel();
-//	            responseModel.setId(company.getId());
-//	            responseModel.setName(company.getName());
-//	            responseModel.setCinNo(company.getCinNo());
-//	            responseModel.setRegistrationNo(company.getRegistrationNo());
-//	            responseModel.setEmail(company.getEmail());
-//	            responseModel.setCompanyPhone(company.getCompanyPhone());
-//	            responseModel.setWebsite(company.getWebsite());
-//	            responseModel.setAddress(company.getAddress());
-//	            responseModel.setBusinessTypesId(company.getBusinessTypesId());
-//	            responseModel.setCurrencyId(company.getCurrencyId());
-//	            responseModel.setTaxIdentificationNumber(company.getTaxIdentificationNumber());
-//	            responseModel.setTaxPayer(company.getTaxPayer());
-//	            responseModel.setLogo(company.getLogo());
-//	            responseModel.setIsDeleted(company.isDeleted());
-//	            responseModel.setUpdatedAt(company.getUpdatedAt());
-//	            responseModels.add(responseModel);
-//	        }
-//	        logger.info("Total active Companies fetched: {}", responseModels.size());
-//	            return responseModels;
-//	    }
-//        public long count() throws Exception{
-//        	return companyRepo.count();
-//        }
-//
-//        }
+

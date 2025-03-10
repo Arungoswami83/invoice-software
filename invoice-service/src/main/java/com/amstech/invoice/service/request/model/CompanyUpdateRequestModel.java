@@ -1,5 +1,7 @@
 package com.amstech.invoice.service.request.model;
 
+import java.util.Date;
+
 import lombok.Data;
 
 @Data
@@ -17,5 +19,8 @@ public class CompanyUpdateRequestModel {
     private String website;
     private boolean isEmailUpdate;
     private boolean isEmailVerified;
+    private String adminUserName;
+    private Date updated_At;
+    private int clientId;
    
 }

@@ -16,7 +16,6 @@ public class CompanyResponseModel {
     private String website;
     private String address;
     private int businessTypesId;
-    private int currencyId;
     private String taxIdentificationNumber;
     private String taxPayer;
     private String logo;
@@ -86,12 +85,6 @@ public class CompanyResponseModel {
 	}
 	public void setBusinessTypesId(int businessTypesId) {
 		this.businessTypesId = businessTypesId;
-	}
-	public int getCurrencyId() {
-		return currencyId;
-	}
-	public void setCurrencyId(int currencyId) {
-		this.currencyId = currencyId;
 	}
 	public String getTaxIdentificationNumber() {
 		return taxIdentificationNumber;

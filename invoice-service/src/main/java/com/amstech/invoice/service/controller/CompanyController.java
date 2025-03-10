@@ -12,17 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.amstech.invoice.service.request.model.CompanyLoginRequestModel;
 import com.amstech.invoice.service.request.model.CompanySignupRequestModel;
 import com.amstech.invoice.service.request.model.CompanyUpdateRequestModel;
-import com.amstech.invoice.service.response.message.RestResponse;
+import com.amstech.invoice.service.response.RestResponse;
 import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.CompanyResponseModel;
 import com.amstech.invoice.service.service.CompanyService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-
 import java.util.Collections;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -47,56 +44,58 @@ public class CompanyController {
         
         System.out.println("InvoiceCompanyController: Object Created");
 }
+
     @Operation(summary = "you can use this method for company/signup",description = "this is company signup")
     @RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
-    public RestResponse signup(@RequestBody CompanySignupRequestModel companyRequestModel) {
-        logger.info("Saving user data: {}", companyRequestModel.getName());
+    public RestResponse signup(@RequestBody CompanySignupRequestModel companySignupRequestModel) {
+        logger.info("Saving Company data with name: {}", companySignupRequestModel.getName());
         try {
-            companyService.signup(companyRequestModel);
-            return RestResponse.build().data(companyRequestModel).success(1452).message("company registyration successfully");
+            CompanyResponseModel companyResponseModel = companyService.signup(companySignupRequestModel); 
+            return RestResponse.build().withSuccess("company registyration successfully",companyResponseModel);
         } catch (Exception e) {
-           e.printStackTrace();
-            return RestResponse.build().error(1457).message("failed to save company data due to"+e.getMessage());
+        	logger.error("Failed to save company due to: {}", e.getMessage(), e);
+        	return RestResponse.build().withError(e.getMessage());
+      }
         }
-    }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/login", produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/login", consumes = "application/json", produces = "application/json")
     public RestResponse companyLogin(@RequestBody CompanyLoginRequestModel companyLoginRequestModel) {
-        logger.info("Login attempt for company with password: {}", companyLoginRequestModel.getPassword());
+      
         try {
-            companyService.login(companyLoginRequestModel);
-            return RestResponse.build().data(companyLoginRequestModel).success(1452).message("company login successfully");
+        	  logger.info("Login with username: {}", companyLoginRequestModel.getAdminUsername());
+             CompanyResponseModel companyResponseModel = companyService.login(companyLoginRequestModel);
+            return RestResponse.build().withSuccess("company login successfully",companyResponseModel);
         } catch (Exception e) {
-        	 e.printStackTrace();
-             return RestResponse.build().error(1457).message("failed to login company data due to"+e.getMessage());
+        	 logger.error("Failed to login company due to: {}", e.getMessage(), e);
+             return RestResponse.build().withError(e.getMessage());
          }
     }
 
+
     @RequestMapping(method = RequestMethod.PUT, value = "/update", consumes = "application/json", produces = "application/json")
-    public RestResponse update(@RequestBody CompanyUpdateRequestModel updateRequestModel) {
-        logger.info("Updating company details with ID: {}", updateRequestModel.getId());
+    public RestResponse update(@RequestBody CompanyUpdateRequestModel companyupdateRequestModel) {
+        logger.info("Updating company details with ID: {}", companyupdateRequestModel.getId());
         try {
-            companyService.updateCompany(updateRequestModel);
-            return RestResponse.build().data(updateRequestModel).success(1452).message("company updated successfully");
+           CompanyResponseModel companyResponseModel= companyService.updatecompany(companyupdateRequestModel);
+            return RestResponse.build().withSuccess("company updated successfully",companyResponseModel);
             
         } catch (Exception e) {
-           e.printStackTrace();
-        return RestResponse.build().error(1457).message("failed to update company data due to"+e.getMessage());
+        	logger.error("Failed to update company due to: {}", e.getMessage(), e);
+        return RestResponse.build().withError(e.getMessage());
     }
     }
-
+    
     @RequestMapping(method = RequestMethod.DELETE, value = "/softDeleteById", produces = "application/json")
-    public RestResponse softDeleteById(@RequestParam Integer id) {
+    public RestResponse softDeleteById(@RequestParam ("id")Integer id) {
         logger.info("Soft deleting company with ID: {}", id);
         try {
             companyService.softDeleteById(id);
-            return RestResponse.build().success(1452).message("company deleted successfully");
+            return RestResponse.build().withSuccess("company deleted successfully");
         } catch (Exception e) {
-        	 e.printStackTrace();
-             return RestResponse.build().error(1457).message("failed to deleted company data due to"+e.getMessage());
+        	 logger.error("Failed to delete company due to: {}", e.getMessage(), e);
+             return RestResponse.build().withError(e.getMessage());
          }
     }
-
 
     @Operation(summary = "Restore a soft-deleted company by ID")
     @PutMapping("/restoreById")
@@ -110,73 +109,33 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-    
-
+  
     @RequestMapping(method = RequestMethod.GET, value = "/findById", produces = "application/json")
     public RestResponse findById(@RequestParam("id") int id) {
         logger.info("Fetching company details for ID: {}", id);
         try {
             CompanyResponseModel companyResponseModel = companyService.findByCompanyId(id);
-            return RestResponse.build().data(companyResponseModel).success(1452).message("company found successfully");
+            return RestResponse.build().withSuccess("company found successfully",companyResponseModel);
         } catch (Exception e) {
-        	 e.printStackTrace();
-             return RestResponse.build().error(1457).message("failed to found company data due to"+e.getMessage());
+        	 logger.error("Failed to find user due to: {}", e.getMessage(), e);
+             return RestResponse.build().withError(e.getMessage());
          }
     }
-    
-    @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
-    public ResponseEntity<RestResponse> findAllCompanies(@RequestParam("page") Integer page, 
-                                                         @RequestParam("size") Integer size) {
-        logger.info("Fetching all company details, page: {}, size: {}", page, size);
 
+    @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
+    public RestResponse findAllCompanies(@RequestParam("page") Integer page,@RequestParam("size") Integer size) {
+        logger.info("Fetching all company details, page: {}, size: {}");
         try {
             List<CompanyResponseModel> companyResponseModels = companyService.findAllCompanies(page, size);
             long totalRecord = companyService.countAllCompany();
-
-            RestResponse response = RestResponse.build()
-                    .data(companyResponseModels)
-                    .success(200)
-                    .page(page)
-                    .size(size)
-                    .totalRecord(totalRecord)
-                    .message("Companies retrieved successfully");
-
-            return ResponseEntity.ok(response);
-
+            return RestResponse.build().withSuccess("Companies retrieved successfully").withTotalRecords(totalRecord).withPageNumber(page).withPageSize(size).withData(companyResponseModels);
         } catch (Exception e) {
-            logger.error("Error fetching company data", e);
-
-            RestResponse errorResponse = RestResponse.build()
-                    .error(500)
-                    .message("Failed to retrieve company data: " + e.getMessage());
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            logger.error("Failed to find company list due to: {}", e);
+          return RestResponse.build().withError(e.getMessage());
         }
     }
 }
    
-		    
-//    @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
-//    public ResponseEntity<RestResponse> findAllCompanies(@RequestParam("page") Integer page, 
-//    		 @RequestParam("size") Integer size) {
-//    			   logger.info("Fetching all company details, page: {}, size: {}", page, size);
-//
-//        try {
-//            List<CompanyResponseModel> companyResponseModels = companyService.findAllCompanies(page,size);
-//            long totalRecord = companyService.count();
-//            RestResponse response = RestResponse.build() .data(companyResponseModels).success(200) 
-//           		 .page(page).size(size).totalRecord(totalRecord).message("company retrieved successfully");
-//
-//           		            return ResponseEntity.ok(response);
-//
-//           		            } catch (Exception e) {
-//           		                logger.error("Error fetching comapny data", e);
-//
-//           		                RestResponse errorResponse = RestResponse.build()
-//           		                        .error(500) 
-//           		                        .message("Failed to retrieve company data: " + e.getMessage());
-//
-//           		                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-//           		            }
-//           		        }
-//}
+	
+    
+ 
