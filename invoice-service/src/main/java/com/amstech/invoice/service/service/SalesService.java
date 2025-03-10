@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
@@ -20,6 +19,8 @@ import com.amstech.invoice.service.request.model.SalesSignupRequestModel;
 import com.amstech.invoice.service.request.model.SalesUpdateRequestModel;
 import com.amstech.invoice.service.response.model.CompanyResponseModel;
 import com.amstech.invoice.service.response.model.SalesInvoiceResponseModel;
+
+import jakarta.transaction.Transactional;
 
 
 @Service
