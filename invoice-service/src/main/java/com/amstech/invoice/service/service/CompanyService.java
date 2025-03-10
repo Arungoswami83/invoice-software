@@ -1,5 +1,7 @@
 package com.amstech.invoice.service.service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,9 +88,14 @@ public class CompanyService {
 	        company.setRegistrationNo(companySignupRequestModel.getRegistrationNo());
 	        company.setTaxIdentificationNumber(companySignupRequestModel.getTaxIdentificationNumber());
 	        company.setTaxPayer(companySignupRequestModel.getTaxPayer());
+	        company.setCreatedAt(Timestamp.from(Instant.now())); 
+	        //company.setUpdatedAt(Timestamp.from(Instant.now()));
+	        company.setEmailUpdate(true);
+	        company.setIsEmailVerified((byte) 1);
+	      //  company.setIsDeleted((byte) 0);
+	       // company.setRestore(1);
 	        
-//	        company.setCreatedAt(new Date(System.currentTimeMillis()));
-	        
+
 	        Company savedCompany = companyRepo.save(company);
 	        logger.info("Company successfully registered with ID: {}", savedCompany.getId());
 	    }
@@ -105,7 +112,7 @@ public class CompanyService {
 	            throw new Exception("Wrong admin username or password.");
 	        }
 
-	        if (company.isDeleted()) {
+	        if (company.getIsDeleted() == (byte) 1)  {
 	            logger.warn("Attempt to login into deactivated account: {}", companyLoginRequestModel.getAdminUsername());
 	            throw new Exception("This company account is deactivated.");
 	        }
@@ -122,16 +129,32 @@ public class CompanyService {
 	        }
 
 	        Company company = companyOptional.get();
-	        if (company.isDeleted()) {
+	        if (company.getIsDeleted() == (byte) 1) {
 	            logger.warn("Company ID {} is already deleted.", id);
 	            throw new Exception("Company already deleted.");
 	        }
 
-	        company.setDeleted(true);
+	        company.setIsDeleted((byte) 1);  // false means 0 (not deleted)
 	        companyRepo.save(company);
 	        logger.info("Company ID {} successfully soft deleted.", id);
+
 	    }
 	
+	    
+	    public String restoreById(Integer id) {
+	        Company company = companyRepo.findById(id)
+	                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+	        if (company.getIsDeleted() == 0) {
+	            throw new RuntimeException("Company is already active");
+	        }
+
+	        company.setIsDeleted((byte) 0);
+	        companyRepo.save(company);
+	        return "Company restored successfully";
+	    }
+	
+
 
 	    public void updateCompany(CompanyUpdateRequestModel companyUpdateRequestModel) throws Exception {
 	        logger.info("Updating company with ID: {}", companyUpdateRequestModel.getId());
@@ -226,8 +249,8 @@ public class CompanyService {
 	        responseModel.setTaxIdentificationNumber(company.getTaxIdentificationNumber());
 	        responseModel.setTaxPayer(company.getTaxPayer());
 	        responseModel.setLogo(company.getLogo());
-	        responseModel.setIsDeleted(company.isDeleted());
-	        responseModel.setUpdatedAt(company.getUpdatedAt());
+	       // responseModel.setIsDeleted(company.getIsDeleted() == 1);  // Convert byte (0/1) to Boolean
+	        responseModel.setUpdatedAt(Timestamp.from(Instant.now()));
 
 	        logger.info("Successfully fetched details for company ID: {}", companyId);
 	        return responseModel;
@@ -236,38 +259,38 @@ public class CompanyService {
 	    public List<CompanyResponseModel> findAllCompanies(Integer page, Integer size) throws Exception {
 	        logger.info("Fetching all active companies.");
 
-	        // Fetch paginated companies
+	        // Fetch only active companies
 	        Page<Company> companyPage = companyRepo.findAll(PageRequest.of(page, size));
 
 	        List<CompanyResponseModel> companyResponseModels = new ArrayList<>();
 
-	        // Filter active companies and map to response model
 	        for (Company company : companyPage.getContent()) {
-	            if (Boolean.FALSE.equals(company.isDeleted())) {  
-	                CompanyResponseModel responseModel = new CompanyResponseModel();
-	                responseModel.setId(company.getId());
-	                responseModel.setName(company.getName());
-	                responseModel.setCinNo(company.getCinNo());
-	                responseModel.setRegistrationNo(company.getRegistrationNo());
-	                responseModel.setEmail(company.getEmail());
-	                responseModel.setCompanyPhone(company.getCompanyPhone());
-	                responseModel.setWebsite(company.getWebsite());
-	                responseModel.setAddress(company.getAddress());
-	                responseModel.setBusinessTypesId(company.getBusinessTypesId());
-	               
-	                responseModel.setTaxIdentificationNumber(company.getTaxIdentificationNumber());
-	                responseModel.setTaxPayer(company.getTaxPayer());
-	                responseModel.setLogo(company.getLogo());
-	                responseModel.setIsDeleted(company.isDeleted());
-	                responseModel.setUpdatedAt(company.getUpdatedAt());
+	            CompanyResponseModel responseModel = new CompanyResponseModel();
+	            responseModel.setId(company.getId());
+	            responseModel.setName(company.getName());
+	            responseModel.setCinNo(company.getCinNo());
+	            responseModel.setRegistrationNo(company.getRegistrationNo());
+	            responseModel.setEmail(company.getEmail());
+	            responseModel.setCompanyPhone(company.getCompanyPhone());
+	            responseModel.setWebsite(company.getWebsite());
+	            responseModel.setAddress(company.getAddress());
+	            responseModel.setBusinessTypesId(company.getBusinessTypesId());
+	            responseModel.setTaxIdentificationNumber(company.getTaxIdentificationNumber());
+	            responseModel.setTaxPayer(company.getTaxPayer());
+	            responseModel.setLogo(company.getLogo());
 
-	                companyResponseModels.add(responseModel);
-	            }
+	            // Corrected: Convert byte to boolean
+	            responseModel.setIsDeleted(company.getIsDeleted() != (byte) 0);
+	            responseModel.setUpdatedAt(Timestamp.from(Instant.now()));
+	            //responseModel.setUpdatedAt(company.getUpdatedAt());
+
+	            companyResponseModels.add(responseModel);
 	        }
 
 	        logger.info("Total active companies fetched: {}", companyResponseModels.size());
 	        return companyResponseModels;
 	    }
+
 	    public long countAllCompany() throws Exception {
 	        return companyRepo.countAllCompany();
 	    }

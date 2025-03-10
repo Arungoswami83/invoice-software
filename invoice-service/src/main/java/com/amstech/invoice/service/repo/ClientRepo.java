@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.SalesInvoices;
@@ -43,6 +45,10 @@ public interface ClientRepo extends JpaRepository<Client, Integer> {
 		 @Query("SELECT c FROM Client c") 
 		    List<Client> findAllClient();
 	 
-	}
+		 @Transactional
+		 @Modifying
+		 @Query("UPDATE Client c SET c.isDeleted = false WHERE c.id = :id") // ✅ Boolean ke liye `false` use karein
+		 void restoreClient(@Param("id") Integer id);
 
+}
 

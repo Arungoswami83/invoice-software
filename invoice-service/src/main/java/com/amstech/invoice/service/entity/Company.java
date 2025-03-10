@@ -19,9 +19,8 @@ public class Company implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name="is_email_update")
-	private byte _isEmailUpdate;
-
+	@Column(name = "is_email_update", nullable = false)
+	private Boolean isEmailUpdate = false;  // ✅ Default value `false` (0)
 	@Lob
 	private String address;
 	
@@ -50,9 +49,7 @@ public class Company implements Serializable {
 	
 
 	private String email;
-	@Column(nullable = false)
-	private Boolean isDeleted = false;  // Ensure the field exists and is correctly spelled
-
+	
 
 	@Column(name="is_email_verified")
 	private byte isEmailVerified;
@@ -62,7 +59,8 @@ public class Company implements Serializable {
 
 	private String name;
 
-	
+	@Column(name = "is_deleted", columnDefinition = "TINYINT(1) DEFAULT 0")
+	private Byte isDeleted = 0;
 
 	@Column(name="registration_no")
 	private String registrationNo;
@@ -111,13 +109,27 @@ public class Company implements Serializable {
 		this.id = id;
 	}
 
-	public byte get_isEmailUpdate() {
-		return this._isEmailUpdate;
+	
+
+	public boolean isEmailUpdate() {
+		return isEmailUpdate;
 	}
 
-	public void set_isEmailUpdate(byte _isEmailUpdate) {
-		this._isEmailUpdate = _isEmailUpdate;
+	public void setEmailUpdate(boolean isEmailUpdate) {
+		this.isEmailUpdate = isEmailUpdate;
 	}
+
+	
+	 
+
+	    public byte getIsDeleted() {
+	        return isDeleted;
+	    }
+
+	    public void setIsDeleted(byte isDeleted) {
+	        this.isDeleted = isDeleted;
+	    }
+	
 
 	public String getAddress() {
 		return this.address;
@@ -185,13 +197,7 @@ public class Company implements Serializable {
 	}
 
 
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+	
 
 	public byte getIsEmailVerified() {
 		return this.isEmailVerified;

@@ -41,20 +41,37 @@ public interface CompanyRepo extends JpaRepository<Company, Integer> {
 	    Company findById(@Param("id") int id,@Param("address") String address,@Param("businessTypesId") int businessTypesId,@Param("companyPhone") String companyPhone,@Param("email") String email,@Param("logo") String logo,@Param("password") String password,@Param("taxPayer") String taxPayer,@Param("website") String website);
 	
 	    
+//	    @Modifying
+//	    @Query("UPDATE Company c SET c.isDeleted = true WHERE c.id = :id")
+//	    void softDeleteCompany(@Param("id") int id);
 	    @Modifying
-	    @Query("UPDATE Company c SET c.isDeleted = true WHERE c.id = :id")
+	    @Query("UPDATE Company c SET c.isDeleted = 1 WHERE c.id = :id")
 	    void softDeleteCompany(@Param("id") int id);
+
 	    
-	    @Query("SELECT COUNT(c) FROM Company c")  
-	    long countAllCompany();
+//	    @Query("SELECT COUNT(c) FROM Company c")  
+//	    long countAllCompany();
 
 		
 		 @Query("SELECT c FROM Company c") 
-		    List<Company> findAllCompany();
+		    List<Company> findAll();
+//		 Page findAll(Pageable pageable);
+		// Page findAll(Pageable pageable);
+		 @Query("SELECT c FROM Company c WHERE c.isDeleted = 0") 
 		 Page findAll(Pageable pageable);
 		    
-		    @Query("SELECT COUNT(c) FROM Company c WHERE c.isDeleted = false")
-		    long countAllCompanies();
+//		    @Query("SELECT COUNT(c) FROM Company c WHERE c.isDeleted = false")
+//		    long countAllCompanies();
+//		 @Query("SELECT COUNT(c) FROM Company c WHERE c.isDeleted = 0")
+//		 long countAllCompanies();
+		 
+		 @Query("SELECT COUNT(c) FROM Company c WHERE c.isDeleted = 0")
+		 long countAllCompany();
+
+		 @Modifying
+		 @Query("UPDATE Company c SET c.isDeleted = 0 WHERE c.id = :id")
+		 void restoreCompany(@Param("id") Integer id);
+
 	 
 
 	}

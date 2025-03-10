@@ -98,6 +98,17 @@ public class ClientController {
 		            return RestResponse.build().error(1457).message("failed to delete client data due to"+e.getMessage());
 		        }
 		    }
+		    
+		    @PutMapping("/restoreById")
+		    public ResponseEntity<String> restoreClient(@RequestParam Integer id) {
+		        try {
+		            clientService.restoreById(id);
+		            return ResponseEntity.ok("Client restored successfully.");
+		        } catch (Exception e) {
+		            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		        }
+		    }
+
 		   
 		    @RequestMapping(method = RequestMethod.GET, value = "/findById", produces = "application/json")
 		    public RestResponse findById(@RequestParam("id") Integer id) {

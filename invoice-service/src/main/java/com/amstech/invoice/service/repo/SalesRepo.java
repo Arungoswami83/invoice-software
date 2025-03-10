@@ -30,5 +30,8 @@ public interface SalesRepo extends JpaRepository<SalesInvoices, Integer> {
     @Modifying
     @Query("UPDATE SalesInvoices s SET s.isDeleted = 1 WHERE s.id = :id")
     void softDeleteSalesInvoices(@Param("id") int id);
+    @Modifying
+    @Query("UPDATE SalesInvoices s SET s.isDeleted = 0 WHERE s.id = :id")
+    void restoreSalesInvoices(@Param("id") Integer id);
 
 }

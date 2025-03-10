@@ -141,6 +141,22 @@ public class ClientService {
 	        clientRepo.save(client);
 	        logger.info("Client soft deleted successfully for ID: {}", id);
 	    }
+	    
+	    public void restoreById(Integer id) throws Exception {
+	        Optional<Client> clientOptional = clientRepo.findById(id);
+	        
+	        if (!clientOptional.isPresent()) {
+	            throw new Exception("Client does not exist.");
+	        }
+
+	        Client client = clientOptional.get();
+	        if (!client.getIsDeleted()) { // Agar already active hai
+	            throw new Exception("Client is already active.");
+	        }
+
+	        clientRepo.restoreClient(id);
+	    }
+	
 
 
 	    public ClientResponseModel findByClientId(int clientId) throws Exception {

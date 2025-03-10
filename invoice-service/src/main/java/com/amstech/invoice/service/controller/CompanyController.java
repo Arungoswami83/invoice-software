@@ -18,6 +18,7 @@ import com.amstech.invoice.service.response.model.CompanyResponseModel;
 import com.amstech.invoice.service.service.CompanyService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.Collections;
 import java.util.List;
@@ -95,6 +96,21 @@ public class CompanyController {
              return RestResponse.build().error(1457).message("failed to deleted company data due to"+e.getMessage());
          }
     }
+
+
+    @Operation(summary = "Restore a soft-deleted company by ID")
+    @PutMapping("/restoreById")
+    public ResponseEntity<String> restoreCompany(
+        @Parameter(description = "ID of the company to restore", required = true)
+        @RequestParam Integer id) {
+        try {
+            companyService.restoreById(id);
+            return ResponseEntity.ok("Company restored successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    
 
     @RequestMapping(method = RequestMethod.GET, value = "/findById", produces = "application/json")
     public RestResponse findById(@RequestParam("id") int id) {

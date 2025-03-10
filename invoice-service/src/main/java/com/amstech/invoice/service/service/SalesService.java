@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
@@ -129,6 +130,24 @@ public class SalesService {
 	        invoice.setIsDeleted(1);
 	        salesRepo.save(invoice);
 	        logger.info("Successfully soft deleted Sales Invoice with ID: {}", id);
+	    }
+	    @Transactional
+	    public void restoreById(Integer id) throws Exception {
+	        Optional<SalesInvoices> invoiceOptional = salesRepo.findById(id);
+
+	        if (!invoiceOptional.isPresent()) {
+	            throw new Exception("Sales invoice does not exist.");
+	        }
+
+	        SalesInvoices invoice = invoiceOptional.get();
+
+	        if (invoice.getIsDeleted() == 0) {
+	            return; // कोई बदलाव नहीं करना
+	        }
+
+	        // Invoice को Restore करें
+	        invoice.setIsDeleted(0);
+	        salesRepo.save(invoice);
 	    }
 
 	    public List<SalesInvoiceResponseModel> findAllActive(Integer page , Integer size) {

@@ -103,6 +103,20 @@ public class SalesController {
           return RestResponse.build().error(1457).message("failed to deleted salesinvoice data due to"+e.getMessage());
       }
   }
+  
+  @PutMapping("/restoreById")
+  public ResponseEntity<String> restoreSalesInvoice(@RequestParam Integer id) {
+      try {
+          salesService.restoreById(id);
+          return ResponseEntity.ok("Sales invoice restored successfully.");
+      } catch (Exception e) {
+          if (e.getMessage().equals("Sales invoice is already active.")) {
+              return ResponseEntity.ok("Invoice is already active. No update needed.");
+          }
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+      }
+  }
+
 
   @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
   public RestResponse findAllSalesInvoices(@RequestParam("page") Integer page, @RequestParam("size") Integer size)  {
