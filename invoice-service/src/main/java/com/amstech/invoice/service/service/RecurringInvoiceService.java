@@ -16,6 +16,7 @@ import com.amstech.invoice.service.converter.entity.RecurringInvoiceModelToEntit
 import com.amstech.invoice.service.converter.model.RecurringInvoiceEntityToModelConverter;
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
+import com.amstech.invoice.service.entity.ProformaInvoice;
 import com.amstech.invoice.service.entity.RecurringInvoice;
 import com.amstech.invoice.service.repo.ClientRepo;
 import com.amstech.invoice.service.repo.CompanyRepo;
@@ -40,48 +41,51 @@ public class RecurringInvoiceService {
 	@Autowired
 	private CompanyRepo companyRepo;
 
-	public void signup(RecurringInvoiceSignupRequestModel requestModel) throws Exception {
-		   Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
-		   
-			  if(!companyOptional.isPresent()) {
-				  throw new Exception ("comapny does not exist");
-			  }
-			  Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
-			   
-			  if(!clientOptional.isPresent()) {
-				  throw new Exception ("client does not exist");
-			  }
-	    RecurringInvoice recurringInvoice = recurringInvoiceModelToEntityConverter.getsaveConverter(requestModel);
-	    recurringInvoice.setCompany(companyOptional.get()); 
-	    recurringInvoice.setClient(clientOptional.get());   
-	    recurringInvoiceRepo.save(recurringInvoice);
-	}
+	 public RecurringInvoiceResponseModel signup(RecurringInvoiceSignupRequestModel requestModel) throws Exception {
+	        Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
+	        if (!companyOptional.isPresent()) {
+	            throw new Exception("Company does not exist");
+	        }
 
-	    public void update(RecurringInvoiceUpdateRequestModel recurringInvoiceUpdateRequestModel) {
-	        LOGGER.info("Attempting to update recurring invoice with ID: {}", recurringInvoiceUpdateRequestModel.getId());
+	        Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
+	        if (!clientOptional.isPresent()) {
+	            throw new Exception("Client does not exist");
+	        }
 
-	        Optional<RecurringInvoice> existingInvoice = recurringInvoiceRepo.findById(recurringInvoiceUpdateRequestModel.getId());
+	        RecurringInvoice recurringInvoice = recurringInvoiceModelToEntityConverter.getsaveConverter(requestModel);
+	        recurringInvoice.setCompany(companyOptional.get());
+	        recurringInvoice.setClient(clientOptional.get());
 
+	        recurringInvoice = recurringInvoiceRepo.save(recurringInvoice);
+	        LOGGER.info("Recurring Invoice created successfully!");
+
+	        return recurringInvoiceEntityToModelConverter.getFindByIdConverter(recurringInvoice);
+	    }
+
+	    public RecurringInvoiceResponseModel update(RecurringInvoiceUpdateRequestModel requestModel) {
+	        LOGGER.info("Attempting to update recurring invoice with ID: {}", requestModel.getId());
+
+	        Optional<RecurringInvoice> existingInvoice = recurringInvoiceRepo.findById(requestModel.getId());
 	        if (existingInvoice.isEmpty()) {
-	            LOGGER.error("Update failed: Invoice with ID {} does not exist", recurringInvoiceUpdateRequestModel.getId());
-	            throw new RuntimeException("Invoice with ID " + recurringInvoiceUpdateRequestModel.getId() + " does not exist");
+	            LOGGER.error("Update failed: Invoice with ID {} does not exist", requestModel.getId());
+	            throw new RuntimeException("Invoice with ID " + requestModel.getId() + " does not exist");
 	        }
 
 	        RecurringInvoice recurringInvoice = existingInvoice.get();
-	        recurringInvoice = recurringInvoiceModelToEntityConverter.getUpdateConverter(recurringInvoiceUpdateRequestModel, recurringInvoice);
-	        recurringInvoiceRepo.save(recurringInvoice);
+	        recurringInvoice = recurringInvoiceModelToEntityConverter.getUpdateConverter(requestModel, recurringInvoice);
+	        recurringInvoice = recurringInvoiceRepo.save(recurringInvoice);
 
-	        LOGGER.info("Recurring invoice with ID {} updated successfully", recurringInvoiceUpdateRequestModel.getId());
+	        LOGGER.info("Recurring invoice with ID {} updated successfully", requestModel.getId());
+	        return recurringInvoiceEntityToModelConverter.getFindByIdConverter(recurringInvoice);
 	    }
 
 	    public RecurringInvoiceResponseModel findById(Integer id) throws Exception {
 	        LOGGER.info("Fetching recurring invoice by ID: {}", id);
 
 	        Optional<RecurringInvoice> existingInvoice = recurringInvoiceRepo.findById(id);
-
 	        if (existingInvoice.isEmpty()) {
 	            LOGGER.error("Fetch failed: Invoice with ID {} does not exist", id);
-	            throw new RuntimeException("Invoice with ID " + id + " does not exist");
+	            throw new Exception("Invoice with ID " + id + " does not exist");
 	        }
 
 	        RecurringInvoice invoice = existingInvoice.get();
@@ -92,11 +96,11 @@ public class RecurringInvoiceService {
 	        LOGGER.info("Recurring invoice with ID {} retrieved successfully", id);
 	        return recurringInvoiceEntityToModelConverter.getFindByIdConverter(invoice);
 	    }
+
 	    public List<RecurringInvoiceResponseModel> findAllRecurringInvoices(Integer page, Integer size) throws Exception {
 	        LOGGER.info("Fetching recurring invoices for page {} with size {}", page, size);
 
 	        try {
-	            // Fetching invoices with pagination
 	            Page<RecurringInvoice> recurringInvoicePage = recurringInvoiceRepo.findAllActive(PageRequest.of(page, size));
 	            List<RecurringInvoice> recurringInvoices = recurringInvoicePage.getContent();
 
@@ -106,11 +110,8 @@ public class RecurringInvoiceService {
 	            }
 
 	            LOGGER.info("Successfully retrieved {} recurring invoices on page {}", recurringInvoices.size(), page);
-
-	            // Converting the entity list to response models and returning
 	            return recurringInvoiceEntityToModelConverter.getfindAllConverter(recurringInvoices);
 	        } catch (Exception e) {
-	            // Logging the error and re-throwing for further handling
 	            LOGGER.error("Error while fetching recurring invoices: {}", e.getMessage(), e);
 	            throw new Exception("Error while fetching recurring invoices", e);
 	        }
@@ -120,9 +121,7 @@ public class RecurringInvoiceService {
 	        LOGGER.info("Counting all active recurring invoices");
 	        return recurringInvoiceRepo.countActiveInvoices();
 	    }
-
-
-
+	
 	   
 	    public void softDeleteById(Integer id) throws Exception {
 	        LOGGER.info("Attempting to soft delete recurring invoice with ID: {}", id);
@@ -144,6 +143,26 @@ public class RecurringInvoiceService {
 	        recurringInvoiceRepo.save(recurringInvoice);
 
 	        LOGGER.info("Recurring invoice with ID {} soft deleted successfully", id);
-	    }	}
+	    }
+	    
+	    public void restoreById(Integer id, Integer status) throws Exception {
+	        Optional<RecurringInvoice> invoiceOptional = recurringInvoiceRepo.findById(id);
+
+	        if (invoiceOptional.isEmpty()) {
+	            throw new RuntimeException("Invoice does not exist.");
+	        }
+
+	        RecurringInvoice recurringInvoice = invoiceOptional.get();
+
+	        // Check if invoice is already active
+	        if (recurringInvoice.getIsDeleted() == 0) {
+	            throw new Exception("Invoice is already active.");
+	        }
+
+	        recurringInvoice.setIsDeleted(status);
+	        recurringInvoiceRepo.save(recurringInvoice);
+	    }
+
+	    }
 
 

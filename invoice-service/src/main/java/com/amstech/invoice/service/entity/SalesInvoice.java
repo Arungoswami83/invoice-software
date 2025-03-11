@@ -21,14 +21,24 @@ public class SalesInvoice implements Serializable {
 	@Id
 	private int id;
 
-	@Column(name="client_id")
-	private int clientId;
+	@ManyToOne
+    @JoinColumn(name = "client_id", nullable = false) // Ensures NOT NULL
+	private Client client;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
+	@Column(name="is_deleted")
+	private int isDeleted;
+	
+	
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
 	private BigDecimal discount;
 
@@ -85,12 +95,12 @@ public class SalesInvoice implements Serializable {
 		this.id = id;
 	}
 
-	public int getClientId() {
-		return this.clientId;
+	public Client getClient() {
+		return client;
 	}
 
-	public void setClientId(int clientId) {
-		this.clientId = clientId;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	public Timestamp getCreatedAt() {
@@ -101,13 +111,7 @@ public class SalesInvoice implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	public Date getDate() {
-		return this.date;
-	}
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
 
 	public BigDecimal getDiscount() {
 		return this.discount;

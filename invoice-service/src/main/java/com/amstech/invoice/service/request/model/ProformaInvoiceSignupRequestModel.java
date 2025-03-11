@@ -10,20 +10,13 @@ import java.util.List;
 import lombok.Data;
 @Data
 public class ProformaInvoiceSignupRequestModel {
-	private int id;
 	private String invoiceNumber;
-
-	private String paymentInstructions;
-
-	private String status;
-
-	private BigDecimal totalAmount;
-
-	private String validityPeriod;
-
-	private Integer companyId;
-
-	private Integer clientId;
+    private String paymentInstructions;
+    private String status;
+    private BigDecimal totalAmount;
+    private String validityPeriod;
+    private Integer companyId;
+    private Integer clientId;
 
 	
 

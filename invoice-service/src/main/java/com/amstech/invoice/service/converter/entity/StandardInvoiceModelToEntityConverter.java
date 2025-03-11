@@ -22,7 +22,6 @@ public class StandardInvoiceModelToEntityConverter {
 	    standardInvoice.setClient(standardInvoice.getClient());
 	    standardInvoice.setCompany(standardInvoice.getCompany());
         standardInvoice.setInvoiceNumber(standardInvoiceSignupRequestModel.getInvoiceNumber());
-	    standardInvoice.setInvoiceDate(standardInvoiceSignupRequestModel.getInvoiceDate());
 	    standardInvoice.setDueDate(standardInvoiceSignupRequestModel.getDueDate());
 	    standardInvoice.setSubtotal(standardInvoiceSignupRequestModel.getSubtotal());
 	    standardInvoice.setDiscount(standardInvoiceSignupRequestModel.getDiscount());
@@ -42,7 +41,6 @@ public class StandardInvoiceModelToEntityConverter {
 	    standardInvoice.setDiscount(requestModel.getDiscount());
 	    standardInvoice.setDueDate(requestModel.getDueDate());
 	    standardInvoice.setGrandTotal(requestModel.getGrandTotal());
-	    standardInvoice.setInvoiceDate(requestModel.getInvoiceDate());
 	    standardInvoice.setRecurring("true".equalsIgnoreCase(requestModel.getRecurringFrequency()));
 	    standardInvoice.setNotes(requestModel.getNotes());
 	    standardInvoice.setPaymentTerm(requestModel.getPaymentTerm());

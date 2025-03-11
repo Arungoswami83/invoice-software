@@ -23,7 +23,6 @@ public class ProductInvoiceModelToEntityConverter {
 
 		    productInvoice.setAccountDetails(productInvoiceSignupRequestModel.getAccountDetails());
 		    productInvoice.setBuyerDetails(productInvoiceSignupRequestModel.getBuyerDetails());
-		    productInvoice.setDate(new Date(productInvoiceSignupRequestModel.getDate()));
 		    productInvoice.setDueDate(new Date(productInvoiceSignupRequestModel.getDueDate()));
             productInvoice.setHandlingCosts(productInvoiceSignupRequestModel.getHandlingCosts());
 		    productInvoice.setOrderNumber(productInvoiceSignupRequestModel.getOrderNumber());
@@ -41,7 +40,6 @@ public class ProductInvoiceModelToEntityConverter {
 		productInvoice.setId(productInvoiceUpdateRequestModel.getId());
 		productInvoice.setAccountDetails(productInvoiceUpdateRequestModel.getAccountDetails());
 		productInvoice.setBuyerDetails(productInvoiceUpdateRequestModel.getBuyerDetails());
-		productInvoice.setDate(new Date(productInvoiceUpdateRequestModel.getDate()));
 	    productInvoice.setDueDate(new Date(productInvoiceUpdateRequestModel.getDueDate()));
         productInvoice.setSupplier(productInvoiceUpdateRequestModel.getSupplier());
 		productInvoice.setOrderNumber(productInvoiceUpdateRequestModel.getOrderNumber());

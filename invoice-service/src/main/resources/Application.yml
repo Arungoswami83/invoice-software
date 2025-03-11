@@ -1,0 +1,4 @@
+spring:
+  name: invoice-service-local
+  profiles:
+    active: local

@@ -22,7 +22,6 @@ public class RecurringInvoiceModelToEntityConverter {
         recurringInvoice.setAutoPaymentSetup(recurringInvoiceSignupRequestModel.getAutoPaymentSetup());
         recurringInvoice.setEndDate(recurringInvoiceSignupRequestModel.getEndDate());
         recurringInvoice.setPaymentTerm(recurringInvoiceSignupRequestModel.getPaymentTerm());
-        recurringInvoice.setStartDate(recurringInvoiceSignupRequestModel.getStartDate());
         recurringInvoice.setTotalPayable(recurringInvoiceSignupRequestModel.getTotalPayable());
    	    recurringInvoice.setClient(recurringInvoice.getClient());
    	    recurringInvoice.setCompany(recurringInvoice.getCompany());

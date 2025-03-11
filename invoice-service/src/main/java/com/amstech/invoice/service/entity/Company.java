@@ -55,8 +55,7 @@ public class Company implements Serializable {
 	@Column(name="registration_no")
 	private String registrationNo;
 
-	private Integer restore;
-
+	
 	@Column(name="tax_identification_number")
 	private String taxIdentificationNumber;
 
@@ -78,9 +77,6 @@ public class Company implements Serializable {
 	private Client client;
 
 	//bi-directional many-to-one association to Currency
-	@ManyToOne
-	private Currency currency;
-
 	//bi-directional many-to-one association to Invoice
 	@OneToMany(mappedBy="company")
 	private List<Invoice> invoices;
@@ -186,10 +182,7 @@ public class Company implements Serializable {
 		this.logo = logo;
 	}
 
-	public void setRestore(Integer restore) {
-		this.restore = restore;
-	}
-
+	
 	public String getName() {
 		return this.name;
 	}
@@ -214,13 +207,6 @@ public class Company implements Serializable {
 		this.registrationNo = registrationNo;
 	}
 
-	public int getRestore() {
-		return this.restore;
-	}
-
-	public void setRestore(int restore) {
-		this.restore = restore;
-	}
 
 	public String getTaxIdentificationNumber() {
 		return this.taxIdentificationNumber;
@@ -270,13 +256,6 @@ public class Company implements Serializable {
 		this.client = client;
 	}
 
-	public Currency getCurrency() {
-		return this.currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
 
 	public List<Invoice> getInvoices() {
 		return this.invoices;

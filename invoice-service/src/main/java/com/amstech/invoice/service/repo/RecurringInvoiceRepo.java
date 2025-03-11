@@ -15,8 +15,9 @@ import com.amstech.invoice.service.entity.RecurringInvoice;
 import com.amstech.invoice.service.entity.StandardInvoice;
 
 public interface RecurringInvoiceRepo extends JpaRepository <RecurringInvoice, Integer>{
-	@Query("SELECT e FROM RecurringInvoice e WHERE e.id = :id AND e.isDeleted = 0")
-	Optional<RecurringInvoice> findById(@Param("id") Integer id);
+	
+	
+	Optional<RecurringInvoice> findById(Integer id);
     @Query("SELECT ri FROM RecurringInvoice ri WHERE ri.isDeleted = 0")
     Page<RecurringInvoice> findAllActive(Pageable pageable);
 

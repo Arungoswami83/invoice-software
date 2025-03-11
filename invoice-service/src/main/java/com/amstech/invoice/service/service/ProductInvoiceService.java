@@ -1,6 +1,8 @@
 package com.amstech.invoice.service.service;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import com.amstech.invoice.service.request.model.ProductInvoiceSignupRequestMode
 import com.amstech.invoice.service.request.model.ProductInvoiceUpdateRequestModel;
 import com.amstech.invoice.service.response.model.ProductInvoiceResponseModel;
 
+
 @Service
 
 public class ProductInvoiceService {
@@ -35,22 +38,32 @@ public class ProductInvoiceService {
 
     private  final Logger LOGGER = LoggerFactory.getLogger(ProductInvoiceService.class);
 
-    public void signup(ProductInvoiceSignupRequestModel productInvoiceSignupRequestModel) throws Exception {
+
+    public ProductInvoiceResponseModel signup(ProductInvoiceSignupRequestModel productInvoiceSignupRequestModel) throws Exception {
         if (productInvoiceSignupRequestModel == null) {
             LOGGER.error("Signup request failed: Request Model is null");
             throw new Exception("Request Model cannot be null");
         }
 
-        LOGGER.debug("Converting request model to entity for user: {}", productInvoiceSignupRequestModel.getId());
+        LOGGER.debug("Converting request model to entity for user: {}", productInvoiceSignupRequestModel.getOrderNumber());
 
         ProductInvoice productInvoice = productInvoiceModelToEntityConverter.getSignupConverter(productInvoiceSignupRequestModel);
-        productInvoice = productInvoiceRepo.save(productInvoice);
+        ProductInvoice save = productInvoiceRepo.save(productInvoice);
 
-        LOGGER.debug("Product Invoice saved successfully! Invoice ID: {}", productInvoice.getId());
-    }
+       return  productInvoiceEntityToModelConverter.getfindByIdConverter(productInvoice);
+    		}
 
 
-    public void update(ProductInvoiceUpdateRequestModel productInvoiceUpdateRequestModel) throws Exception {
+
+    public ProductInvoiceResponseModel update(ProductInvoiceUpdateRequestModel productInvoiceUpdateRequestModel) throws Exception {
+    	
+     Optional<ProductInvoice> InvoiceOptional = productInvoiceRepo.findById(productInvoiceUpdateRequestModel.getId());
+    	   if (InvoiceOptional.isEmpty()) {
+            throw new Exception("invoice does not exist.");
+         }
+ 
+       ProductInvoice productInvoice = InvoiceOptional.get();
+
         LOGGER.info("Updating invoice with ID: {}", productInvoiceUpdateRequestModel.getId());
 
         Optional<ProductInvoice> productInvoiceOptional = productInvoiceRepo.findById(productInvoiceUpdateRequestModel.getId());
@@ -60,11 +73,13 @@ public class ProductInvoiceService {
             throw new Exception("Product invoice does not exist.");
         }
 
-        ProductInvoice productInvoice = productInvoiceOptional.get();
-        ProductInvoice updatedInvoice = productInvoiceModelToEntityConverter.getUpdateConverter(productInvoiceUpdateRequestModel, productInvoice);
-        productInvoiceRepo.save(updatedInvoice);
+     
+        productInvoice = productInvoiceModelToEntityConverter.getUpdateConverter(productInvoiceUpdateRequestModel, productInvoice);
+        productInvoiceRepo.save(productInvoice);
 
         LOGGER.info("Invoice with ID {} updated successfully.", productInvoiceUpdateRequestModel.getId());
+
+        return productInvoiceEntityToModelConverter.getfindByIdConverter(productInvoice);
     }
 
     public ProductInvoiceResponseModel findInvoiceById(Integer id) throws Exception {
@@ -87,29 +102,6 @@ public class ProductInvoiceService {
         return productInvoiceEntityToModelConverter.getfindByIdConverter(productInvoice);
     }
 
-    public void softDeleteById(Integer id, Integer status) throws Exception {
-        LOGGER.info("Attempting to soft delete invoice with ID: {}", id);
-
-        Optional<ProductInvoice> invoiceOptional = productInvoiceRepo.findById(id);
-
-        if (!invoiceOptional.isPresent()) {
-            LOGGER.error("Invoice with ID {} does not exist", id);
-            throw new Exception("Invoice does not exist.");
-        }
-
-        ProductInvoice productInvoice = invoiceOptional.get();
-
-        if (productInvoice.getIsDeleted() == 1) {
-            LOGGER.warn("Invoice with ID {} is already deleted", id);
-            throw new Exception("Invoice already deleted.");
-        }
-
-        productInvoice.setIsDeleted(status);
-        productInvoiceRepo.save(productInvoice);
-        LOGGER.info("Invoice with ID {} successfully soft deleted", id);
-    }
-
-
     public List<ProductInvoiceResponseModel> findAll(Integer page,Integer size) throws Exception {
     	
         LOGGER.info("Fetching all invoices...");
@@ -126,6 +118,48 @@ public class ProductInvoiceService {
         	return productInvoiceRepo.countAllInvoice();
         }
     
+    
+   
+    public void softDeleteById(Integer id) throws Exception {
+        LOGGER.info("Attempting to soft delete invoice with ID: {}", id);
+
+        Optional<ProductInvoice> invoiceOptional = productInvoiceRepo.findById(id);
+        
+        if (!invoiceOptional.isPresent()) {
+            LOGGER.error("Invoice with ID {} does not exist", id);
+            throw new Exception("Invoice does not exist.");
+        }
+
+        ProductInvoice productInvoice = invoiceOptional.get();
+
+        if (productInvoice.getIsDeleted() == 1) {
+            LOGGER.warn("Invoice with ID {} is already deleted", id);
+            throw new Exception("Invoice already deleted.");
+        }
+
+        productInvoice.setIsDeleted(1);
+        productInvoiceRepo.save(productInvoice);
+        LOGGER.info("Invoice with ID {} successfully soft deleted", id);
     }
+    public void restoreById(Integer id, Integer status) throws Exception {
+        Optional<ProductInvoice> invoiceOptional = productInvoiceRepo.findById(id);
+
+        if (invoiceOptional.isEmpty()) {
+            throw new RuntimeException("Invoice does not exist.");
+        }
+
+        ProductInvoice productInvoice = invoiceOptional.get();
+
+        // Check if invoice is already active
+        if (productInvoice.getIsDeleted() == 0) {
+            throw new Exception("Invoice is already active.");
+        }
+
+        productInvoice.setIsDeleted(status);
+        productInvoiceRepo.save(productInvoice);
+    }
+
+}
+
 
 

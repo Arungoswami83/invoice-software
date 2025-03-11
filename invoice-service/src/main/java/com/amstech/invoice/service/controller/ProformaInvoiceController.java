@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,72 +33,74 @@ public class ProformaInvoiceController {
 	private  ProformaInvoiceService proformaInvoiceService;
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
-	public RestResponse signup(@RequestBody ProformaInvoiceSignupRequestModel requestModel) {
-	    LOGGER.info("Saving invoice data for Client ID: {}", requestModel.getClientId());
+    public RestResponse signup(@RequestBody ProformaInvoiceSignupRequestModel requestModel) {
+        LOGGER.info("Saving invoice data for Client ID: {}", requestModel.getClientId());
 
-	    try {
-	        proformaInvoiceService.Signup(requestModel);
-	        LOGGER.info("success");
-	       
+        try {
+            ProformaInvoiceResponseModel responseModel = proformaInvoiceService.signup(requestModel);
+            LOGGER.info("Proforma Invoice Created Successfully!");
 
-	        return RestResponse.build().data(requestModel).message("Proforma Invoice Created Successfully");
-	    } catch (Exception e) {
-	        LOGGER.error("Error occurred while signing up: {}", e.getMessage(), e);
+            return RestResponse.build().withSuccess("Proforma Invoice Created Successfully", responseModel);
+        } catch (DataIntegrityViolationException e) {
+            LOGGER.error("Duplicate Entry Error: {}", e.getMessage(), e);
+            return RestResponse.build().error("Duplicate Entry: Invoice already exists");
+        } catch (Exception e) {
+            LOGGER.error("Error occurred while signing up: {}", e.getMessage(), e);
+            return RestResponse.build().error("Failed to save invoice");
+        }
+    }
 
-	        // Return a more specific error code and message, based on the error type
-	        return RestResponse.build()
-	                .error(500)  // Internal server error (or use 400 for bad input)
-	                .message("Failed to save invoice: " + e.getMessage());
-	    }
-	}
+    @RequestMapping(method = RequestMethod.PUT, value = "/update", consumes = "application/json", produces = "application/json")
+    public RestResponse update(@RequestBody ProformaInvoiceUpdateRequestModel requestModel) {
+        LOGGER.info("Updating proforma invoice data: {}", requestModel.getId());
 
+        try {
+            ProformaInvoiceResponseModel responseModel = proformaInvoiceService.update(requestModel);
+            LOGGER.info("Proforma Invoice updated successfully!");
 
-	    @RequestMapping(method = RequestMethod.PUT, value = "/update", consumes = "application/json", produces = "application/json")
-	    public RestResponse updateProformaInvoice(@RequestBody ProformaInvoiceUpdateRequestModel requestModel) {
-	        LOGGER.info("Updating invoice data for Invoice ID: {}", requestModel.getId());
+            return RestResponse.build().withSuccess("Proforma Invoice Updated Successfully", responseModel);
+        } catch (Exception e) {
+            LOGGER.error("Failed to update invoice: {}", e.getMessage(), e);
+            return RestResponse.build().withError(e.getMessage());
+        }
+    }
 
-	        try {
-	            proformaInvoiceService.update(requestModel);
-	            LOGGER.info("proforma Invoice update Successfully!");
+    @RequestMapping(method = RequestMethod.GET, value = "/findByInvoiceId", produces = "application/json")
+    public RestResponse findByInvoiceId(@RequestParam("id") Integer id) {
+        LOGGER.info("Fetching proforma invoice by ID: {}", id);
 
-	            return RestResponse.build().data(requestModel).success(200).message(" Proforma Invoice update Successfully");
-	        }  catch (Exception e) {
-	            LOGGER.error("Failed to update invoices due to: {}", e.getMessage(), e);
+        try {
+            ProformaInvoiceResponseModel responseModel = proformaInvoiceService.findInvoiceById(id);
+            LOGGER.info("Proforma Invoice ID {} found successfully", id);
 
-	            return RestResponse.build().error(500).message("Failed to update invoice");
-	        }
-	    }
+            return RestResponse.build().withSuccess("Proforma Invoice Found Successfully", responseModel);
+        } catch (Exception e) {
+            LOGGER.error("Failed to find invoice: {}", e.getMessage(), e);
+            return RestResponse.build().withError(e.getMessage());
+        }
+    }
 
-	    @RequestMapping(method = RequestMethod.GET, value = "/findByInvoiceId", produces = "application/json")
-	    public RestResponse findByInvoiceId(@RequestParam("id") Integer id) {
-	        LOGGER.info("Fetching proforma invoice by ID: {}", id);
+    @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
+    public RestResponse findAllInvoices(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        LOGGER.info("Fetching all proforma invoices...");
 
-	        try {
-	            ProformaInvoiceResponseModel responseModel = proformaInvoiceService.findById(id);
-	            LOGGER.info("proforma Invoice find Successfully!");
+        try {
+            List<ProformaInvoiceResponseModel> responseList = proformaInvoiceService.findAll(page, size);
+            long totalRecord = proformaInvoiceService.countAllInvoices();
+            LOGGER.info("Fetched {} proforma invoices successfully", responseList.size());
 
-	            return RestResponse.build().data(responseModel).success(200).message(" Proforma Invoice find Successfully");
-	        }  catch (Exception e) {
-	            LOGGER.error("Failed to find invoice due to: {}", e.getMessage(), e);
-	            return RestResponse.build().error(500).message("Failed to find invoice");
-	        }
-	    }
-
-	    @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
-	    public RestResponse findAllInvoices(@RequestParam("page") Integer page,@RequestParam("size") Integer size) {
-	        LOGGER.info("Fetching all proforma invoices...");
-
-	        try {
-	            List<ProformaInvoiceResponseModel> responseList = proformaInvoiceService.findAllInvoices(page,size);
-	            long totalRecord = proformaInvoiceService.count();
-	            LOGGER.info("Successfully fetched {} invoices.", responseList.size());
-	            return RestResponse.build().data(responseList).success(200).page(page).size(size).totalRecord(totalRecord).message("find all invoice successfully");
-	        } catch (Exception e) {
-	            LOGGER.error("Failed to fetch invoices due to: {}", e.getMessage(), e);
-	            return RestResponse.build().error(500).message("Failed to find invoice");
-	        }
-	    }
-
+            return RestResponse.build()
+                    .withSuccess("Proforma Invoices Found Successfully")
+                    .withTotalRecords(totalRecord)
+                    .withPageNumber(page)
+                    .withPageSize(size)
+                    .withData(responseList);
+        } catch (Exception e) {
+            LOGGER.error("Failed to fetch invoices: {}", e.getMessage(), e);
+            return RestResponse.build().withError(e.getMessage());
+        }
+    }
+    
 	    @RequestMapping(method = RequestMethod.DELETE, value = "/softDelete", produces = "application/json")
 	    public RestResponse softDeleteById(@RequestParam("id") Integer id) {
 	        LOGGER.info("Soft deleting proforma invoice with ID: {}", id);
@@ -106,10 +109,28 @@ public class ProformaInvoiceController {
 	            proformaInvoiceService.softDeleteById(id);
 	            LOGGER.info("Invoice ID {} soft deleted successfully", id);
 
-	            return RestResponse.build().success(200).message(" Proforma Invoice delete Successfully");
+	            return RestResponse.build().withSuccess("invoice deleted successfully");
 	        } catch (Exception e) {
 	            LOGGER.error("Failed to soft delete invoice due to: {}", e.getMessage(), e);
-	            return RestResponse.build().error(500).message("Failed to delete invoice");
+	            return RestResponse.build().withError(e.getMessage());
 	        }
 	    }
+	    
+	    @RequestMapping(method = RequestMethod.DELETE,value = "/RestoreDeleteProformaInvoice", produces = "application/json")
+	    public RestResponse RestoreDeleteProformaInvoice(@RequestParam("id") Integer id,@RequestParam("status") Integer status) {
+	        LOGGER.info("Soft delete request received for invoice ID: {}", id);
+
+	        try {
+	            proformaInvoiceService.restoreById(id, status);
+	            if(status==0) {
+		            return RestResponse.build().withSuccess("invoice re-activate successfully");
+	            }else {
+		            return RestResponse.build().withSuccess("invoice de-activate successfully");
+
+	            }
+	        } catch (Exception e) {
+	            LOGGER.error("Failed to restore invoice ID {}: {}", id);
+	            return RestResponse.build().withError(e.getMessage());
+	            }
+	 }
 }

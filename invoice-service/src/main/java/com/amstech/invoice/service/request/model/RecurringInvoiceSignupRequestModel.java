@@ -13,14 +13,10 @@ import lombok.Data;
 @Data
 public class RecurringInvoiceSignupRequestModel {
 	
-	private int id;
     private byte autoPaymentSetup;
-
-	private Integer companyId;
-
-	private Integer clientId;
+    private Integer companyId;
+    private Integer clientId;
     private Date endDate;
     private String paymentTerm;
-    private Date startDate;
     private BigDecimal totalPayable;
     }

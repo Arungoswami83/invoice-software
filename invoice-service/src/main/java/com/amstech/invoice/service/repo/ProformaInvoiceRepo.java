@@ -1,4 +1,4 @@
-package com.amstech.invoice.service.repo;
+  package com.amstech.invoice.service.repo;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +16,7 @@ import com.amstech.invoice.service.entity.StandardInvoice;
 
 public interface ProformaInvoiceRepo  extends JpaRepository <ProformaInvoice, Integer>{
  
-	@Query("SELECT e FROM ProformaInvoice e WHERE e.id = :id AND e.isDeleted = 0")
-	Optional<ProformaInvoice> findById(@Param("id") Integer id);
+	Optional<ProformaInvoice> findById(Integer id);
 
 	  @Query("SELECT p FROM ProformaInvoice p WHERE p.isDeleted = 0")
 	    Page<ProformaInvoice> findAllActive(Pageable pageable);

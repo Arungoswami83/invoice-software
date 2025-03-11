@@ -10,7 +10,6 @@ public class StandardInvoiceUpdateRequestModel {
 	private BigDecimal discount;
 	private Date dueDate;
 	private BigDecimal grandTotal;
-	private Date invoiceDate;
 	private boolean isRecurring;
 	private String notes;
     private String paymentTerm;

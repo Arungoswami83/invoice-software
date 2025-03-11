@@ -9,7 +9,6 @@ public class ProductInvoiceUpdateRequestModel {
 	private int id;
 	private String accountDetails;
 	private String buyerDetails;
-	private long date;
 	private long dueDate;
     private String supplier;
 	private String orderNumber;

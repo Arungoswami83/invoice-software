@@ -1,11 +1,15 @@
 package com.amstech.invoice.service.entity;
 
+
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 /**
@@ -43,8 +47,8 @@ public class Invoice implements Serializable {
 	@Column(name="grand_total")
 	private BigDecimal grandTotal;
 
-	@Column(name="invoice_number")
-	private String invoiceNumber;
+	@Column(name = "invoice_number", unique = true)
+    private String invoiceNumber;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="issue_date")
@@ -52,11 +56,15 @@ public class Invoice implements Serializable {
 
 	private BigDecimal paid;
 
+	@ManyToOne
+	@JoinColumn(name = "payments_id", nullable = false)
+	private Payment payment;
+
 	@Column(name="product_code")
 	private String productCode;
 
 	@Lob
-	private String quantity;
+	private int quantity;
 
 	private BigDecimal shipping;
 
@@ -85,16 +93,15 @@ public class Invoice implements Serializable {
 	@OneToMany(mappedBy="invoice")
 	private List<EmailLog> emailLogs;
 
-	//bi-directional many-to-one association to GenerateInvoice
-	@OneToMany(mappedBy="invoice")
-	private List<GenerateInvoice> generateInvoices;
-
 	//bi-directional many-to-one association to Client
 	@ManyToOne
-	private Client client;
+    @JoinColumn(name = "client_id", nullable = false)
+	@JsonManagedReference 
+    private Client client;
 
 	//bi-directional many-to-one association to Company
-	@ManyToOne
+	 @ManyToOne
+	 @JoinColumn(name = "company_id", nullable = false)
 	private Company company;
 
 	//bi-directional many-to-one association to InvoiceItem
@@ -105,20 +112,12 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to InvoiceType
 	@ManyToOne
 	@JoinColumn(name="invoice_types_id")
+	@JsonIgnore
 	private InvoiceType invoiceType;
 
-	//bi-directional many-to-one association to Payment
-	@ManyToOne
-	@JoinColumn(name="payments_id")
-	private Payment payment;
-
-	//bi-directional many-to-one association to Report
-	@ManyToOne
-	@JoinColumn(name="reports_id")
-	private Report report;
-
 	//bi-directional many-to-one association to InvoiceLog
-	@OneToMany(mappedBy="invoice")
+	@OneToMany(mappedBy = "invoice")
+	@JsonManagedReference
 	private List<InvoiceLog> invoiceLogs;
 
 	//bi-directional many-to-one association to Notification
@@ -136,6 +135,35 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoice")
 	private List<TaxDetail> taxDetails;
+	
+	 @Column(name="deleted")
+	    private Boolean deleted;
+	 
+	  @PrePersist
+	    public void generateInvoiceNumber() {
+	        if (this.invoiceNumber == null) {
+	            this.invoiceNumber = "INV-" + id; // This will be NULL initially
+		   //     this.invoiceNumber = "INV-" + (id == null ? "1001" : String.format("%04d", id));
+
+	        }
+	    }
+
+	    @PostPersist
+	    public void updateInvoiceNumber() {
+	        if (this.invoiceNumber.equals("INV-null")) {
+	            this.invoiceNumber = "INV-" + id;
+	        }
+	    }
+	   
+	public Boolean getDeleted() {
+			return deleted;
+		}
+
+		public void setDeleted(Boolean deleted) {
+			this.deleted = deleted;
+		}
+		
+
 
 	public Invoice() {
 	}
@@ -235,6 +263,13 @@ public class Invoice implements Serializable {
 	public void setPaid(BigDecimal paid) {
 		this.paid = paid;
 	}
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
 
 	public String getProductCode() {
 		return this.productCode;
@@ -244,11 +279,11 @@ public class Invoice implements Serializable {
 		this.productCode = productCode;
 	}
 
-	public String getQuantity() {
+	public int getQuantity() {
 		return this.quantity;
 	}
 
-	public void setQuantity(String quantity) {
+	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
 
@@ -365,29 +400,7 @@ public class Invoice implements Serializable {
 
 		return emailLog;
 	}
-
-	public List<GenerateInvoice> getGenerateInvoices() {
-		return this.generateInvoices;
-	}
-
-	public void setGenerateInvoices(List<GenerateInvoice> generateInvoices) {
-		this.generateInvoices = generateInvoices;
-	}
-
-	public GenerateInvoice addGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().add(generateInvoice);
-		generateInvoice.setInvoice(this);
-
-		return generateInvoice;
-	}
-
-	public GenerateInvoice removeGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().remove(generateInvoice);
-		generateInvoice.setInvoice(null);
-
-		return generateInvoice;
-	}
-
+	
 	public Client getClient() {
 		return this.client;
 	}
@@ -418,22 +431,6 @@ public class Invoice implements Serializable {
 
 	public void setInvoiceType(InvoiceType invoiceType) {
 		this.invoiceType = invoiceType;
-	}
-
-	public Payment getPayment() {
-		return this.payment;
-	}
-
-	public void setPayment(Payment payment) {
-		this.payment = payment;
-	}
-
-	public Report getReport() {
-		return this.report;
-	}
-
-	public void setReport(Report report) {
-		this.report = report;
 	}
 
 	public List<InvoiceLog> getInvoiceLogs() {
@@ -506,22 +503,8 @@ public class Invoice implements Serializable {
 		return this.reports;
 	}
 
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
-
-	public Report addReport(Report report) {
-		getReports().add(report);
-		report.setInvoice(this);
-
-		return report;
-	}
-
-	public Report removeReport(Report report) {
-		getReports().remove(report);
-		report.setInvoice(null);
-
-		return report;
+	public void setReports(Report reports) {
+		this.reports = (List<Report>) reports;
 	}
 
 	public List<TaxDetail> getTaxDetails() {
@@ -545,5 +528,7 @@ public class Invoice implements Serializable {
 
 		return taxDetail;
 	}
+
+	 
 
 }

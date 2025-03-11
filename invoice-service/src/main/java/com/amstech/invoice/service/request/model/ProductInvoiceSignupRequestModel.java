@@ -6,10 +6,8 @@ import java.sql.Date;
 import lombok.Data;
 @Data
 public class ProductInvoiceSignupRequestModel {
-    private Integer  id;
 	private String accountDetails;
 	private String buyerDetails;
-	private long date;
 	private long dueDate;
 	private BigDecimal handlingCosts;
 	private String orderNumber;

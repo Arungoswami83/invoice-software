@@ -13,13 +13,13 @@ import com.amstech.invoice.service.response.model.ProductInvoiceResponseModel;
 public class ProductInvoiceEntityToModelConverter {
 	
 	public ProductInvoiceResponseModel getfindByIdConverter(ProductInvoice productInvoice) {
+		
 		ProductInvoiceResponseModel responseModel = new ProductInvoiceResponseModel();
 		responseModel.setId(productInvoice.getId());
-		responseModel.setAccountDetails(productInvoice.getAccountDetails());
 		responseModel.setBuyerDetails(productInvoice.getBuyerDetails());
 		responseModel.setSupplier(productInvoice.getSupplier());
-	
-        
+		responseModel.setPaymentMethod(productInvoice.getPaymentMethod());
+		responseModel.setOrderNumber(productInvoice.getOrderNumber());
 		return responseModel;
 	}
 
@@ -30,9 +30,10 @@ public class ProductInvoiceEntityToModelConverter {
 		for (ProductInvoice productInvoice : productInvoiceList) {
 			ProductInvoiceResponseModel responseModel = new ProductInvoiceResponseModel();
 			responseModel.setId(productInvoice.getId());
-			responseModel.setAccountDetails(productInvoice.getAccountDetails());
 			responseModel.setBuyerDetails(productInvoice.getBuyerDetails());
 			responseModel.setSupplier(productInvoice.getSupplier());
+			responseModel.setPaymentMethod(productInvoice.getPaymentMethod());
+			responseModel.setOrderNumber(productInvoice.getOrderNumber());
 
 			productInvoiceResponseModels.add(responseModel);
 		}

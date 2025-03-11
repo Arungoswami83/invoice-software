@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -28,8 +32,7 @@ public class ProductInvoice implements Serializable {
 	@Column(name="buyer_details")
 	private String buyerDetails;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
+	
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
@@ -78,6 +81,13 @@ public class ProductInvoice implements Serializable {
 
 	public ProductInvoice() {
 	}
+	   @CreationTimestamp
+	    @Column(updatable = false, nullable = false)
+	    private LocalDateTime createdAt;
+
+	    @UpdateTimestamp
+	    @Column(nullable = false)
+	    private LocalDateTime updatedAt;
 
 	public int getId() {
 		return this.id;
@@ -103,13 +113,6 @@ public class ProductInvoice implements Serializable {
 		this.buyerDetails = buyerDetails;
 	}
 
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
 
 	public Date getDueDate() {
 		return this.dueDate;

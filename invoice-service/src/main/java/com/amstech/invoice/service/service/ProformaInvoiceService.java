@@ -10,6 +10,7 @@ import com.amstech.invoice.service.converter.entity.ProformaInvoiceModelToEntity
 import com.amstech.invoice.service.converter.model.ProformaInvoiceEntityToModelConverter;
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
+import com.amstech.invoice.service.entity.ProductInvoice;
 import com.amstech.invoice.service.entity.ProformaInvoice;
 import com.amstech.invoice.service.repo.ClientRepo;
 import com.amstech.invoice.service.repo.CompanyRepo;
@@ -42,78 +43,84 @@ public class ProformaInvoiceService {
 	@Autowired
 	private ProformaInvoiceEntityToModelConverter proformaInvoiceEntityToModelConverter;
 
+	 public ProformaInvoiceResponseModel signup(ProformaInvoiceSignupRequestModel requestModel) throws Exception {
+		  Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
+	        if (!companyOptional.isPresent()) {
+	            throw new Exception("Company does not exist");
+	        }
+
+	        LOGGER.debug("Converting request model to entity for user: {}", requestModel.getCompanyId());
+
+	        Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
+	        if (!clientOptional.isPresent()) {
+	            throw new Exception("Client does not exist");
+	        }
+
+	        ProformaInvoice proformaInvoice = proformaInvoiceModelToEntityConverter.getSignupConverter(requestModel);
+	        proformaInvoice.setCompany(companyOptional.get());
+	        proformaInvoice.setClient(clientOptional.get());
+	        ProformaInvoice savedInvoice = proformaInvoiceRepo.save(proformaInvoice);
+
+	        return proformaInvoiceEntityToModelConverter.getfindbyid(savedInvoice);
+	    }
+
+	 
+	 
+	    public ProformaInvoiceResponseModel update(ProformaInvoiceUpdateRequestModel requestModel) throws Exception {
+	        Optional<ProformaInvoice> invoiceOptional = proformaInvoiceRepo.findById(requestModel.getId());
+
+	        if (invoiceOptional.isEmpty()) {
+	            throw new Exception("Invoice does not exist.");
+	        }
+
+	        ProformaInvoice proformaInvoice = invoiceOptional.get();
+	        LOGGER.info("Updating invoice with ID: {}", requestModel.getId());
+
+	        proformaInvoice = proformaInvoiceModelToEntityConverter.getUpdateConverter(requestModel, proformaInvoice);
+	        proformaInvoiceRepo.save(proformaInvoice);
+
+	        LOGGER.info("Invoice with ID {} updated successfully.", requestModel.getId());
+	        return proformaInvoiceEntityToModelConverter.getfindbyid(proformaInvoice);
+	    }
+
+	    public ProformaInvoiceResponseModel findInvoiceById(Integer id) throws Exception {
+	        LOGGER.info("Fetching invoice by ID: {}", id);
+
+	        Optional<ProformaInvoice> invoiceOptional = proformaInvoiceRepo.findById(id);
+
+	        if (!invoiceOptional.isPresent()) {
+	            LOGGER.error("Invoice with ID {} does not exist.", id);
+	            throw new Exception("Invoice does not exist.");
+	        }
+
+	        ProformaInvoice proformaInvoice = invoiceOptional.get();
+	        if (proformaInvoice.getIsDeleted() == 1) {
+	            LOGGER.warn("Invoice with ID {} is already deleted.", id);
+	            throw new Exception("Invoice already deleted.");
+	        }
+
+	        LOGGER.info("Invoice with ID {} fetched successfully.", id);
+	        return proformaInvoiceEntityToModelConverter.getfindbyid(proformaInvoice);
+	    }
+
+	    public List<ProformaInvoiceResponseModel> findAll(Integer page, Integer size) throws Exception {
+	        LOGGER.info("Fetching all invoices...");
+
+	        Page<ProformaInvoice> proformaInvoicePage = proformaInvoiceRepo.findAllActive(PageRequest.of(page, size));
+	        List<ProformaInvoice> proformaInvoiceList = proformaInvoicePage.getContent();
+
+	        if (proformaInvoiceList.isEmpty()) {
+	            throw new Exception("No invoices found.");
+	        }
+
+	        LOGGER.info("Fetched {} invoices successfully", proformaInvoiceList.size());
+	        return proformaInvoiceEntityToModelConverter.getfindAllConverter(proformaInvoiceList);
+	    }
+
+	    public long countAllInvoices() throws Exception {
+	        return proformaInvoiceRepo.countActiveInvoices();
+	    }
 	
-
-	public void Signup(ProformaInvoiceSignupRequestModel requestModel) throws Exception {
-	   Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
-	   
-	  if(!companyOptional.isPresent()) {
-		  throw new Exception ("comapny does not exist");
-	  }
-	  Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
-	   
-	  if(!clientOptional.isPresent()) {
-		  throw new Exception ("client does not exist");
-	  }
-	    ProformaInvoice proformaInvoice = new ProformaInvoice();
-
-	    ProformaInvoice invoice = proformaInvoiceModelToEntityConverter.getSignupConverter(requestModel);
-	    invoice.setCompany(companyOptional.get()); // सही तरीके से सेट करें
-	    invoice.setClient(clientOptional.get());   // सही तरीके से सेट करें
-	    proformaInvoiceRepo.save(invoice);
-	}
-
-
-	public void update(ProformaInvoiceUpdateRequestModel requestModel) throws Exception {
-	    LOGGER.info("Updating proforma invoice with ID: {}", requestModel.getId());
-
-	    ProformaInvoice proformaInvoice = proformaInvoiceRepo.findById(requestModel.getId()).orElse(null);
-	    if (proformaInvoice == null) {
-	        LOGGER.error("Invoice with ID {} does not exist", requestModel.getId());
-	        throw new Exception("Invoice with ID " + requestModel.getId() + " does not exist");
-	    }
-
-	    proformaInvoice = proformaInvoiceModelToEntityConverter.getUpdateConverter(requestModel, proformaInvoice);
-	    proformaInvoiceRepo.save(proformaInvoice);
-	    
-	    LOGGER.info("Proforma invoice with ID {} updated successfully", requestModel.getId());
-	}
-
-	public ProformaInvoiceResponseModel findById(Integer id) throws Exception {
-	    LOGGER.info("Fetching proforma invoice with ID: {}", id);
-
-	    ProformaInvoice proformaInvoice = proformaInvoiceRepo.findById(id).orElse(null);
-	    if (proformaInvoice == null) {
-	        LOGGER.error("Invoice with ID {} not found", id);
-	        throw new Exception("Invoice with ID " + id + " not found");
-	    }
-
-	    if (proformaInvoice.getIsDeleted() == 1) {
-	        throw new Exception("Invoice is deactivated.");
-	    }
-
-	    LOGGER.info("Proforma invoice with ID {} fetched successfully", id);
-	    return proformaInvoiceEntityToModelConverter.getfindbyid(proformaInvoice);
-	}
-
-	public List<ProformaInvoiceResponseModel> findAllInvoices(Integer page, Integer size) throws Exception {
-	    LOGGER.info("Fetching proforma invoices for page {} with size {}", page, size);
-
-	    Page<ProformaInvoice> proformaInvoicePage = proformaInvoiceRepo.findAllActive(PageRequest.of(page, size));
-	    List<ProformaInvoice> proformaInvoices = proformaInvoicePage.getContent();  
-
-	    if (proformaInvoices.isEmpty()) {
-	        LOGGER.warn("No invoices found in the system.");
-	        throw new Exception("No invoices found");
-	    }
-
-	    LOGGER.info("Fetched {} proforma invoices", proformaInvoices.size());
-	    return proformaInvoiceEntityToModelConverter.getfindAllConverter(proformaInvoices);
-	}
-
-	public long count() {
-	    return proformaInvoiceRepo.countActiveInvoices();  
-	}
 
 	
 
@@ -137,5 +144,23 @@ public class ProformaInvoiceService {
 
 	    LOGGER.info("Proforma invoice with ID {} soft deleted successfully", id);
 	}
+	
+	  public void restoreById(Integer id, Integer status) throws Exception {
+	        Optional<ProformaInvoice> invoiceOptional = proformaInvoiceRepo.findById(id);
+
+	        if (invoiceOptional.isEmpty()) {
+	            throw new RuntimeException("Invoice does not exist.");
+	        }
+
+	        ProformaInvoice proformaInvoice = invoiceOptional.get();
+
+	        // Check if invoice is already active
+	        if (proformaInvoice.getIsDeleted() == 0) {
+	            throw new Exception("Invoice is already active.");
+	        }
+
+	        proformaInvoice.setIsDeleted(status);
+	        proformaInvoiceRepo.save(proformaInvoice);
+	    }
 
 }

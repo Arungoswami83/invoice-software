@@ -15,6 +15,7 @@ import com.amstech.invoice.service.converter.entity.ServiceInvoiceModelToEntityC
 import com.amstech.invoice.service.converter.model.ServiceInvoiceEntityToModelConverter;
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.ProductInvoice;
+import com.amstech.invoice.service.entity.RecurringInvoice;
 import com.amstech.invoice.service.entity.ServiceInvoice;
 import com.amstech.invoice.service.repo.ClientRepo;
 import com.amstech.invoice.service.repo.ServiceInvoiceRepo;
@@ -38,90 +39,89 @@ public class ServiceInvoiceService {
 	@Autowired
 	private ServiceInvoiceEntityToModelConverter serviceInvoiceEntityToModelConverter;
 
-   
-	public void signup(ServiceInvoiceSignupRequestModel serviceInvoiceSignupRequestModel) throws Exception {
-	    LOGGER.info("Signup request received for invoice: {}", serviceInvoiceSignupRequestModel.getInvoiceNumber());
+	 public ServiceInvoiceResponseModel signup(ServiceInvoiceSignupRequestModel requestModel) throws Exception {
+	        LOGGER.info("Signup request received for Service Invoice");
 
-	    Optional<Client> clientOptional = clientRepo.findById(serviceInvoiceSignupRequestModel.getClientId());
-	    if (clientOptional.isEmpty()) {
-	        LOGGER.error("Client with ID {} does not exist", serviceInvoiceSignupRequestModel.getClientId());
-	        throw new Exception("Client does not exist.");
-	    }
-	    Client client = clientOptional.get();
-
-	    ServiceInvoice serviceInvoice = serviceInvoiceModelToEntityConverter.getsaveConverter(serviceInvoiceSignupRequestModel);
-	    serviceInvoice.setClient(client);  // ✅ Make sure client is set
-	    serviceInvoiceRepo.save(serviceInvoice);
-	}
-
-
-	    public void update(ServiceInvoiceUpdateRequestModel requestModel) throws Exception {
-	        LOGGER.info("Update request received for invoice ID: {}", requestModel.getId());
-
-	        if (requestModel == null || requestModel.getId() == 0) {
-	            LOGGER.error("Invoice ID is null or zero");
-	            throw new RuntimeException("Invoice ID cannot be null or zero");
+	        Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
+	        if (!clientOptional.isPresent()) {
+	            throw new Exception("Client does not exist");
 	        }
+
+	        ServiceInvoice serviceInvoice = serviceInvoiceModelToEntityConverter.getsaveConverter(requestModel);
+	        serviceInvoice.setClient(clientOptional.get());
+
+	        serviceInvoice = serviceInvoiceRepo.save(serviceInvoice);
+	        LOGGER.info("Service Invoice created successfully!");
+
+	        return serviceInvoiceEntityToModelConverter.getFindByIdConverter(serviceInvoice);
+	    }
+
+	    // ✅ Update Service Invoice
+	    public ServiceInvoiceResponseModel update(ServiceInvoiceUpdateRequestModel requestModel) throws Exception {
+	        LOGGER.info("Attempting to update service invoice with ID: {}", requestModel.getId());
 
 	        Optional<ServiceInvoice> existingInvoice = serviceInvoiceRepo.findById(requestModel.getId());
 	        if (existingInvoice.isEmpty()) {
-	            LOGGER.error("Invoice with ID {} not found", requestModel.getId());
+	            LOGGER.error("Update failed: Invoice with ID {} does not exist", requestModel.getId());
 	            throw new Exception("Invoice with ID " + requestModel.getId() + " does not exist");
 	        }
 
 	        ServiceInvoice serviceInvoice = existingInvoice.get();
 	        serviceInvoice = serviceInvoiceModelToEntityConverter.getUpdateConverter(requestModel, serviceInvoice);
-	        serviceInvoiceRepo.save(serviceInvoice);
+	        serviceInvoice = serviceInvoiceRepo.save(serviceInvoice);
 
-	        LOGGER.info("Invoice ID {} updated successfully", requestModel.getId());
+	        LOGGER.info("Service invoice with ID {} updated successfully", requestModel.getId());
+	        return serviceInvoiceEntityToModelConverter.getFindByIdConverter(serviceInvoice);
 	    }
 
-	    public ServiceInvoiceResponseModel findInvoiceById(Integer id) throws Exception {
-	        LOGGER.info("Fetching invoice by ID: {}", id);
+	    // ✅ Find Service Invoice by ID
+	    public ServiceInvoiceResponseModel findById(Integer id) throws Exception {
+	        LOGGER.info("Fetching service invoice by ID: {}", id);
 
-	        Optional<ServiceInvoice> serviceInvoice = serviceInvoiceRepo.findById(id);
-	        if (serviceInvoice.isEmpty()) {
-	            LOGGER.error("Invoice with ID {} not found", id);
-	            throw new Exception("Invoice with ID " + id + " not found");
+	        Optional<ServiceInvoice> existingInvoice = serviceInvoiceRepo.findById(id);
+	        if (existingInvoice.isEmpty()) {
+	            LOGGER.error("Fetch failed: Invoice with ID {} does not exist", id);
+	            throw new Exception("Invoice with ID " + id + " does not exist");
 	        }
-	        
-	        ServiceInvoice Invoice = serviceInvoice.get();
-	        if (Invoice.getIsDeleted() == 1) {
-				throw new Exception("invoice is desctivate.");
-			}
 
-	        LOGGER.info("Invoice ID {} found successfully", id);
-	        return serviceInvoiceEntityToModelConverter.getFindByIdConverter(serviceInvoice.get());
+	        ServiceInvoice invoice = existingInvoice.get();
+	        if (invoice.getIsDeleted() == 1) {
+	            LOGGER.error("Service Invoice with ID {} is deactivated", id);
+	            throw new Exception("Invoice is deactivated.");
+	        }
+
+	        LOGGER.info("Service invoice with ID {} retrieved successfully", id);
+	        return serviceInvoiceEntityToModelConverter.getFindByIdConverter(invoice);
 	    }
 
-	    public List<ServiceInvoiceResponseModel> findAllInvoices(Integer page, Integer size) throws Exception {
-	        LOGGER.info("Fetching invoices for page {} with size {}", page, size);
+	    // ✅ Fetch All Service Invoices (With Pagination)
+	    public List<ServiceInvoiceResponseModel> findAllServiceInvoices(Integer page, Integer size) throws Exception {
+	        LOGGER.info("Fetching service invoices for page {} with size {}", page, size);
 
 	        try {
 	            Page<ServiceInvoice> serviceInvoicePage = serviceInvoiceRepo.findAllActive(PageRequest.of(page, size));
 	            List<ServiceInvoice> serviceInvoices = serviceInvoicePage.getContent();
 
 	            if (serviceInvoices.isEmpty()) {
-	                LOGGER.warn("No invoices found in the database");
-	                throw new Exception("No invoices found");
+	                LOGGER.warn("No service invoices found on page {} with size {}", page, size);
+	                throw new Exception("No service invoices found");
 	            }
 
-	            LOGGER.info("Fetched {} invoices successfully", serviceInvoices.size());
+	            LOGGER.info("Successfully retrieved {} service invoices on page {}", serviceInvoices.size(), page);
 	            return serviceInvoiceEntityToModelConverter.getfindAllConverter(serviceInvoices);
 	        } catch (Exception e) {
-	            LOGGER.error("Error in findAllInvoices: {}", e.getMessage(), e);
-	            throw new Exception("Error fetching invoices", e);
+	            LOGGER.error("Error while fetching service invoices: {}", e.getMessage(), e);
+	            throw new Exception("Error while fetching service invoices", e);
 	        }
 	    }
 
+	    // ✅ Count Total Service Invoices
+	    public long countServiceInvoices() {
+	        LOGGER.info("Counting all active service invoices");
+	        return serviceInvoiceRepo.countActiveInvoices();
+	    }
 
-	    public long count() throws Exception {
-		    return serviceInvoiceRepo.count();
-		}
-
-		 
-
-	    public void softDeleteById(Integer id,Integer status) throws Exception {
+	    public void softDeleteById(Integer id) throws Exception {
 	        LOGGER.info("Soft delete request received for invoice ID: {}", id);
 
 	        Optional<ServiceInvoice> invoiceOptional = serviceInvoiceRepo.findById(id);
@@ -136,10 +136,28 @@ public class ServiceInvoiceService {
 	            throw new Exception("Invoice already deleted.");
 	        }
 
-	        serviceInvoice.setIsDeleted(status);
+	        serviceInvoice.setIsDeleted(1);
 	        serviceInvoiceRepo.save(serviceInvoice);
 
 	        LOGGER.info("Invoice ID {} soft deleted successfully", id);
 	    }
+	    public void restoreById(Integer id, Integer status) throws Exception {
+	        Optional<ServiceInvoice> invoiceOptional = serviceInvoiceRepo.findById(id);
+
+	        if (invoiceOptional.isEmpty()) {
+	            throw new RuntimeException("Invoice does not exist.");
+	        }
+
+	        ServiceInvoice serviceInvoice = invoiceOptional.get();
+
+	        // Check if invoice is already active
+	        if (serviceInvoice.getIsDeleted() == 0) {
+	            throw new Exception("Invoice is already active.");
+	        }
+
+	        serviceInvoice.setIsDeleted(status);
+	        serviceInvoiceRepo.save(serviceInvoice);
+	    }
+
 	   
 }

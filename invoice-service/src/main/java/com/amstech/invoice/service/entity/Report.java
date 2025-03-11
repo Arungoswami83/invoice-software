@@ -36,8 +36,8 @@ public class Report implements Serializable {
 	private List<Dashboard> dashboards;
 
 	//bi-directional many-to-one association to Invoice
-	@OneToMany(mappedBy="report")
-	private List<Invoice> invoices;
+//	@OneToMany(mappedBy="report")
+//	private List<Invoice> invoices;
 
 	//bi-directional many-to-one association to Client
 	@ManyToOne
@@ -119,27 +119,27 @@ public class Report implements Serializable {
 		return dashboard;
 	}
 
-	public List<Invoice> getInvoices() {
-		return this.invoices;
-	}
+//	public List<Invoice> getInvoices() {
+//		return this.invoices;
+//	}
+//
+//	public void setInvoices(List<Invoice> invoices) {
+//		this.invoices = invoices;
+//	}
+//
+//	public Invoice addInvoice(Invoice invoice) {
+//		getInvoices().add(invoice);
+//		invoice.setReports(this);
+//
+//		return invoice;
+//	}
 
-	public void setInvoices(List<Invoice> invoices) {
-		this.invoices = invoices;
-	}
-
-	public Invoice addInvoice(Invoice invoice) {
-		getInvoices().add(invoice);
-		invoice.setReport(this);
-
-		return invoice;
-	}
-
-	public Invoice removeInvoice(Invoice invoice) {
-		getInvoices().remove(invoice);
-		invoice.setReport(null);
-
-		return invoice;
-	}
+//	public Invoice removeInvoice(Invoice invoice) {
+//		getInvoices().remove(invoice);
+//		invoice.setReports(null);
+//
+//		return invoice;
+//	}
 
 	public Client getClient() {
 		return this.client;

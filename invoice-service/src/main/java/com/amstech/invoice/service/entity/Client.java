@@ -6,6 +6,8 @@ import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 /**
  * The persistent class for the client database table.
@@ -18,6 +20,14 @@ public class Client implements Serializable {
 
 	@Id
 	private int id;
+	
+	@JsonProperty
+	@Column(name="username")
+	private String userName;
+	
+	@JsonProperty
+	@Column(name="password",nullable = false)
+	private String password;
 
 	@Lob
 	private String address;
@@ -35,9 +45,7 @@ public class Client implements Serializable {
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
-
+	
 	private String email;
 
 	@Column(name="first_name")
@@ -76,10 +84,7 @@ public class Client implements Serializable {
 	@OneToMany(mappedBy="client")
 	private List<Company> companies;
 
-	//bi-directional many-to-one association to GenerateInvoice
-	@OneToMany(mappedBy="client")
-	private List<GenerateInvoice> generateInvoices;
-
+	
 	//bi-directional many-to-one association to Invoice
 	@OneToMany(mappedBy="client")
 	private List<Invoice> invoices;
@@ -139,14 +144,6 @@ public class Client implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
 	public String getEmail() {
 		return this.email;
 	}
@@ -169,6 +166,21 @@ public class Client implements Serializable {
 
 	public void setIsDeleted(byte isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getLastName() {
@@ -257,27 +269,7 @@ public class Client implements Serializable {
 		return company;
 	}
 
-	public List<GenerateInvoice> getGenerateInvoices() {
-		return this.generateInvoices;
-	}
-
-	public void setGenerateInvoices(List<GenerateInvoice> generateInvoices) {
-		this.generateInvoices = generateInvoices;
-	}
-
-	public GenerateInvoice addGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().add(generateInvoice);
-		generateInvoice.setClient(this);
-
-		return generateInvoice;
-	}
-
-	public GenerateInvoice removeGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().remove(generateInvoice);
-		generateInvoice.setClient(null);
-
-		return generateInvoice;
-	}
+	
 
 	public List<Invoice> getInvoices() {
 		return this.invoices;

@@ -43,10 +43,6 @@ public class StandardInvoice implements Serializable {
 	@Column(name="grand_total")
 	private BigDecimal grandTotal;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name="invoice_date")
-	private Date invoiceDate;
-
 	@Column(name="invoice_number")
 	private String invoiceNumber;
 
@@ -146,13 +142,6 @@ public class StandardInvoice implements Serializable {
 		this.grandTotal = grandTotal;
 	}
 
-	public Date getInvoiceDate() {
-		return this.invoiceDate;
-	}
-
-	public void setInvoiceDate(Date invoiceDate) {
-		this.invoiceDate = invoiceDate;
-	}
 
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;

@@ -17,11 +17,9 @@ import jakarta.persistence.TemporalType;
 import lombok.Data;
 @Data
 public class StandardInvoiceSignupRequestModel {
-	private int id;
 	private BigDecimal discount;
 	private Date dueDate;
 	private BigDecimal grandTotal;
-	private Date invoiceDate;
 	private String invoiceNumber;
 	private boolean isRecurring;
 	private String notes;

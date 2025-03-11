@@ -14,8 +14,7 @@ import com.amstech.invoice.service.entity.ServiceInvoice;
 import com.amstech.invoice.service.entity.StandardInvoice;
 
 public interface StandardInvoiceRepo extends JpaRepository <StandardInvoice, Integer>{
-	@Query("SELECT e FROM StandardInvoice e WHERE e.id = :id AND e.isDeleted = 0")
-	Optional<StandardInvoice> findById(@Param("id") Integer id);
+	Optional<StandardInvoice> findById(Integer id);
 	
 	@Query("SELECT s FROM StandardInvoice s WHERE s.isDeleted = 0 OR s.isDeleted IS NULL")
 	Page<StandardInvoice> findAllActive(Pageable pageable);

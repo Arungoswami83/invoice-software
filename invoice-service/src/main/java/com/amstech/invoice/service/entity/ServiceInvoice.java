@@ -24,10 +24,6 @@ public class ServiceInvoice implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	
-
-
-
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
 	private Date dueDate;

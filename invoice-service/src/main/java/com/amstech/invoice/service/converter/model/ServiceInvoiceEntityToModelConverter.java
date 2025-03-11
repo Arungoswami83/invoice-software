@@ -13,7 +13,7 @@ public class ServiceInvoiceEntityToModelConverter {
 
 	 public ServiceInvoiceResponseModel getFindByIdConverter(ServiceInvoice serviceInvoice) {
 		   ServiceInvoiceResponseModel responseModel = new ServiceInvoiceResponseModel();
-		   serviceInvoice.setId(serviceInvoice.getId());
+		    responseModel.setId(serviceInvoice.getId());
 		    responseModel.setInvoiceNumber(serviceInvoice.getInvoiceNumber());
 		    responseModel.setGrandTotal(serviceInvoice.getGrandTotal());
 		    responseModel.setNotes(serviceInvoice.getNotes());

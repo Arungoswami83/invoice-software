@@ -18,7 +18,6 @@ import jakarta.persistence.TemporalType;
 import lombok.Data;
 @Data
 public class ServiceInvoiceSignupRequestModel {
-	private int id;
     private Date dueDate;
     private BigDecimal grandTotal;
     private String invoiceNumber;

@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
 /**
  * The persistent class for the recurring_invoices database table.
  * 
@@ -25,30 +26,17 @@ public class RecurringInvoice implements Serializable {
 	@Column(name="auto_payment_setup")
 	private byte autoPaymentSetup;
 
-	public Client getClient() {
-		return client;
-	}
+	
+	@ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 
-	public void setClient(Client client) {
-		this.client = client;
-	}
-
-	public Company getCompany() {
-		return company;
-	}
-
-	public void setCompany(Company company) {
-		this.company = company;
-	}
-	  @ManyToOne
-	    @JoinColumn(name = "client_id", nullable = false)
-	    private Client client;
-
-	    @ManyToOne
-	    @JoinColumn(name = "company_id", nullable = false)
-	    private Company company;
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
 
+	
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="end_date")
@@ -57,9 +45,7 @@ public class RecurringInvoice implements Serializable {
 	@Column(name="payment_term")
 	private String paymentTerm;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name="start_date")
-	private Date startDate;
+
 
 	@Column(name="total_payable")
 	private BigDecimal totalPayable;
@@ -88,6 +74,28 @@ public class RecurringInvoice implements Serializable {
 	public int getIsDeleted() {
 		return isDeleted;
 	}
+	 @CreationTimestamp
+	  @Column(updatable = false, nullable = false)
+	    private LocalDateTime createdAt;
+
+	    public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+		@UpdateTimestamp
+	    @Column(nullable = false)
+	    private LocalDateTime updatedAt;
 
 	public void setIsDeleted(int isDeleted) {
 		this.isDeleted = isDeleted;
@@ -130,13 +138,6 @@ public class RecurringInvoice implements Serializable {
 		this.paymentTerm = paymentTerm;
 	}
 
-	public Date getStartDate() {
-		return this.startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
 
 	public BigDecimal getTotalPayable() {
 		return this.totalPayable;
@@ -233,5 +234,21 @@ public class RecurringInvoice implements Serializable {
 
 		return recurringService;
 	}
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+	  
 
 }
