@@ -59,34 +59,6 @@ public class SalesService {
 	        SalesInvoices salesSave = salesRepo.save(salesInvoices);
 	        return salesEntityToModelConverter.getfindBySalesInvoiceId(salesSave);
 	    }
-//	  public UserResponseModel update(UserUpdateRequestModel userUpdateRequestModel) throws Exception {
-//
-//	        Optional<User> userOptional = userRepo.findById(userUpdateRequestModel.getId());
-//
-//	        if (userOptional.isEmpty()) {
-//	            throw new Exception("The user account does not exist.");
-//	        }
-//
-//	        User user = userOptional.get();
-//
-//	        if (userUpdateRequestModel.isEmailUpdate()) {
-//	            if (!userUpdateRequestModel.isEmailVerified()) {
-//	                throw new Exception("Your account is not verified. Please verify it to continue.");
-//	            }
-//	            User userByEmail = userRepo.findByEmail(userUpdateRequestModel.getEmail());
-//	            if (userByEmail != null) {
-//	                throw new Exception("An account with this email already exists. Please use another email.");
-//	            }
-//	            user.setEmail(userUpdateRequestModel.getEmail());
-//	        }
-//
-//	        user = userModelToEntityConverter.getUpdateConvert(userUpdateRequestModel, user);
-//	        User savedUser = userRepo.save(user);
-//	        return userEntityToModelConverter.getfindById(savedUser);
-//	    }
-	  
-	  
-
 	    public SalesInvoiceResponseModel update(SalesUpdateRequestModel salesUpdateRequestModel) throws Exception {
 	        
 	        Optional<SalesInvoices> optionalSalesInvoices = salesRepo.findById(salesUpdateRequestModel.getId());
