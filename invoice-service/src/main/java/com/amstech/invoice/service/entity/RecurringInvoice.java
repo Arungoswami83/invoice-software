@@ -3,14 +3,12 @@ package com.amstech.invoice.service.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-
-/**
- * The persistent class for the recurring_invoices database table.
- * 
- */
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name="recurring_invoices")
 @NamedQuery(name="RecurringInvoice.findAll", query="SELECT r FROM RecurringInvoice r")
@@ -20,40 +18,36 @@ public class RecurringInvoice implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
+	@Column(name="is_deleted")
+	private int isDeleted;
+
+
+	@ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
 	@Column(name="auto_payment_setup")
 	private byte autoPaymentSetup;
 
-	@Lob
-	@Column(name="client_address")
-	private String clientAddress;
-
-	@Column(name="client_email")
-	private String clientEmail;
-
-	@Column(name="client_name")
-	private String clientName;
-
-	@Column(name="client_phone")
-	private String clientPhone;
-
-	@Column(name="company_info")
-	private String companyInfo;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="due_date")
-	private Date dueDate;
-
 	@Temporal(TemporalType.DATE)
 	@Column(name="end_date")
 	private Date endDate;
+	
+	@CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    private LocalDateTime createdAt;
+	
+	 @UpdateTimestamp
+	 @Column(nullable=false)
+	 private LocalDateTime updatedAt;
 
 	@Column(name="payment_term")
 	private String paymentTerm;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="start_date")
-	private Date startDate;
 
 	@Column(name="total_payable")
 	private BigDecimal totalPayable;
@@ -97,52 +91,22 @@ public class RecurringInvoice implements Serializable {
 		this.autoPaymentSetup = autoPaymentSetup;
 	}
 
-	public String getClientAddress() {
-		return this.clientAddress;
+	
+
+	public Client getClient() {
+		return client;
 	}
 
-	public void setClientAddress(String clientAddress) {
-		this.clientAddress = clientAddress;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
-	public String getClientEmail() {
-		return this.clientEmail;
+	public Company getCompany() {
+		return company;
 	}
 
-	public void setClientEmail(String clientEmail) {
-		this.clientEmail = clientEmail;
-	}
-
-	public String getClientName() {
-		return this.clientName;
-	}
-
-	public void setClientName(String clientName) {
-		this.clientName = clientName;
-	}
-
-	public String getClientPhone() {
-		return this.clientPhone;
-	}
-
-	public void setClientPhone(String clientPhone) {
-		this.clientPhone = clientPhone;
-	}
-
-	public String getCompanyInfo() {
-		return this.companyInfo;
-	}
-
-	public void setCompanyInfo(String companyInfo) {
-		this.companyInfo = companyInfo;
-	}
-
-	public Date getDueDate() {
-		return this.dueDate;
-	}
-
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	public Date getEndDate() {
@@ -159,14 +123,6 @@ public class RecurringInvoice implements Serializable {
 
 	public void setPaymentTerm(String paymentTerm) {
 		this.paymentTerm = paymentTerm;
-	}
-
-	public Date getStartDate() {
-		return this.startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
 	}
 
 	public BigDecimal getTotalPayable() {

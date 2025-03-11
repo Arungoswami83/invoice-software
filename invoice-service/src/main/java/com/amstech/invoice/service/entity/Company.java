@@ -20,7 +20,7 @@ public class Company implements Serializable {
 	private int id;
 
 	@Column(name = "is_email_update", nullable = false)
-	private Boolean isEmailUpdate = false;  // ✅ Default value `false` (0)
+	private Boolean isEmailUpdate = false;   	
 	@Lob
 	private String address;
 	
@@ -65,8 +65,6 @@ public class Company implements Serializable {
 	@Column(name="registration_no")
 	private String registrationNo;
 
-	private int restore;
-
 	@Column(name="tax_identification_number")
 	private String taxIdentificationNumber;
 
@@ -82,21 +80,21 @@ public class Company implements Serializable {
 	@OneToMany(mappedBy="company")
 	private List<Invoice> invoices;
 
-	//bi-directional many-to-one association to ProformaInvoice
-	@OneToMany(mappedBy="company1")
-	private List<ProformaInvoice> proformaInvoices1;
-
-	//bi-directional many-to-one association to ProformaInvoice
-	@OneToMany(mappedBy="company2")
-	private List<ProformaInvoice> proformaInvoices2;
-
-	//bi-directional many-to-one association to StandardInvoice
-	@OneToMany(mappedBy="company1")
-	private List<StandardInvoice> standardInvoices1;
-
-	//bi-directional many-to-one association to StandardInvoice
-	@OneToMany(mappedBy="company2")
-	private List<StandardInvoice> standardInvoices2;
+//	//bi-directional many-to-one association to ProformaInvoice
+//	@OneToMany(mappedBy="company1")
+//	private List<ProformaInvoice> proformaInvoices1;
+//
+//	//bi-directional many-to-one association to ProformaInvoice
+//	@OneToMany(mappedBy="company2")
+//	private List<ProformaInvoice> proformaInvoices2;
+//
+//	//bi-directional many-to-one association to StandardInvoice
+//	@OneToMany(mappedBy="company1")
+//	private List<StandardInvoice> standardInvoices1;
+//
+//	//bi-directional many-to-one association to StandardInvoice
+//	@OneToMany(mappedBy="company2")
+//	private List<StandardInvoice> standardInvoices2;
 
 	public Company() {
 	}
@@ -239,14 +237,6 @@ public class Company implements Serializable {
 		this.registrationNo = registrationNo;
 	}
 
-	public int getRestore() {
-		return this.restore;
-	}
-
-	public void setRestore(int restore) {
-		this.restore = restore;
-	}
-
 	public String getTaxIdentificationNumber() {
 		return this.taxIdentificationNumber;
 	}
@@ -301,92 +291,38 @@ public class Company implements Serializable {
 		return invoice;
 	}
 
-	public List<ProformaInvoice> getProformaInvoices1() {
-		return this.proformaInvoices1;
-	}
-
-	public void setProformaInvoices1(List<ProformaInvoice> proformaInvoices1) {
-		this.proformaInvoices1 = proformaInvoices1;
-	}
-
-	public ProformaInvoice addProformaInvoices1(ProformaInvoice proformaInvoices1) {
-		getProformaInvoices1().add(proformaInvoices1);
-		proformaInvoices1.setCompany1(this);
-
-		return proformaInvoices1;
-	}
-
-	public ProformaInvoice removeProformaInvoices1(ProformaInvoice proformaInvoices1) {
-		getProformaInvoices1().remove(proformaInvoices1);
-		proformaInvoices1.setCompany1(null);
-
-		return proformaInvoices1;
-	}
-
-	public List<ProformaInvoice> getProformaInvoices2() {
-		return this.proformaInvoices2;
-	}
-
-	public void setProformaInvoices2(List<ProformaInvoice> proformaInvoices2) {
-		this.proformaInvoices2 = proformaInvoices2;
-	}
-
-	public ProformaInvoice addProformaInvoices2(ProformaInvoice proformaInvoices2) {
-		getProformaInvoices2().add(proformaInvoices2);
-		proformaInvoices2.setCompany2(this);
-
-		return proformaInvoices2;
-	}
-
-	public ProformaInvoice removeProformaInvoices2(ProformaInvoice proformaInvoices2) {
-		getProformaInvoices2().remove(proformaInvoices2);
-		proformaInvoices2.setCompany2(null);
-
-		return proformaInvoices2;
-	}
-
-	public List<StandardInvoice> getStandardInvoices1() {
-		return this.standardInvoices1;
-	}
-
-	public void setStandardInvoices1(List<StandardInvoice> standardInvoices1) {
-		this.standardInvoices1 = standardInvoices1;
-	}
-
-	public StandardInvoice addStandardInvoices1(StandardInvoice standardInvoices1) {
-		getStandardInvoices1().add(standardInvoices1);
-		standardInvoices1.setCompany1(this);
-
-		return standardInvoices1;
-	}
-
-	public StandardInvoice removeStandardInvoices1(StandardInvoice standardInvoices1) {
-		getStandardInvoices1().remove(standardInvoices1);
-		standardInvoices1.setCompany1(null);
-
-		return standardInvoices1;
-	}
-
-	public List<StandardInvoice> getStandardInvoices2() {
-		return this.standardInvoices2;
-	}
-
-	public void setStandardInvoices2(List<StandardInvoice> standardInvoices2) {
-		this.standardInvoices2 = standardInvoices2;
-	}
-
-	public StandardInvoice addStandardInvoices2(StandardInvoice standardInvoices2) {
-		getStandardInvoices2().add(standardInvoices2);
-		standardInvoices2.setCompany2(this);
-
-		return standardInvoices2;
-	}
-
-	public StandardInvoice removeStandardInvoices2(StandardInvoice standardInvoices2) {
-		getStandardInvoices2().remove(standardInvoices2);
-		standardInvoices2.setCompany2(null);
-
-		return standardInvoices2;
-	}
+//	public List<ProformaInvoice> getProformaInvoices1() {
+//		return this.proformaInvoices1;
+//	}
+//
+//	public void setProformaInvoices1(List<ProformaInvoice> proformaInvoices1) {
+//		this.proformaInvoices1 = proformaInvoices1;
+//	}
 
 }
+//
+//	public List<ProformaInvoice> getProformaInvoices2() {
+//		return this.proformaInvoices2;
+//	}
+//
+//	public void setProformaInvoices2(List<ProformaInvoice> proformaInvoices2) {
+//		this.proformaInvoices2 = proformaInvoices2;
+//	}
+//
+//	public List<StandardInvoice> getStandardInvoices1() {
+//		return this.standardInvoices1;
+//	}
+//
+//	public void setStandardInvoices1(List<StandardInvoice> standardInvoices1) {
+//		this.standardInvoices1 = standardInvoices1;
+//	}
+//
+//	
+//	public List<StandardInvoice> getStandardInvoices2() {
+//		return this.standardInvoices2;
+//	}
+//
+//	public void setStandardInvoices2(List<StandardInvoice> standardInvoices2) {
+//		this.standardInvoices2 = standardInvoices2;
+//	}
+//}

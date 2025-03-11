@@ -25,7 +25,6 @@ public class ClientModelToEntityConverter {
         client.setPostalZipCode(clientSignupRequestModel.getPostalZipCode());
         client.setMobileNumber(clientSignupRequestModel.getMobileNumber());
         client.setUserName(clientSignupRequestModel.getUsername());
-        client.setDate(clientSignupRequestModel.getDate());
         client.setPassword(clientSignupRequestModel.getPassword());
         
         

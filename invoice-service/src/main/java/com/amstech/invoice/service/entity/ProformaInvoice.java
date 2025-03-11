@@ -22,8 +22,9 @@ public class ProformaInvoice implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name="client_id")
-	private int clientId;
+	@ManyToOne
+	@JoinColumn(name="client_id",referencedColumnName = "id")
+	private Client client;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -33,6 +34,9 @@ public class ProformaInvoice implements Serializable {
 
 	@Column(name="invoice_number")
 	private String invoiceNumber;
+	
+	@Column(name="is_deleted",nullable = false)
+	private int isDeleted;
 
 	@Lob
 	@Column(name="payment_instructions")
@@ -61,16 +65,6 @@ public class ProformaInvoice implements Serializable {
 	@OneToMany(mappedBy="proformaInvoice2")
 	private List<ProformaInvoiceItem> proformaInvoiceItems2;
 
-	//bi-directional many-to-one association to Company
-	@ManyToOne
-	@JoinColumn(name="company_id1")
-	private Company company1;
-
-	//bi-directional many-to-one association to Company
-	@ManyToOne
-	@JoinColumn(name="company_id2")
-	private Company company2;
-
 	public ProformaInvoice() {
 	}
 
@@ -82,12 +76,14 @@ public class ProformaInvoice implements Serializable {
 		this.id = id;
 	}
 
-	public int getClientId() {
-		return this.clientId;
+
+
+	public Client getClient() {
+		return client;
 	}
 
-	public void setClientId(int clientId) {
-		this.clientId = clientId;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	public Timestamp getCreatedAt() {
@@ -220,20 +216,6 @@ public class ProformaInvoice implements Serializable {
 		return proformaInvoiceItems2;
 	}
 
-	public Company getCompany1() {
-		return this.company1;
-	}
 
-	public void setCompany1(Company company1) {
-		this.company1 = company1;
-	}
-
-	public Company getCompany2() {
-		return this.company2;
-	}
-
-	public void setCompany2(Company company2) {
-		this.company2 = company2;
-	}
 
 }

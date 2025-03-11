@@ -42,13 +42,10 @@ public class InvoiceItem implements Serializable {
 	private List<Invoice> invoices;
 
 	//bi-directional many-to-one association to TaxDetail
-	@OneToMany(mappedBy="invoiceItem1")
-	private List<TaxDetail> taxDetails1;
+	@OneToMany(mappedBy="invoiceItem")
+	private List<TaxDetail> taxDetails;
 
-	//bi-directional many-to-one association to TaxDetail
-	@OneToMany(mappedBy="invoiceItem2")
-	private List<TaxDetail> taxDetails2;
-
+	
 	public InvoiceItem() {
 	}
 
@@ -146,48 +143,27 @@ public class InvoiceItem implements Serializable {
 		return invoice;
 	}
 
-	public List<TaxDetail> getTaxDetails1() {
-		return this.taxDetails1;
+	public List<TaxDetail> getTaxDetails() {
+		return this.taxDetails;
 	}
 
-	public void setTaxDetails1(List<TaxDetail> taxDetails1) {
-		this.taxDetails1 = taxDetails1;
+	public void setTaxDetails(List<TaxDetail> taxDetails) {
+		this.taxDetails = taxDetails;
 	}
 
-	public TaxDetail addTaxDetails1(TaxDetail taxDetails1) {
-		getTaxDetails1().add(taxDetails1);
-		taxDetails1.setInvoiceItem1(this);
+	public TaxDetail addTaxDetails(TaxDetail taxDetails) {
+		getTaxDetails().add(taxDetails);
+		taxDetails.setInvoiceItem(this);
 
-		return taxDetails1;
+		return taxDetails;
 	}
 
-	public TaxDetail removeTaxDetails1(TaxDetail taxDetails1) {
-		getTaxDetails1().remove(taxDetails1);
-		taxDetails1.setInvoiceItem1(null);
+	public TaxDetail removeTaxDetails(TaxDetail taxDetails) {
+		getTaxDetails().remove(taxDetails);
+		taxDetails.setInvoiceItem(null);
 
-		return taxDetails1;
+		return taxDetails;
 	}
 
-	public List<TaxDetail> getTaxDetails2() {
-		return this.taxDetails2;
-	}
-
-	public void setTaxDetails2(List<TaxDetail> taxDetails2) {
-		this.taxDetails2 = taxDetails2;
-	}
-
-	public TaxDetail addTaxDetails2(TaxDetail taxDetails2) {
-		getTaxDetails2().add(taxDetails2);
-		taxDetails2.setInvoiceItem2(this);
-
-		return taxDetails2;
-	}
-
-	public TaxDetail removeTaxDetails2(TaxDetail taxDetails2) {
-		getTaxDetails2().remove(taxDetails2);
-		taxDetails2.setInvoiceItem2(null);
-
-		return taxDetails2;
-	}
-
+	
 }

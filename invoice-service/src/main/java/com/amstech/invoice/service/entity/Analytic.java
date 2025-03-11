@@ -19,11 +19,6 @@ public class Analytic implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	//bi-directional many-to-one association to GenerateInvoice
-	@ManyToOne
-	@JoinColumn(name="generate_invoice_id")
-	private GenerateInvoice generateInvoice;
-
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
 	private Invoice invoice;
@@ -48,14 +43,6 @@ public class Analytic implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public GenerateInvoice getGenerateInvoice() {
-		return this.generateInvoice;
-	}
-
-	public void setGenerateInvoice(GenerateInvoice generateInvoice) {
-		this.generateInvoice = generateInvoice;
 	}
 
 	public Invoice getInvoice() {

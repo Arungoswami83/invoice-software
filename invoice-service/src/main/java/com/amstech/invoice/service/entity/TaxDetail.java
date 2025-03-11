@@ -25,23 +25,13 @@ public class TaxDetail implements Serializable {
 
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
-	@JoinColumn(name="invoice_id1")
-	private Invoice invoice1;
+	@JoinColumn(name="invoice_id")
+	private Invoice invoice;
 
 	//bi-directional many-to-one association to InvoiceItem
 	@ManyToOne
-	@JoinColumn(name="item_id1")
-	private InvoiceItem invoiceItem1;
-
-	//bi-directional many-to-one association to Invoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id2")
-	private Invoice invoice2;
-
-	//bi-directional many-to-one association to InvoiceItem
-	@ManyToOne
-	@JoinColumn(name="item_id2")
-	private InvoiceItem invoiceItem2;
+	@JoinColumn(name="item_id")
+	private InvoiceItem invoiceItem;
 
 	public TaxDetail() {
 	}
@@ -70,36 +60,21 @@ public class TaxDetail implements Serializable {
 		this.percentage = percentage;
 	}
 
-	public Invoice getInvoice1() {
-		return this.invoice1;
+	public Invoice getInvoice() {
+		return invoice;
 	}
 
-	public void setInvoice1(Invoice invoice1) {
-		this.invoice1 = invoice1;
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
 	}
 
-	public InvoiceItem getInvoiceItem1() {
-		return this.invoiceItem1;
+	public InvoiceItem getInvoiceItem() {
+		return invoiceItem;
 	}
 
-	public void setInvoiceItem1(InvoiceItem invoiceItem1) {
-		this.invoiceItem1 = invoiceItem1;
+	public void setInvoiceItem(InvoiceItem invoiceItem) {
+		this.invoiceItem = invoiceItem;
 	}
 
-	public Invoice getInvoice2() {
-		return this.invoice2;
-	}
-
-	public void setInvoice2(Invoice invoice2) {
-		this.invoice2 = invoice2;
-	}
-
-	public InvoiceItem getInvoiceItem2() {
-		return this.invoiceItem2;
-	}
-
-	public void setInvoiceItem2(InvoiceItem invoiceItem2) {
-		this.invoiceItem2 = invoiceItem2;
-	}
 
 }

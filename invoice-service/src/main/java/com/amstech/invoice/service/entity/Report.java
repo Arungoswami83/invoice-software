@@ -43,6 +43,8 @@ public class Report implements Serializable {
 	//bi-directional many-to-one association to Client
 	@ManyToOne
 	private Client client;
+	
+	 
 
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
@@ -130,14 +132,14 @@ public class Report implements Serializable {
 
 	public Invoice addInvoice(Invoice invoice) {
 		getInvoices().add(invoice);
-		invoice.setReport(this);
+		invoice.setReports(null);
 
 		return invoice;
 	}
 
 	public Invoice removeInvoice(Invoice invoice) {
 		getInvoices().remove(invoice);
-		invoice.setReport(null);
+		invoice.setReports(null);
 
 		return invoice;
 	}

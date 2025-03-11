@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 /**
@@ -18,12 +21,13 @@ public class Invoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
-	private int isdeleted;
 
 	private BigDecimal balance;
+	
+	 @ManyToOne
+	    @JoinColumn(name = "report_id")
+	    private Report report; 
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -46,8 +50,8 @@ public class Invoice implements Serializable {
 	@Column(name="grand_total")
 	private BigDecimal grandTotal;
 
-	@Column(name="invoice_number")
-	private String invoiceNumber;
+	@Column(name = "invoice_number", unique = true)
+    private String invoiceNumber;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="issue_date")
@@ -55,11 +59,15 @@ public class Invoice implements Serializable {
 
 	private BigDecimal paid;
 
+	@ManyToOne
+	@JoinColumn(name = "payments_id", nullable = false)
+	private Payment payment;
+
 	@Column(name="product_code")
 	private String productCode;
 
 	@Lob
-	private String quantity;
+	private int quantity;
 
 	private BigDecimal shipping;
 
@@ -88,16 +96,15 @@ public class Invoice implements Serializable {
 	@OneToMany(mappedBy="invoice")
 	private List<EmailLog> emailLogs;
 
-	//bi-directional many-to-one association to GenerateInvoice
-	@OneToMany(mappedBy="invoice")
-	private List<GenerateInvoice> generateInvoices;
-
 	//bi-directional many-to-one association to Client
 	@ManyToOne
-	private Client client;
+    @JoinColumn(name = "client_id", nullable = false)
+	@JsonManagedReference 
+    private Client client;
 
 	//bi-directional many-to-one association to Company
-	@ManyToOne
+	 @ManyToOne
+	 @JoinColumn(name = "company_id", nullable = false)
 	private Company company;
 
 	//bi-directional many-to-one association to InvoiceItem
@@ -108,53 +115,56 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to InvoiceType
 	@ManyToOne
 	@JoinColumn(name="invoice_types_id")
+	@JsonIgnore
 	private InvoiceType invoiceType;
 
-	//bi-directional many-to-one association to Payment
-	@ManyToOne
-	@JoinColumn(name="payments_id")
-	private Payment payment;
-
-	//bi-directional many-to-one association to Report
-	@ManyToOne
-	@JoinColumn(name="reports_id")
-	private Report report;
-
 	//bi-directional many-to-one association to InvoiceLog
-	@OneToMany(mappedBy="invoice1")
-	private List<InvoiceLog> invoiceLogs1;
-
-	//bi-directional many-to-one association to InvoiceLog
-	@OneToMany(mappedBy="invoice2")
-	private List<InvoiceLog> invoiceLogs2;
+	@OneToMany(mappedBy = "invoice")
+	@JsonManagedReference
+	private List<InvoiceLog> invoiceLogs;
 
 	//bi-directional many-to-one association to Notification
-	@OneToMany(mappedBy="invoice1")
-	private List<Notification> notifications1;
-
-	//bi-directional many-to-one association to Notification
-	@OneToMany(mappedBy="invoice2")
-	private List<Notification> notifications2;
+	@OneToMany(mappedBy="invoice")
+	private List<Notification> notifications;
 
 	//bi-directional many-to-one association to Payment
-	@OneToMany(mappedBy="invoice1")
-	private List<Payment> payments1;
-
-	//bi-directional many-to-one association to Payment
-	@OneToMany(mappedBy="invoice2")
-	private List<Payment> payments2;
+	@OneToMany(mappedBy="invoice")
+	private List<Payment> payments;
 
 	//bi-directional many-to-one association to Report
 	@OneToMany(mappedBy="invoice")
 	private List<Report> reports;
 
 	//bi-directional many-to-one association to TaxDetail
-	@OneToMany(mappedBy="invoice1")
-	private List<TaxDetail> taxDetails1;
+	@OneToMany(mappedBy="invoice")
+	private List<TaxDetail> taxDetails;
+	
+	 @Column(name="deleted")
+	    private Boolean deleted;
+	 
+	  @PrePersist
+	    public void generateInvoiceNumber() {
+	        if (this.invoiceNumber == null) {
+	            this.invoiceNumber = "INV-" + id; // This will be NULL initially
+		   //     this.invoiceNumber = "INV-" + (id == null ? "1001" : String.format("%04d", id));
 
-	//bi-directional many-to-one association to TaxDetail
-	@OneToMany(mappedBy="invoice2")
-	private List<TaxDetail> taxDetails2;
+	        }
+	    }
+
+	    @PostPersist
+	    public void updateInvoiceNumber() {
+	        if (this.invoiceNumber.equals("INV-null")) {
+	            this.invoiceNumber = "INV-" + id;
+	        }
+	    }
+	   
+	public Boolean getDeleted() {
+			return deleted;
+		}
+
+		public void setDeleted(Boolean deleted) {
+			this.deleted = deleted;
+		}
 
 	public Invoice() {
 	}
@@ -254,6 +264,13 @@ public class Invoice implements Serializable {
 	public void setPaid(BigDecimal paid) {
 		this.paid = paid;
 	}
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
 
 	public String getProductCode() {
 		return this.productCode;
@@ -263,11 +280,11 @@ public class Invoice implements Serializable {
 		this.productCode = productCode;
 	}
 
-	public String getQuantity() {
+	public int getQuantity() {
 		return this.quantity;
 	}
 
-	public void setQuantity(String quantity) {
+	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
 
@@ -384,29 +401,7 @@ public class Invoice implements Serializable {
 
 		return emailLog;
 	}
-
-	public List<GenerateInvoice> getGenerateInvoices() {
-		return this.generateInvoices;
-	}
-
-	public void setGenerateInvoices(List<GenerateInvoice> generateInvoices) {
-		this.generateInvoices = generateInvoices;
-	}
-
-	public GenerateInvoice addGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().add(generateInvoice);
-		generateInvoice.setInvoice(this);
-
-		return generateInvoice;
-	}
-
-	public GenerateInvoice removeGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().remove(generateInvoice);
-		generateInvoice.setInvoice(null);
-
-		return generateInvoice;
-	}
-
+	
 	public Client getClient() {
 		return this.client;
 	}
@@ -439,226 +434,61 @@ public class Invoice implements Serializable {
 		this.invoiceType = invoiceType;
 	}
 
-	public Payment getPayment() {
-		return this.payment;
+	public List<InvoiceLog> getInvoiceLogs() {
+		return this.invoiceLogs;
 	}
 
-	public void setPayment(Payment payment) {
-		this.payment = payment;
+	public void setInvoiceLogs(List<InvoiceLog> invoiceLogs) {
+		this.invoiceLogs = invoiceLogs;
 	}
 
-	public Report getReport() {
-		return this.report;
+	public List<Notification> getNotifications() {
+		return this.notifications;
 	}
 
-	public void setReport(Report report) {
-		this.report = report;
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 
-	public List<InvoiceLog> getInvoiceLogs1() {
-		return this.invoiceLogs1;
+
+	public List<Payment> getPayments() {
+		return this.payments;
 	}
 
-	public void setInvoiceLogs1(List<InvoiceLog> invoiceLogs1) {
-		this.invoiceLogs1 = invoiceLogs1;
+	public void setPayments(List<Payment> payments) {
+		this.payments = payments;
 	}
 
-	public InvoiceLog addInvoiceLogs1(InvoiceLog invoiceLogs1) {
-		getInvoiceLogs1().add(invoiceLogs1);
-		invoiceLogs1.setInvoice1(this);
+	public Payment addPayment(Payment payment) {
+		getPayments().add(payment);
+		payment.addInvoice(this);
 
-		return invoiceLogs1;
+		return payment;
 	}
 
-	public InvoiceLog removeInvoiceLogs1(InvoiceLog invoiceLogs1) {
-		getInvoiceLogs1().remove(invoiceLogs1);
-		invoiceLogs1.setInvoice1(null);
-
-		return invoiceLogs1;
-	}
-
-	public List<InvoiceLog> getInvoiceLogs2() {
-		return this.invoiceLogs2;
-	}
-
-	public void setInvoiceLogs2(List<InvoiceLog> invoiceLogs2) {
-		this.invoiceLogs2 = invoiceLogs2;
-	}
-
-	public InvoiceLog addInvoiceLogs2(InvoiceLog invoiceLogs2) {
-		getInvoiceLogs2().add(invoiceLogs2);
-		invoiceLogs2.setInvoice2(this);
-
-		return invoiceLogs2;
-	}
-
-	public InvoiceLog removeInvoiceLogs2(InvoiceLog invoiceLogs2) {
-		getInvoiceLogs2().remove(invoiceLogs2);
-		invoiceLogs2.setInvoice2(null);
-
-		return invoiceLogs2;
-	}
-
-	public List<Notification> getNotifications1() {
-		return this.notifications1;
-	}
-
-	public void setNotifications1(List<Notification> notifications1) {
-		this.notifications1 = notifications1;
-	}
-
-	public Notification addNotifications1(Notification notifications1) {
-		getNotifications1().add(notifications1);
-		notifications1.setInvoice1(this);
-
-		return notifications1;
-	}
-
-	public Notification removeNotifications1(Notification notifications1) {
-		getNotifications1().remove(notifications1);
-		notifications1.setInvoice1(null);
-
-		return notifications1;
-	}
-
-	public List<Notification> getNotifications2() {
-		return this.notifications2;
-	}
-
-	public void setNotifications2(List<Notification> notifications2) {
-		this.notifications2 = notifications2;
-	}
-
-	public Notification addNotifications2(Notification notifications2) {
-		getNotifications2().add(notifications2);
-		notifications2.setInvoice2(this);
-
-		return notifications2;
-	}
-
-	public Notification removeNotifications2(Notification notifications2) {
-		getNotifications2().remove(notifications2);
-		notifications2.setInvoice2(null);
-
-		return notifications2;
-	}
-
-	public List<Payment> getPayments1() {
-		return this.payments1;
-	}
-
-	public void setPayments1(List<Payment> payments1) {
-		this.payments1 = payments1;
-	}
-
-	public Payment addPayments1(Payment payments1) {
-		getPayments1().add(payments1);
-		payments1.setInvoice1(this);
-
-		return payments1;
-	}
-
-	public Payment removePayments1(Payment payments1) {
-		getPayments1().remove(payments1);
-		payments1.setInvoice1(null);
-
-		return payments1;
-	}
-
-	public List<Payment> getPayments2() {
-		return this.payments2;
-	}
-
-	public void setPayments2(List<Payment> payments2) {
-		this.payments2 = payments2;
-	}
-
-	public Payment addPayments2(Payment payments2) {
-		getPayments2().add(payments2);
-		payments2.setInvoice2(this);
-
-		return payments2;
-	}
-
-	public Payment removePayments2(Payment payments2) {
-		getPayments2().remove(payments2);
-		payments2.setInvoice2(null);
-
-		return payments2;
+	public Payment removePayment(Payment payment) {
+	    if (payment != null && getPayments() != null) {
+	        getPayments().remove(payment);
+	        // Ensure `payment` class has `setInvoice` method instead of `addInvoice`
+	        payment.addInvoice(null);  
+	    }
+	    return payment;
 	}
 
 	public List<Report> getReports() {
-		return this.reports;
+	    return this.reports;
 	}
 
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
+	public void setReports(List<Report> reports) {  // Fixed incorrect type
+	    this.reports = reports;
 	}
 
-	public Report addReport(Report report) {
-		getReports().add(report);
-		report.setInvoice(this);
-
-		return report;
+	public List<TaxDetail> getTaxDetails() {
+		return taxDetails;
 	}
 
-	public Report removeReport(Report report) {
-		getReports().remove(report);
-		report.setInvoice(null);
-
-		return report;
-	}
-
-	public List<TaxDetail> getTaxDetails1() {
-		return this.taxDetails1;
-	}
-
-	public void setTaxDetails1(List<TaxDetail> taxDetails1) {
-		this.taxDetails1 = taxDetails1;
-	}
-
-	public TaxDetail addTaxDetails1(TaxDetail taxDetails1) {
-		getTaxDetails1().add(taxDetails1);
-		taxDetails1.setInvoice1(this);
-
-		return taxDetails1;
-	}
-
-	public TaxDetail removeTaxDetails1(TaxDetail taxDetails1) {
-		getTaxDetails1().remove(taxDetails1);
-		taxDetails1.setInvoice1(null);
-
-		return taxDetails1;
-	}
-
-	public List<TaxDetail> getTaxDetails2() {
-		return this.taxDetails2;
-	}
-
-	public void setTaxDetails2(List<TaxDetail> taxDetails2) {
-		this.taxDetails2 = taxDetails2;
-	}
-
-	public TaxDetail addTaxDetails2(TaxDetail taxDetails2) {
-		getTaxDetails2().add(taxDetails2);
-		taxDetails2.setInvoice2(this);
-
-		return taxDetails2;
-	}
-
-	public TaxDetail removeTaxDetails2(TaxDetail taxDetails2) {
-		getTaxDetails2().remove(taxDetails2);
-		taxDetails2.setInvoice2(null);
-
-		return taxDetails2;
-	}
-
-	public int getIsdeleted() {
-		return isdeleted;
-	}
-
-	public void setIsdeleted(int isdeleted) {
-		this.isdeleted = isdeleted;
+	public void setTaxDetails(List<TaxDetail> taxDetails) {
+		this.taxDetails = taxDetails;
 	}
 
 }

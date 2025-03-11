@@ -22,15 +22,14 @@ public class ServiceInvoice implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name="client_id")
-	private int clientId;
+	@ManyToOne
+	@JoinColumn(name="client_id",referencedColumnName = "id")
+	private Client client;
+
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
-
-	@Temporal(TemporalType.DATE)
-	private Date date;
-
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
 	private Date dueDate;
@@ -48,6 +47,9 @@ public class ServiceInvoice implements Serializable {
 	private String paymentTerm;
 
 	private String signature;
+	
+	@Column(name="is_deleted",nullable=false)
+	private int isDeleted;
 
 	private String status;
 
@@ -81,13 +83,14 @@ public class ServiceInvoice implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 
-	public int getClientId() {
-		return this.clientId;
+	public Client getClient() {
+		return client;
 	}
 
-	public void setClientId(int clientId) {
-		this.clientId = clientId;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	public Timestamp getCreatedAt() {
@@ -96,15 +99,7 @@ public class ServiceInvoice implements Serializable {
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
+	}	
 
 	public Date getDueDate() {
 		return this.dueDate;
@@ -144,6 +139,15 @@ public class ServiceInvoice implements Serializable {
 
 	public void setPaymentTerm(String paymentTerm) {
 		this.paymentTerm = paymentTerm;
+	}
+	
+	
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public String getSignature() {

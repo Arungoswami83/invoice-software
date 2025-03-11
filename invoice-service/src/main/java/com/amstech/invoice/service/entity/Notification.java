@@ -36,13 +36,9 @@ public class Notification implements Serializable {
 
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
-	@JoinColumn(name="invoice_id1")
-	private Invoice invoice1;
+	@JoinColumn(name="invoice_id")
+	private Invoice invoice;
 
-	//bi-directional many-to-one association to Invoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id2")
-	private Invoice invoice2;
 
 	public Notification() {
 	}
@@ -95,20 +91,13 @@ public class Notification implements Serializable {
 		this.userId = userId;
 	}
 
-	public Invoice getInvoice1() {
-		return this.invoice1;
+	public Invoice getInvoice() {
+		return invoice;
 	}
 
-	public void setInvoice1(Invoice invoice1) {
-		this.invoice1 = invoice1;
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
 	}
 
-	public Invoice getInvoice2() {
-		return this.invoice2;
-	}
-
-	public void setInvoice2(Invoice invoice2) {
-		this.invoice2 = invoice2;
-	}
-
+	
 }

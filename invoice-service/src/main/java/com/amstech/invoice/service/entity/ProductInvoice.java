@@ -3,8 +3,12 @@ package com.amstech.invoice.service.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 
 /**
@@ -20,6 +24,8 @@ public class ProductInvoice implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	@Column(name="is_deleted" ,nullable = false)
+	private int is_deleted;
 
 	@Lob
 	@Column(name="account_details")
@@ -28,9 +34,14 @@ public class ProductInvoice implements Serializable {
 	@Column(name="buyer_details")
 	private String buyerDetails;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
-
+	@CreationTimestamp
+    @Column(updatable = false, nullable = false)
+    private LocalDateTime createdAt;
+	
+	@UpdateTimestamp
+	@Column(nullable = false)
+	private LocalDateTime updatedAt;
+	    
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
 	private Date dueDate;
@@ -96,13 +107,6 @@ public class ProductInvoice implements Serializable {
 		this.buyerDetails = buyerDetails;
 	}
 
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
 
 	public Date getDueDate() {
 		return this.dueDate;
@@ -114,6 +118,23 @@ public class ProductInvoice implements Serializable {
 
 	public BigDecimal getHandlingCosts() {
 		return this.handlingCosts;
+	}
+	
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public void setHandlingCosts(BigDecimal handlingCosts) {

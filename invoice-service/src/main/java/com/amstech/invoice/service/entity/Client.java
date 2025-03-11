@@ -46,9 +46,6 @@ public class Client implements Serializable {
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
-
 	private String email;
 
 	@Column(name="first_name")
@@ -87,10 +84,6 @@ public class Client implements Serializable {
 	@JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
 	private City city;
 
-
-	//bi-directional many-to-one association to GenerateInvoice
-	@OneToMany(mappedBy="client")
-	private List<GenerateInvoice> generateInvoices;
 
 	//bi-directional many-to-one association to Invoice
 	@OneToMany(mappedBy="client")
@@ -149,14 +142,6 @@ public class Client implements Serializable {
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public String getEmail() {
@@ -239,31 +224,6 @@ public class Client implements Serializable {
 		this.updatedAt = updatedAt;
 	}
 
-	
-
-	
-	public List<GenerateInvoice> getGenerateInvoices() {
-		return this.generateInvoices;
-	}
-
-	public void setGenerateInvoices(List<GenerateInvoice> generateInvoices) {
-		this.generateInvoices = generateInvoices;
-	}
-
-	public GenerateInvoice addGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().add(generateInvoice);
-		generateInvoice.setClient(this);
-
-		return generateInvoice;
-	}
-
-	public GenerateInvoice removeGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().remove(generateInvoice);
-		generateInvoice.setClient(null);
-
-		return generateInvoice;
-	}
-
 	public List<Invoice> getInvoices() {
 		return this.invoices;
 	}
@@ -337,13 +297,6 @@ public class Client implements Serializable {
 		this.userName = userName;
 	}
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
 
 	public String getPassword() {
 		return password;

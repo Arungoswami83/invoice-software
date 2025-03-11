@@ -22,8 +22,6 @@ public class SalesModelToEntityConverter {
 	        salesInvoices.setSubtotal(salesSignupRequestModel.getSubtotal());
 	        salesInvoices.setTax(salesSignupRequestModel.getTax());
 	        salesInvoices.setTotal(salesSignupRequestModel.getTotal());
-	        salesInvoices.setDate(salesSignupRequestModel.getDate());
-	        salesInvoices.setDueDate(salesSignupRequestModel.getDueDate());
 	        salesInvoices.setClient(salesInvoices.getClient());
 	  
 	        return salesInvoices;

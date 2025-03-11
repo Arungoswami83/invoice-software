@@ -21,16 +21,17 @@ public class StandardInvoice implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-
-	@Column(name="client_id")
-	private int clientId;
+	
+	@ManyToOne
+	@JoinColumn(name="client_id",referencedColumnName = "id")
+	private Client client;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Column(name="deleted_at")
-	private Timestamp deletedAt;
-
+	@Column(name="is_deleted")
+	private int isDeleted;
+	
 	private BigDecimal discount;
 
 	@Temporal(TemporalType.DATE)
@@ -40,9 +41,6 @@ public class StandardInvoice implements Serializable {
 	@Column(name="grand_total")
 	private BigDecimal grandTotal;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name="invoice_date")
-	private Date invoiceDate;
 
 	@Column(name="invoice_number")
 	private String invoiceNumber;
@@ -74,17 +72,7 @@ public class StandardInvoice implements Serializable {
 	//bi-directional many-to-one association to InvoiceType
 	@OneToMany(mappedBy="standardInvoice")
 	private List<InvoiceType> invoiceTypes;
-
-	//bi-directional many-to-one association to Company
-	@ManyToOne
-	@JoinColumn(name="company_id1")
-	private Company company1;
-
-	//bi-directional many-to-one association to Company
-	@ManyToOne
-	@JoinColumn(name="company_id2")
-	private Company company2;
-
+	
 	public StandardInvoice() {
 	}
 
@@ -96,12 +84,14 @@ public class StandardInvoice implements Serializable {
 		this.id = id;
 	}
 
-	public int getClientId() {
-		return this.clientId;
+	
+	
+	public Client getClient() {
+		return client;
 	}
 
-	public void setClientId(int clientId) {
-		this.clientId = clientId;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	public Timestamp getCreatedAt() {
@@ -112,13 +102,7 @@ public class StandardInvoice implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	public Timestamp getDeletedAt() {
-		return this.deletedAt;
-	}
 
-	public void setDeletedAt(Timestamp deletedAt) {
-		this.deletedAt = deletedAt;
-	}
 
 	public BigDecimal getDiscount() {
 		return this.discount;
@@ -143,15 +127,6 @@ public class StandardInvoice implements Serializable {
 	public void setGrandTotal(BigDecimal grandTotal) {
 		this.grandTotal = grandTotal;
 	}
-
-	public Date getInvoiceDate() {
-		return this.invoiceDate;
-	}
-
-	public void setInvoiceDate(Date invoiceDate) {
-		this.invoiceDate = invoiceDate;
-	}
-
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;
 	}
@@ -252,22 +227,6 @@ public class StandardInvoice implements Serializable {
 		invoiceType.setStandardInvoice(null);
 
 		return invoiceType;
-	}
-
-	public Company getCompany1() {
-		return this.company1;
-	}
-
-	public void setCompany1(Company company1) {
-		this.company1 = company1;
-	}
-
-	public Company getCompany2() {
-		return this.company2;
-	}
-
-	public void setCompany2(Company company2) {
-		this.company2 = company2;
 	}
 
 }
