@@ -20,14 +20,9 @@ public class ServiceInvoice implements Serializable {
 
 	@Id
 	private int id;
-
 	
-
 	@Column(name="created_at")
 	private Timestamp createdAt;
-
-	@Temporal(TemporalType.DATE)
-	private Date date;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
@@ -97,23 +92,12 @@ public class ServiceInvoice implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	
-
 	public Timestamp getCreatedAt() {
 		return this.createdAt;
 	}
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public Date getDueDate() {

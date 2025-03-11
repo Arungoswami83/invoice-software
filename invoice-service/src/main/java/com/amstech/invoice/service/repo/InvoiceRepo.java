@@ -12,7 +12,7 @@ import com.amstech.invoice.service.entity.Invoice;
 import ch.qos.logback.core.net.server.Client;
 
 @Repository
-public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
+public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
 	
      @Query("SELECT i FROM Invoice i WHERE i.deleted = false") 
 	 List<Invoice>findAllInvoice(Pageable pageable);
@@ -27,6 +27,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
   	 
   	 @Query("SELECT e FROM Invoice e WHERE e.invoiceNumber = :invoiceNumber AND e.deleted=false")
   	 Optional<Invoice>findByInvoiceNumber(@Param("invoiceNumber")String invoiceNumber);
+  
   	 
 }
 

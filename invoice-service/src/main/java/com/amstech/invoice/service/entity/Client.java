@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
@@ -26,6 +27,14 @@ public class Client implements Serializable {
 
 	@Lob
 	private String address;
+	
+	@JsonProperty
+	@Column(name="username")
+	private String userName;
+	
+	@JsonProperty
+	@Column(name="password",nullable = false)
+	private String password;
 
 	@Lob
 	@Column(name="billing_address")
@@ -39,9 +48,6 @@ public class Client implements Serializable {
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
-
-	@Temporal(TemporalType.DATE)
-	private Date date;
 
 	private String email;
 
@@ -145,14 +151,6 @@ public class Client implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
 	public String getEmail() {
 		return this.email;
 	}
@@ -207,6 +205,26 @@ public class Client implements Serializable {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public String getPostalZipCode() {

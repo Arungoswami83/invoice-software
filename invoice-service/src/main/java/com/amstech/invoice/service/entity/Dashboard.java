@@ -39,11 +39,6 @@ public class Dashboard implements Serializable {
 	@JoinColumn(name="analytics_id")
 	private Analytic analytic;
 
-	//bi-directional many-to-one association to GenerateInvoice
-	@ManyToOne
-	@JoinColumn(name="generate_invoice_id")
-	private GenerateInvoice generateInvoice;
-
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
 	private Invoice invoice;
@@ -123,14 +118,6 @@ public class Dashboard implements Serializable {
 
 	public void setAnalytic(Analytic analytic) {
 		this.analytic = analytic;
-	}
-
-	public GenerateInvoice getGenerateInvoice() {
-		return this.generateInvoice;
-	}
-
-	public void setGenerateInvoice(GenerateInvoice generateInvoice) {
-		this.generateInvoice = generateInvoice;
 	}
 
 	public Invoice getInvoice() {

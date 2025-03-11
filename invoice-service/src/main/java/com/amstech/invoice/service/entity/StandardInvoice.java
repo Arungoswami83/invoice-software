@@ -25,11 +25,10 @@ public class StandardInvoice implements Serializable {
 	@JoinColumn(name = "client_id", referencedColumnName = "id")
 	private Client client;
 
-
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Column(name="is_deleted")
+	@Column(name="is_deleted" )
 	private int isDeleted;
 
 	private BigDecimal discount;
@@ -40,10 +39,6 @@ public class StandardInvoice implements Serializable {
 
 	@Column(name="grand_total")
 	private BigDecimal grandTotal;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="invoice_date")
-	private Date invoiceDate;
 
 	@Column(name="invoice_number")
 	private String invoiceNumber;
@@ -90,18 +85,13 @@ public class StandardInvoice implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	
-
 	public Timestamp getCreatedAt() {
-		return this.createdAt;
+		return createdAt;
 	}
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
-
-	
 
 	public Client getClient() {
 		return client;
@@ -141,14 +131,6 @@ public class StandardInvoice implements Serializable {
 
 	public void setGrandTotal(BigDecimal grandTotal) {
 		this.grandTotal = grandTotal;
-	}
-
-	public Date getInvoiceDate() {
-		return this.invoiceDate;
-	}
-
-	public void setInvoiceDate(Date invoiceDate) {
-		this.invoiceDate = invoiceDate;
 	}
 
 	public String getInvoiceNumber() {

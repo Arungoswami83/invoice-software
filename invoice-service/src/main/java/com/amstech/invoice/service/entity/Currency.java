@@ -59,19 +59,4 @@ public class Currency implements Serializable {
 	public void setCompanies(List<Company> companies) {
 		this.companies = companies;
 	}
-
-	public Company addCompany(Company company) {
-		getCompanies().add(company);
-		company.setCurrency(this);
-
-		return company;
-	}
-
-	public Company removeCompany(Company company) {
-		getCompanies().remove(company);
-		company.setCurrency(null);
-
-		return company;
-	}
-
 }

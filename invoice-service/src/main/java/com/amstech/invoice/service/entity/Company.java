@@ -34,6 +34,10 @@ public class Company implements Serializable {
 	private Timestamp createdAt;
 
 	private String email;
+	
+	@ManyToOne
+	@JoinColumn(name = "currency_id") 
+	private Currency currency;
 
 	@Column(name="is_deleted")
 	private byte isDeleted;
@@ -50,8 +54,6 @@ public class Company implements Serializable {
 
 	@Column(name="registration_no")
 	private String registrationNo;
-
-	private Boolean restore;
 
 	@Column(name="tax_identification_number")
 	private String taxIdentificationNumber;
@@ -72,10 +74,6 @@ public class Company implements Serializable {
 	//bi-directional many-to-one association to Client
 	@ManyToOne
 	private Client client;
-
-	//bi-directional many-to-one association to Currency
-	@ManyToOne
-	private Currency currency;
 
 	//bi-directional many-to-one association to Invoice
 	@OneToMany(mappedBy="company")
@@ -99,11 +97,6 @@ public class Company implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public void setRestore(Boolean restore) {
-		this.restore = restore;
-	}
-
 	public String getAddress() {
 		return this.address;
 	}
@@ -126,6 +119,14 @@ public class Company implements Serializable {
 
 	public void setCinNo(String cinNo) {
 		this.cinNo = cinNo;
+	}
+	
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 
 	public String getCompanyPhone() {
@@ -246,14 +247,6 @@ public class Company implements Serializable {
 
 	public void setClient(Client client) {
 		this.client = client;
-	}
-
-	public Currency getCurrency() {
-		return this.currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
 	}
 
 	public List<Invoice> getInvoices() {

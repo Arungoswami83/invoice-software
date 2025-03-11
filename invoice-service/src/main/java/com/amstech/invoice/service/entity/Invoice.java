@@ -92,10 +92,6 @@ public class Invoice implements Serializable {
 	@OneToMany(mappedBy="invoice")
 	private List<EmailLog> emailLogs;
 
-	//bi-directional many-to-one association to GenerateInvoice
-	@OneToMany(mappedBy="invoice")
-	private List<GenerateInvoice> generateInvoices;
-
 	//bi-directional many-to-one association to Client
 	@ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
@@ -401,29 +397,7 @@ public class Invoice implements Serializable {
 
 		return emailLog;
 	}
-
-	public List<GenerateInvoice> getGenerateInvoices() {
-		return this.generateInvoices;
-	}
-
-	public void setGenerateInvoices(List<GenerateInvoice> generateInvoices) {
-		this.generateInvoices = generateInvoices;
-	}
-
-	public GenerateInvoice addGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().add(generateInvoice);
-		generateInvoice.setInvoice(this);
-
-		return generateInvoice;
-	}
-
-	public GenerateInvoice removeGenerateInvoice(GenerateInvoice generateInvoice) {
-		getGenerateInvoices().remove(generateInvoice);
-		generateInvoice.setInvoice(null);
-
-		return generateInvoice;
-	}
-
+	
 	public Client getClient() {
 		return this.client;
 	}
@@ -431,7 +405,7 @@ public class Invoice implements Serializable {
 	public void setClient(Client client) {
 		this.client = client;
 	}
-
+	
 	public Company getCompany() {
 		return this.company;
 	}

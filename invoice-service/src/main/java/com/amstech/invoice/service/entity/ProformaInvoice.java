@@ -25,9 +25,7 @@ public class ProformaInvoice implements Serializable {
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
-
+     
 	@Column(name="invoice_number")
 	private String invoiceNumber;
 
@@ -57,9 +55,10 @@ public class ProformaInvoice implements Serializable {
 	//bi-directional many-to-one association to Company
 	@ManyToOne
 	private Company company;
-	@Column(name="client_id")
-	private Client client;
-
+	
+	@ManyToOne
+	@JoinColumn(name = "client_id", referencedColumnName = "id")
+	private Client client; 
 
 	public Client getClient() {
 		return client;
@@ -90,22 +89,12 @@ public class ProformaInvoice implements Serializable {
 		this.id = id;
 	}
 
-	
-
 	public Timestamp getCreatedAt() {
 		return this.createdAt;
 	}
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public String getInvoiceNumber() {
