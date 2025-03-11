@@ -7,6 +7,8 @@ import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * The persistent class for the sales_invoices database table.
@@ -24,10 +26,9 @@ public class SalesInvoices implements Serializable {
 	
 	@Column(name = "is_deleted")
 	private int isDeleted;
-
-
-	@Column(name="client_id")
-	private int clientId;
+	@ManyToOne
+    @JoinColumn(name = "client_id", nullable = false) // Ensures NOT NULL
+    private Client client;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -94,12 +95,14 @@ public class SalesInvoices implements Serializable {
 		this.id = id;
 	}
 
-	public int getClientId() {
-		return this.clientId;
+
+
+	public Client getClient() {
+		return client;
 	}
 
-	public void setClientId(int clientId) {
-		this.clientId = clientId;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 	public Timestamp getCreatedAt() {

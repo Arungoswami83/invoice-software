@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class SalesSignupRequestModel {
 	
-	private int id;  
+	  
     private String invoiceNumber;  
-    private Integer clientId; 
+    private int clientId; 
     private Date date;  
     private Date dueDate;  
     private String paymentTerm;  

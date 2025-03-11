@@ -2,21 +2,29 @@ package com.amstech.invoice.service.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.amstech.invoice.service.converter.entity.SalesModelToEntityConverter;
+import com.amstech.invoice.service.converter.model.SalesEntityToModelConverter;
+import com.amstech.invoice.service.entity.City;
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
 import com.amstech.invoice.service.entity.SalesInvoices;
 import com.amstech.invoice.service.repo.ClientRepo;
 import com.amstech.invoice.service.repo.SalesRepo;
+import com.amstech.invoice.service.request.model.ClientSignupRequestModel;
 import com.amstech.invoice.service.request.model.CompanyLoginRequestModel;
 import com.amstech.invoice.service.request.model.SalesSignupRequestModel;
 import com.amstech.invoice.service.request.model.SalesUpdateRequestModel;
+import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.CompanyResponseModel;
 import com.amstech.invoice.service.response.model.SalesInvoiceResponseModel;
 
@@ -31,106 +39,112 @@ public class SalesService {
 	private SalesRepo salesRepo;
 	@Autowired
 	private ClientRepo clientRepo;
+	@Autowired
+	private SalesEntityToModelConverter salesEntityToModelConverter;
+	@Autowired
+	private SalesModelToEntityConverter salesModelToEntityConverter;
+	
 
-
-	  public void signup(SalesSignupRequestModel salesSignupRequestModel) throws Exception {
-	        logger.info("Starting signup process for client ID: {}", salesSignupRequestModel.getClientId());
-	        
-	        Optional<Client> existingClientById = clientRepo.findById(salesSignupRequestModel.getClientId());
-	        if (!existingClientById.isPresent()) {
-	            logger.error("Client already exists");
-	            throw new Exception("Client already exists");
+	  public SalesInvoiceResponseModel signup(SalesSignupRequestModel salesSignupRequestModel) throws Exception {
+	      
+		  Optional<Client> clientOptional = clientRepo.findById(salesSignupRequestModel.getClientId());
+	        if (!clientOptional.isPresent()) {
+	        	logger.error("client does not exist for ID: {}",salesSignupRequestModel.getClientId());
+	            throw new Exception("Client dore not exists");
+	            
 	        }
 	        
-	        SalesInvoices salesInvoices = new SalesInvoices();
-	        salesInvoices.setInvoiceNumber(salesSignupRequestModel.getInvoiceNumber());
-	        salesInvoices.setClientId(salesSignupRequestModel.getClientId());
-	        salesInvoices.setDiscount(salesSignupRequestModel.getDiscount());
-	        salesInvoices.setPaymentTerm(salesSignupRequestModel.getPaymentTerm());
-	        salesInvoices.setSignature(salesSignupRequestModel.getSignature());
-	        salesInvoices.setStatus(salesSignupRequestModel.getStatus());
-	        salesInvoices.setSubtotal(salesSignupRequestModel.getSubtotal());
-	        salesInvoices.setTax(salesSignupRequestModel.getTax());
-	        salesInvoices.setTotal(salesSignupRequestModel.getTotal());
-	        salesInvoices.setDate(salesSignupRequestModel.getDate());
-	        salesInvoices.setDueDate(salesSignupRequestModel.getDueDate());
-	        
+	        SalesInvoices salesInvoices = salesModelToEntityConverter.getsave(salesSignupRequestModel);	        
+	        salesInvoices.setClient(clientOptional.get());
 	        SalesInvoices salesSave = salesRepo.save(salesInvoices);
-	        logger.info("SalesInvoice created with ID: {}", salesSave.getId());
+	        return salesEntityToModelConverter.getfindBySalesInvoiceId(salesSave);
 	    }
+//	  public UserResponseModel update(UserUpdateRequestModel userUpdateRequestModel) throws Exception {
+//
+//	        Optional<User> userOptional = userRepo.findById(userUpdateRequestModel.getId());
+//
+//	        if (userOptional.isEmpty()) {
+//	            throw new Exception("The user account does not exist.");
+//	        }
+//
+//	        User user = userOptional.get();
+//
+//	        if (userUpdateRequestModel.isEmailUpdate()) {
+//	            if (!userUpdateRequestModel.isEmailVerified()) {
+//	                throw new Exception("Your account is not verified. Please verify it to continue.");
+//	            }
+//	            User userByEmail = userRepo.findByEmail(userUpdateRequestModel.getEmail());
+//	            if (userByEmail != null) {
+//	                throw new Exception("An account with this email already exists. Please use another email.");
+//	            }
+//	            user.setEmail(userUpdateRequestModel.getEmail());
+//	        }
+//
+//	        user = userModelToEntityConverter.getUpdateConvert(userUpdateRequestModel, user);
+//	        User savedUser = userRepo.save(user);
+//	        return userEntityToModelConverter.getfindById(savedUser);
+//	    }
+	  
+	  
 
-	    public void updateSales(SalesUpdateRequestModel salesUpdateRequestModel) throws Exception {
-	        logger.info("Updating Sales Invoice with ID: {}", salesUpdateRequestModel.getId());
+	    public SalesInvoiceResponseModel update(SalesUpdateRequestModel salesUpdateRequestModel) throws Exception {
 	        
 	        Optional<SalesInvoices> optionalSalesInvoices = salesRepo.findById(salesUpdateRequestModel.getId());
 	        if (!optionalSalesInvoices.isPresent()) {
-	            logger.error("Sales Invoice does not exist");
+	           
 	            throw new Exception("Sales Invoice does not exist");
 	        }
 
 	        SalesInvoices salesInvoices = optionalSalesInvoices.get();
 	        Client client = clientRepo.findById(salesUpdateRequestModel.getClientId())
 	                .orElseThrow(() -> new Exception("Client does not exist"));
-
-	        salesInvoices.setPaymentTerm(salesUpdateRequestModel.getPaymentTerm());
-	        salesInvoices.setSignature(salesUpdateRequestModel.getSignature());
-	        salesInvoices.setStatus(salesUpdateRequestModel.getStatus());
-	        salesInvoices.setSubtotal(salesUpdateRequestModel.getSubtotal());
-	        salesInvoices.setTotal(salesUpdateRequestModel.getTotal());
-	        salesInvoices.setTax(salesUpdateRequestModel.getTax());
-	        salesInvoices.setClientId(client.getId());
 	        
-	        salesRepo.save(salesInvoices);
-	        logger.info("Successfully updated Sales Invoice with ID: {}", salesInvoices.getId());
-	    }
+	        salesInvoices = salesModelToEntityConverter.getupdate(salesUpdateRequestModel, salesInvoices);
+	        SalesInvoices savedSales = salesRepo.save(salesInvoices);
+	        return salesEntityToModelConverter.getfindBySalesInvoiceId(savedSales);
+	       
+	        
+	       	    }
 
-	    public SalesInvoiceResponseModel findBySalesInvoiceId(Integer id) {
-	        logger.info("Fetching Sales Invoice with ID: {}", id);
-	        try {
-	            SalesInvoices sales = salesRepo.findById(id)
-	                    .orElseThrow(() -> new RuntimeException("Sales Invoice not found with ID: " + id));
+	    public SalesInvoiceResponseModel findById(Integer id)throws Exception {
 
-	            SalesInvoiceResponseModel responseModel = new SalesInvoiceResponseModel();
-	            responseModel.setId(sales.getId());
+	            Optional<SalesInvoices> salesOptional = salesRepo.findById(id);
 	            
-	            if (sales.getClientId() != 1) {
-	                responseModel.setClientId(sales.getClientId());
-	            }
-
-	            responseModel.setDiscount(sales.getDiscount());
-	            responseModel.setPaymentTerm(sales.getPaymentTerm());
-	            responseModel.setSignature(sales.getSignature());
-	            responseModel.setStatusName(sales.getStatus());
-	            responseModel.setSubtotal(sales.getSubtotal());
-	            responseModel.setTax(sales.getTax());
-	            responseModel.setTotal(sales.getTotal());
+	            if (salesOptional.isEmpty()) {
+		          
+		            throw new Exception("Client does not exists");
+		        }
+	            SalesInvoices salesInvoice   = salesOptional.get();
 	            
-	            logger.info("Sales Invoice retrieved successfully!");
-	            return responseModel;
-	        } catch (Exception e) {
-	            logger.error("Failed to retrieve Sales Invoice: {}", e.getMessage(), e);
-	            throw new RuntimeException("Failed to retrieve Sales Invoice.");
-	        }
+	            
+	            if(salesInvoice.getIsDeleted() == 1) {
+	     	       throw new Exception("Your account has been deactivated. Please contact the administrator for assistance.");
+	     	        }
+	            
+	            return salesEntityToModelConverter.getfindBySalesInvoiceId(salesInvoice);
 	    }
+	            
 
+	 
 	    public void softDeleteById(Integer id) throws Exception {
-	        logger.info("Soft deleting Sales Invoice with ID: {}", id);
+	       
 	        Optional<SalesInvoices> invoiceOptional = salesRepo.findById(id);
 
 	        if (!invoiceOptional.isPresent()) {
-	            logger.error("Sales Invoice does not exist.");
+	            logger.error("Attempted to delete non-existing {} id.",id);
 	            throw new Exception("Sales Invoice does not exist.");
 	        }
 
 	        SalesInvoices invoice = invoiceOptional.get();
 	        if (invoice.getIsDeleted() == 1) {
-	            logger.warn("Sales Invoice already deleted.");
+	            logger.warn("Sales Invoice already deleted.",id);
 	            throw new Exception("Sales Invoice already deleted.");
 	        }
 
 	        invoice.setIsDeleted(1);
+	        invoice.setUpdatedAt(Timestamp.from(Instant.now()));
 	        salesRepo.save(invoice);
-	        logger.info("Successfully soft deleted Sales Invoice with ID: {}", id);
+	        
 	    }
 	    @Transactional
 	    public void restoreById(Integer id) throws Exception {
@@ -143,38 +157,19 @@ public class SalesService {
 	        SalesInvoices invoice = invoiceOptional.get();
 
 	        if (invoice.getIsDeleted() == 0) {
-	            return; // कोई बदलाव नहीं करना
+	            return; 
 	        }
 
-	        // Invoice को Restore करें
+	       
 	        invoice.setIsDeleted(0);
 	        salesRepo.save(invoice);
 	    }
 
 	    public List<SalesInvoiceResponseModel> findAllActive(Integer page , Integer size) {
-	        logger.info("Fetching all active Sales Invoices");
-	        List<SalesInvoices> salesInvoicesList = salesRepo.findAll();
-	        
-
-	        
-	        List<SalesInvoiceResponseModel> salesInvoiceResponseModels = new ArrayList<SalesInvoiceResponseModel>();
-	        for (SalesInvoices salesInvoices : salesInvoicesList) {
-				SalesInvoiceResponseModel salesInvoiceResponseModel = new SalesInvoiceResponseModel();
-				salesInvoiceResponseModel.setClientId(salesInvoices.getClientId());
-				salesInvoiceResponseModel.setDiscount(salesInvoices.getDiscount());
-				salesInvoiceResponseModel.setId(salesInvoices.getId());
-				salesInvoiceResponseModel.setPaymentTerm(salesInvoices.getPaymentTerm());
-				salesInvoiceResponseModel.setSignature(salesInvoices.getSignature());
-				salesInvoiceResponseModel.setStatusName(salesInvoices.getStatus());
-				salesInvoiceResponseModel.setSubtotal(salesInvoices.getSubtotal());
-				salesInvoiceResponseModel.setTax(salesInvoices.getTax());
-				salesInvoiceResponseModel.setTotal(salesInvoices.getTotal());
-				
-				salesInvoiceResponseModels.add(salesInvoiceResponseModel);
-			}
-	        logger.info("Total active SalesInvoices fetched: {}", salesInvoiceResponseModels.size());
-	        return salesInvoiceResponseModels;
-	        
+	     
+	    	 List<SalesInvoices> sales = salesRepo.findAll();
+		        return salesEntityToModelConverter.getfindAllActiveConverter(sales);
+	    
 	    }
         public long count() throws Exception{
     	return salesRepo.count();

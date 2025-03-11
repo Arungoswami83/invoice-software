@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class SalesInvoiceResponseModel {
 	private int id; 
-	private int clientId;
     private String paymentTerm;  
     private BigDecimal subtotal; 
     private BigDecimal discount; 
@@ -16,4 +15,5 @@ public class SalesInvoiceResponseModel {
     private BigDecimal total;
     private String signature;
     private String statusName;
+    private int clientId;
 }
