@@ -10,7 +10,7 @@ public class ClientUpdateRequestModel {
 	    private String lastName;
 	    private String email;
 	    private String address;
-	    private String phoneNumber;
+	    private String mobileNumber;
 	    private String companyName;
 	    private Integer cityId;
 				

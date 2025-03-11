@@ -27,14 +27,16 @@ public interface CompanyRepo extends JpaRepository<Company, Integer> {
 	    Company findByCompanyId(@Param("id") int id);
 	    
 	    @Query("SELECT c FROM Company c WHERE c.name = :name")
-	    Company findByCompanyName(@Param("name") String name);
-
-	    
+	    Company findByCompanyName(@Param("name") String name);  
 	
-	    @Query("SELECT c FROM Company c WHERE c.adminUserName = :adminUsername AND c.password = :password")
+//	    @Query("SELECT c FROM Company c WHERE c.email = :adminUsername or e.companyPhone = :adminUsername AND c.password = :password")
+//	    Company findByAdminUserNameAndPassword(@Param("adminUsername") String adminUsername, @Param("password") String password);
+//
+//	
+	    
+	    @Query("SELECT c FROM Company c WHERE c.email = :adminUsername OR c.companyPhone = :adminUsername AND c.password = :password")
 	    Company findByAdminUserNameAndPassword(@Param("adminUsername") String adminUsername, @Param("password") String password);
 
-	
 	    @Query("Update Company u set u.name=:name,u.address=:address,u.businessTypesId=:businessTypesId,u.companyPhone=:companyPhone,u.email=:email,u.logo=:logo,u.password=:password,u.taxPayer=:taxPayer,u.website=:website WHERE u.id=:id")
 	    Company findById(@Param("id") int id,@Param("address") String address,@Param("businessTypesId") int businessTypesId,@Param("companyPhone") String companyPhone,@Param("email") String email,@Param("logo") String logo,@Param("password") String password,@Param("taxPayer") String taxPayer,@Param("website") String website);
 	

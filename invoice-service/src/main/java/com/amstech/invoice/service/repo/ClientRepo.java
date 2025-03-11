@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.amstech.invoice.service.entity.Client;
+import com.amstech.invoice.service.entity.Company;
 import com.amstech.invoice.service.entity.SalesInvoices;
 @Repository
 public interface ClientRepo extends JpaRepository<Client, Integer> {
@@ -22,7 +24,7 @@ public interface ClientRepo extends JpaRepository<Client, Integer> {
 	    List<Client> findByCityId(@Param("cityId") Integer cityId);
 
 	    
-	    Optional<Client> findByPhoneNumber(String phoneNumber);
+	    Optional<Client> findBymobileNumber(String mobileNumber);
 
 	   
 	    @Query("SELECT c FROM Client c WHERE c.email = :email")
@@ -32,23 +34,25 @@ public interface ClientRepo extends JpaRepository<Client, Integer> {
 
 	    
 //	    List<Client> findByCity(String city);
-//	  @Query("SELECT a FROM Client a WHERE a.userName = :userName AND a.password = :password")
+	  @Query("SELECT a FROM Client a WHERE a.email = :userName OR  a.mobileNumber =: userName AND a.password = :password")
 	    Optional<Client> findByUserNameAndPassword(@Param("userName") String userName, @Param("password") String password);
 
 	    
 	    Optional<Client> findByFirstName(String firstName);
+	    
+	    @Query("SELECT c FROM Client c WHERE c.isDeleted = false")
+	    List<Client> findAllClient(Pageable pageable);
+		    
+		 
+		 @Query("SELECT COUNT(c) FROM Client c WHERE c.isDeleted = false")
+		 long countAllClient();
 
-	    @Query("SELECT COUNT(c) FROM Client c")  
-	    long countAllClient();
-
-		
-		 @Query("SELECT c FROM Client c") 
-		    List<Client> findAllClient();
 	 
 		 @Transactional
 		 @Modifying
-		 @Query("UPDATE Client c SET c.isDeleted = false WHERE c.id = :id") // ✅ Boolean ke liye `false` use karein
+		 @Query("UPDATE Client c SET c.isDeleted = false WHERE c.id = :id") 
 		 void restoreClient(@Param("id") Integer id);
 
 }
+
 

@@ -10,7 +10,7 @@ import lombok.Data;
 public class ClientSignupRequestModel {
 
 	
-		private int id;
+		
 	    private String companyName;
 	    private String businessName;
 	    private String emailAddress;
@@ -25,7 +25,7 @@ public class ClientSignupRequestModel {
 	    private int cityId;
 	    private String stateProvince;
 	    private String postalZipCode;
-	    private String phoneNumber;
+	    private String mobileNumber;
 	    private String username;
 	    private String password;
 	    private Date date;

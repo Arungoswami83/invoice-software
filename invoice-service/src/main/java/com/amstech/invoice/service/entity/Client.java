@@ -84,7 +84,7 @@ public class Client implements Serializable {
 	 
 	//bi-directional many-to-one association to City
 	@ManyToOne
-	@JoinColumn(name = "city_id", referencedColumnName = "id")
+	@JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
 	private City city;
 
 

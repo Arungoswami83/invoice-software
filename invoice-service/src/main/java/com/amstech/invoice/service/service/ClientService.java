@@ -1,31 +1,37 @@
 	package com.amstech.invoice.service.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.amstech.invoice.service.converter.entity.ClientModelToEntityConverter;
+import com.amstech.invoice.service.converter.model.ClientEntityToModelConverter;
+import com.amstech.invoice.service.entity.BusinessTypes;
 import com.amstech.invoice.service.entity.City;
 import com.amstech.invoice.service.entity.Client;
+import com.amstech.invoice.service.entity.Company;
 import com.amstech.invoice.service.repo.CityRepo;
 import com.amstech.invoice.service.repo.ClientRepo;
 import com.amstech.invoice.service.request.model.ClientLoginRequestModel;
 import com.amstech.invoice.service.request.model.ClientSignupRequestModel;
 import com.amstech.invoice.service.request.model.ClientUpdateRequestModel;
+import com.amstech.invoice.service.request.model.CompanyLoginRequestModel;
+import com.amstech.invoice.service.request.model.CompanySignupRequestModel;
+import com.amstech.invoice.service.request.model.CompanyUpdateRequestModel;
 import com.amstech.invoice.service.response.model.ClientResponseModel;
+import com.amstech.invoice.service.response.model.CompanyResponseModel;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
 
 
 
@@ -38,41 +44,35 @@ public class ClientService {
 	@Autowired
 	private CityRepo cityRepo;
 	
+	@Autowired
+	private ClientEntityToModelConverter clientEntityToModelConverter;
+	@Autowired
+	private ClientModelToEntityConverter clientModelToEntityConverter;
+	
+	private ClientResponseModel clientResponseModel;
 	
 	
 	    private static final Logger logger = LoggerFactory.getLogger(ClientService.class);
+	    
 
-	    public void signup(ClientSignupRequestModel clientSignupRequestModel) throws Exception {
-	        logger.info("Signup request received for username: {}", clientSignupRequestModel.getUsername());
 
+	    public ClientResponseModel signup(ClientSignupRequestModel clientSignupRequestModel) throws Exception {
+	        
 	        Optional<City> existingCity = cityRepo.findById(clientSignupRequestModel.getCityId());
-	        Client client = new Client();
-
-	        client.setFirstName(clientSignupRequestModel.getFirstName());
-	        client.setLastName(clientSignupRequestModel.getLastName());
-	        client.setEmail(clientSignupRequestModel.getEmailAddress());
-	        client.setCompanyName(clientSignupRequestModel.getCompanyName());
-	        client.setBusinessName(clientSignupRequestModel.getBusinessName());
-	        client.setLinkedinProfileUrl(clientSignupRequestModel.getLinkedinProfileUrl());
-	        client.setBillingAddress(clientSignupRequestModel.getBillingAddress());
-	        client.setSpecificRegistrationDetails(clientSignupRequestModel.getSpecificRegistrationDetails());
-	        client.setAddress(clientSignupRequestModel.getStreetAddress());
-	        client.setPostalZipCode(clientSignupRequestModel.getPostalZipCode());
-	        client.setMobileNumber(clientSignupRequestModel.getPhoneNumber());
-	        client.setUserName(clientSignupRequestModel.getUsername());
-	        client.setDate(clientSignupRequestModel.getDate());
-	        client.setPassword(clientSignupRequestModel.getPassword());
-
-	        // Set city only if it exists
-	        existingCity.ifPresent(client::setCity);
-
+	         
+	        if (!existingCity.isPresent()) {
+  	            logger.error("client does not exist for ID: {}", clientSignupRequestModel.getCityId());
+   	            throw new Exception("Business Type does not exist.");
+   	        }
+	        Client client = clientModelToEntityConverter.getSaveConvert(clientSignupRequestModel);
+	        client.setCity(existingCity.get());
 	        Client savedClient = clientRepo.save(client);
-	        logger.info("Client successfully registered with ID: {}", savedClient.getId());
+	        //ClientResponseModel clientResponseModel = new ClientResponseModel();
+	        return clientEntityToModelConverter.getfindById(savedClient);
 	    }
-
-	    public void login(ClientLoginRequestModel clientLoginRequestModel) throws Exception {
-	        logger.info("Login attempt for username: {}", clientLoginRequestModel.getUsername());
-
+	    
+	    public ClientResponseModel login(ClientLoginRequestModel clientLoginRequestModel) throws Exception {
+	       
 	        Optional<Client> clientOptional = clientRepo.findByUserNameAndPassword(
 	            clientLoginRequestModel.getUsername(), clientLoginRequestModel.getPassword()
 	        );
@@ -88,58 +88,60 @@ public class ClientService {
 	            throw new Exception("This user account is deactivated.");
 	        }
 
-	        logger.info("Login successful for user: {}", client.getUserName());
+	        return clientEntityToModelConverter.getfindById(client);
 	    }
 
-	    public void updateClient(ClientUpdateRequestModel request) throws Exception {
-	        logger.info("Updating client ID: {}", request.getId());
 
-	        Client client = clientRepo.findById(request.getId()).orElse(null);
-	        if (client == null) {
-	            throw new Exception("Client not found.");
-	        }
+public ClientResponseModel updateClient(ClientUpdateRequestModel clientUpdateRequestModel) throws Exception {
+    
+	 Optional<Client> clientOptional = clientRepo.findById(clientUpdateRequestModel.getId());
+	 
+     if (clientOptional.isEmpty()) {
+         throw new Exception("The client account does not exist.");
+	     }
+    Client client = clientOptional.get();
+    try {
+        if (!client.getEmail().equals(clientUpdateRequestModel.getEmail()) &&
+            clientRepo.findByEmail(clientUpdateRequestModel.getEmail()).isPresent()) {
+            throw new Exception("Email is already taken.");
+        }
+    } catch (Exception e) {
+        throw new Exception("Error checking email.");
+    }
 
-	        // Check if email is being changed and is unique
-	        if (!client.getEmail().equals(request.getEmail()) && clientRepo.findByEmail(request.getEmail()).isPresent()) {
-	            throw new Exception("Email is already taken.");
-	        }
+    if (clientUpdateRequestModel.getCityId() != null && clientUpdateRequestModel.getCityId() != 0) {
+        try {
+            City city = cityRepo.findById(clientUpdateRequestModel.getCityId()).get();
+            client.setCity(city);
+        } catch (Exception e) {
+            throw new Exception("City not found.");
+        }
+    }    
+    client.setEmail(clientUpdateRequestModel.getEmail());
+    client.setCompanyName(clientUpdateRequestModel.getCompanyName());
+    
+    client = clientModelToEntityConverter.getUpdateConvert(clientUpdateRequestModel,client);
+    Client savedClient = clientRepo.save(client);
+    return clientEntityToModelConverter.getfindById(savedClient);
+}
 
-	        // Update client details
-	        client.setEmail(request.getEmail());
-	        client.setFirstName(request.getFirstName());
-	        client.setLastName(request.getLastName());
-	        client.setAddress(request.getAddress());
-	        client.setMobileNumber(request.getPhoneNumber());
-	        client.setCompanyName(request.getCompanyName());
-
-	        // Update city if provided
-	        if (request.getCityId() != null && request.getCityId() != 0) {
-	            City city = cityRepo.findById(request.getCityId()).orElse(null);
-	            if (city == null) {
-	                throw new Exception("City not found.");
-	            }
-	            client.setCity(city);
-	        }
-
-	        clientRepo.save(client);
-	        logger.info("Client updated successfully: {}", request.getId());
-	    }
 	    public void softDeleteById(int id) throws Exception {
-	        logger.info("Soft delete request received for client ID: {}", id);
-
-	        Client client = clientRepo.findById(id).orElse(null);
-	        if (client == null) {
+	        
+	        Optional<Client> clientOptional = clientRepo.findById(id);
+	       
+	        if (clientOptional == null) {
 	            throw new Exception("Client does not exist.");
 	        }
+	        Client client = clientOptional.get();
 
-	        if (client.getIsDeleted()) {
-	            logger.warn("Attempt to delete already deleted client ID: {}", id);
-	            throw new Exception("Client already deleted.");
+	        if (client.getIsDeleted() == true) {
+	         throw new Exception("Client already deleted.");
 	        }
 
 	        client.setIsDeleted(true);
+	        client.setUpdatedAt(Timestamp.from(Instant.now()));
+
 	        clientRepo.save(client);
-	        logger.info("Client soft deleted successfully for ID: {}", id);
 	    }
 	    
 	    public void restoreById(Integer id) throws Exception {
@@ -156,93 +158,26 @@ public class ClientService {
 
 	        clientRepo.restoreClient(id);
 	    }
+	    
+	    
+	    public ClientResponseModel findByClientId(int id) throws Exception {
+	    	Optional<Client> clientOptional = clientRepo.findById(id);
+	      
+	        if (clientOptional == null) {
+	            throw new Exception("Client does not exist.");
+	        }
+	        Client client = clientOptional.get();
+	        
+	        if (client.getIsDeleted()== true) {
+	          throw new Exception("Your account has been deactivated. Please contact the administrator for assistance.");
+	      }
+	        return clientEntityToModelConverter.getfindById(client);
+	    }
 	
-
-
-	    public ClientResponseModel findByClientId(int clientId) throws Exception {
-	        logger.info("Fetching client details for ID: {}", clientId);
-
-	        Client client = clientRepo.findById(clientId).orElse(null);
-	        if (client == null) {
-	            logger.warn("Client not found for ID: {}", clientId);
-	            throw new Exception("Client does not exist.");
-	        }
-
-	        return mapToResponse(client);
-	    }
-
-	    public ClientResponseModel findClientByEmail(String email) throws Exception {
-	        logger.info("Fetching client by email: {}", email);
-
-	        Client client = clientRepo.findByEmail(email).orElse(null);
-	        if (client == null) {
-	            throw new Exception("Client does not exist.");
-	        }
-
-	        return mapToResponse(client);
-	    }
-
-	    public ClientResponseModel findClientByPhone(String phone) throws Exception {
-	        logger.info("Fetching client by phone number: {}", phone);
-
-	        Client client = clientRepo.findByPhoneNumber(phone).orElse(null);
-	        if (client == null) {
-	            throw new Exception("Client does not exist.");
-	        }
-
-	        return mapToResponse(client);
-	    }
-
-	    public ClientResponseModel findClientByName(String name) throws Exception {
-	        logger.info("Fetching client by name: {}", name);
-
-	        Client client = clientRepo.findByFirstName(name).orElse(null);
-	        if (client == null) {
-	            throw new Exception("Client does not exist.");
-	        }
-
-	        return mapToResponse(client);
-	    }
-
-	    private ClientResponseModel mapToResponse(Client client) {
-	        ClientResponseModel response = new ClientResponseModel();
-	        response.setId(client.getId());
-	        response.setFirstName(client.getFirstName());
-	        response.setLastName(client.getLastName());
-	        response.setEmailAddress(client.getEmail());
-	        response.setPhoneNumber(client.getMobileNumber());
-	        response.setCompanyName(client.getCompanyName());
-	        response.setAddress(client.getAddress());
-
-	        return response;
-	    }
-
-
-    public List<ClientResponseModel> findAll(Integer page, Integer size) throws Exception {
-        logger.info("Fetching all active clients.");
-
-        
-        Page<Client> clientPage = clientRepo.findAll(PageRequest.of(page, size));
-
-        List<ClientResponseModel> clientResponseModels = new ArrayList<>();
-
-        for (Client client : clientPage.getContent()) {  
-            if (Boolean.FALSE.equals(client.getIsDeleted())) {  
-                ClientResponseModel responseModel = new ClientResponseModel();
-                responseModel.setId(client.getId());
-                responseModel.setFirstName(client.getFirstName());
-                responseModel.setLastName(client.getLastName());
-                responseModel.setEmailAddress(client.getEmail());
-                responseModel.setPhoneNumber(client.getMobileNumber());
-                responseModel.setCompanyName(client.getCompanyName());
-                responseModel.setAddress(client.getAddress());
-
-                clientResponseModels.add(responseModel);
-            }
-        }
-
-        logger.info("Total active clients fetched: {}", clientResponseModels.size());
-        return clientResponseModels;
+    public List<ClientResponseModel> findAllClient(Integer page, Integer size) throws Exception {
+       
+        List<Client> clientList = clientRepo.findAllClient(PageRequest.of(page, size));
+        return clientEntityToModelConverter.getFindAllConvert(clientList);
     }
 
     public long countAllClient() throws Exception {
@@ -250,33 +185,8 @@ public class ClientService {
     }
 }
 
-//	    public List<ClientResponseModel> findAll(Integer page , Integer size) throws Exception {
-//	        logger.info("Fetching all active clients.");
-//
-//
-//	        List<Client> clientList = (List<Client>) clientRepo.findAll(PageRequest.of(page, size));
-//	        List<ClientResponseModel> clientResponseModels = new ArrayList<>();
-//
-//	        for (Client client : clientList) {
-//	            if (!client.getIsDeleted()) {
-//	                ClientResponseModel responseModel = new ClientResponseModel();
-//	                responseModel.setId(client.getId());
-//	                responseModel.setFirstName(client.getFirstName());
-//	                responseModel.setLastName(client.getLastName());
-//	                responseModel.setEmailAddress(client.getEmail());
-//	                responseModel.setPhoneNumber(client.getMobileNumber());
-//	                responseModel.setCompanyName(client.getCompanyName());
-//	                responseModel.setAddress(client.getAddress());
-//
-//	                clientResponseModels.add(responseModel);
-//	            }
-//	        }
-//
-//	        logger.info("Total active clients fetched: {}", clientResponseModels.size());
-//	        return clientResponseModels;
-//	    }
-//        public long countAllClient() throws Exception{
-//        	return clientRepo.countAllClient();
-//        }
-//	}
-//
+	    
+	    
+	    
+	    
+

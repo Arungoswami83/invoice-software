@@ -9,7 +9,7 @@ public class ClientResponseModel {
     private String firstName;
     private String lastName;
     private String emailAddress;
-    private String phoneNumber;
+    private String mobileNumber;
     private String companyName;
     private String address;
     private Boolean isDeleted;
