@@ -1,4 +1,4 @@
 spring:
-  name: invoice-service-prod
+  name: invoice-service-local
   profiles:
     active: local
