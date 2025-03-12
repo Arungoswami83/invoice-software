@@ -7,7 +7,6 @@
   </parent>
   <artifactId>invoice-service</artifactId>
   <name>invoice-service</name>
-  <dependencies>
-    <!-- Yahan sirf zaroori dependencies add karein -->
-  </dependencies>
+
 </project>
+

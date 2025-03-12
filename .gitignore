@@ -4,6 +4,7 @@
 build/
 target/
 logs/
+bin/
 
 
 */.classpath
@@ -12,9 +13,8 @@ logs/
 */target/
 */logs/
 */build/
+*/bin/
 
        
         
-       
-       
-/bin/
+
