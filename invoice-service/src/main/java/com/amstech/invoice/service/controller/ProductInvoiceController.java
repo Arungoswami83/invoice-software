@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.amstech.invoice.service.request.model.ProductInvoiceSignupRequestModel;
 import com.amstech.invoice.service.request.model.ProductInvoiceUpdateRequestModel;
-import com.amstech.invoice.service.response.message.RestResponse;
+import com.amstech.invoice.service.response.RestResponse;
 import com.amstech.invoice.service.response.model.ProductInvoiceResponseModel;
 import com.amstech.invoice.service.service.ProductInvoiceService;
 

@@ -1,4 +1,4 @@
-package com.amstech.invoice.service.response.message;
+package com.amstech.invoice.service.response;
 
 import com.amstech.invoice.service.util.*;
 import java.util.Collection;
