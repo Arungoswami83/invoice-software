@@ -13,7 +13,7 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="sales_invoices")
+@Table(name="sales_invoice")
 @NamedQuery(name="SalesInvoice.findAll", query="SELECT s FROM SalesInvoice s")
 public class SalesInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;

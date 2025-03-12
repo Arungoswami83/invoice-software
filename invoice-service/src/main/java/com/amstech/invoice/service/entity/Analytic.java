@@ -26,7 +26,7 @@ public class Analytic implements Serializable {
 	@JoinColumn(name="sales_invoices_id")
 	private SalesInvoices salesInvoices;
 	
-	 @ManyToOne
+		@ManyToOne
 	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
 	    private SalesInvoice salesInvoice; 
 
@@ -34,6 +34,7 @@ public class Analytic implements Serializable {
 	//bi-directional many-to-one association to Dashboard
 	@OneToMany(mappedBy="analytic")
 	private List<Dashboard> dashboards;
+	
 	public Analytic() {
 	}
 

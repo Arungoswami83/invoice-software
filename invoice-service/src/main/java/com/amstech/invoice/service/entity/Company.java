@@ -17,7 +17,15 @@ public class Company implements Serializable {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "is_email_update", nullable = false)
+    public Boolean getIsEmailUpdate() {
+		return isEmailUpdate;
+	}
+
+	public void setIsEmailUpdate(Boolean isEmailUpdate) {
+		this.isEmailUpdate = isEmailUpdate;
+	}
+
+	@Column(name = "is_email_update", nullable = false)
     private Boolean isEmailUpdate = false;
 
     @Lob
