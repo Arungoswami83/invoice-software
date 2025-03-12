@@ -3,79 +3,81 @@ package com.amstech.invoice.service.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
-
+/**
+ * The persistent class for the sales_invoice_items database table.
+ */
 @Entity
 @Table(name="sales_invoice_items")
 @NamedQuery(name="SalesInvoiceItem.findAll", query="SELECT s FROM SalesInvoiceItem s")
 public class SalesInvoiceItem implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	@ManyToOne
-	@JoinColumn(name = "sales_invoice_id", nullable = false)
-	private SalesInvoice salesInvoice;
+    private String name;
 
-	private String name;
-	private int quantity;
-	private BigDecimal subtotal;
+    private int quantity;
 
-	@Column(name="unit_price")
-	private BigDecimal unitPrice;
+    private BigDecimal subtotal;
 
-	public SalesInvoiceItem() {
-	}
+    @Column(name="unit_price")
+    private BigDecimal unitPrice;
 
-	// Getters and Setters
-	public int getId() {
-		return this.id;
-	}
+    // Bi-directional many-to-one association to SalesInvoices
+    @ManyToOne
+    @JoinColumn(name="invoice_id")
+    private SalesInvoices salesInvoices; // ✅ यह अब सही entity को refer कर रहा है
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public SalesInvoiceItem() {}
 
-	public String getName() {
-		return this.name;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public int getQuantity() {
-		return this.quantity;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public BigDecimal getSubtotal() {
-		return this.subtotal;
-	}
+    public int getQuantity() {
+        return this.quantity;
+    }
 
-	public void setSubtotal(BigDecimal subtotal) {
-		this.subtotal = subtotal;
-	}
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
-	public BigDecimal getUnitPrice() {
-		return this.unitPrice;
-	}
+    public BigDecimal getSubtotal() {
+        return this.subtotal;
+    }
 
-	public void setUnitPrice(BigDecimal unitPrice) {
-		this.unitPrice = unitPrice;
-	}
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
 
-	public SalesInvoice getSalesInvoice() {
-		return salesInvoice;
-	}
+    public BigDecimal getUnitPrice() {
+        return this.unitPrice;
+    }
 
-	public void setSalesInvoice(SalesInvoice salesInvoice) {
-		this.salesInvoice = salesInvoice;
-	}
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public SalesInvoices getSalesInvoices() {
+        return this.salesInvoices;
+    }
+
+    public void setSalesInvoices(SalesInvoices salesInvoices) {
+        this.salesInvoices = salesInvoices;
+    }
 }

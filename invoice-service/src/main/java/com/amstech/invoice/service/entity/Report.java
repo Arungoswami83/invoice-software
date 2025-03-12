@@ -1,3 +1,4 @@
+
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
@@ -18,12 +19,7 @@ public class Report implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
-	 @ManyToOne
-	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
-	    private SalesInvoice salesInvoice;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -36,49 +32,33 @@ public class Report implements Serializable {
 	@Column(name="issue_date")
 	private Date issueDate;
 
+	private int payments;
+
+	@ManyToOne
+    @JoinColumn(name = "sales_invoice_id")  
+    private SalesInvoice salesInvoice;
+	
+	@ManyToOne
+	@JoinColumn(name = "sales_invoices")  
+	private SalesInvoices salesInvoices;
+
+
 	//bi-directional many-to-one association to Dashboard
 	@OneToMany(mappedBy="report")
 	private List<Dashboard> dashboards;
 
-	//bi-directional many-to-one association to Invoice
-	
-	@OneToMany(mappedBy="report")
-	private List<Invoice> invoices;
-
-
-
 	//bi-directional many-to-one association to Client
 	@ManyToOne
 	private Client client;
-
-	//bi-directional many-to-one association to Invoice
+	
 	@ManyToOne
+	@JoinColumn(name = "invoice_id", nullable = false)
 	private Invoice invoice;
-
+	
 	//bi-directional many-to-one association to InvoiceType
 	@ManyToOne
 	@JoinColumn(name="invoice_types")
 	private InvoiceType invoiceType;
-
-	//bi-directional many-to-one association to Payment
-	@ManyToOne
-	@JoinColumn(name="payments")
-	private Payment payment;
-
-	//bi-directional many-to-one association to SalesInvoice
-	@ManyToOne
-	@JoinColumn(name="sales_invoices")
-
-	private SalesInvoices salesInvoices;
-
-
-	public SalesInvoices getSalesInvoices() {
-		return salesInvoices;
-	}
-
-	public void setSalesInvoices(SalesInvoices salesInvoices) {
-		this.salesInvoices = salesInvoices;
-	}
 
 	public Report() {
 	}
@@ -115,6 +95,29 @@ public class Report implements Serializable {
 		this.issueDate = issueDate;
 	}
 
+	public int getPayments() {
+		return this.payments;
+	}
+
+	public void setPayments(int payments) {
+		this.payments = payments;
+	}
+	public Invoice getInvoice() {
+		return invoice;
+	}
+
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
+	}
+
+	public SalesInvoice getSalesInvoice() {
+		return salesInvoice;
+	}
+
+	public void setSalesInvoice(SalesInvoice salesInvoice) {
+		this.salesInvoice = salesInvoice;
+	}
+
 	public List<Dashboard> getDashboards() {
 		return this.dashboards;
 	}
@@ -137,43 +140,12 @@ public class Report implements Serializable {
 		return dashboard;
 	}
 
-	public List<Invoice> getInvoices() {
-		return this.invoices;
-	}
-
-	public void setInvoices(List<Invoice> invoices) {
-		this.invoices = invoices;
-	}
-
-	public Invoice addInvoice(Invoice invoice) {
-		getInvoices().add(invoice);
-		invoice.setReports(null);
-
-		return invoice;
-	}
-
-	public Invoice removeInvoice(Invoice invoice) {
-		getInvoices().remove(invoice);
-		invoice.setReports(null);
-
-		return invoice;
-	}
-
-
 	public Client getClient() {
 		return this.client;
 	}
 
 	public void setClient(Client client) {
 		this.client = client;
-	}
-
-	public Invoice getInvoice() {
-		return this.invoice;
-	}
-
-	public void setInvoice(Invoice invoice) {
-		this.invoice = invoice;
 	}
 
 	public InvoiceType getInvoiceType() {
@@ -183,21 +155,16 @@ public class Report implements Serializable {
 	public void setInvoiceType(InvoiceType invoiceType) {
 		this.invoiceType = invoiceType;
 	}
-
-	public Payment getPayment() {
-		return this.payment;
-	}
-
-	public void setPayment(Payment payment) {
-		this.payment = payment;
-	}
-
-	public SalesInvoices getSalesInvoice() {
-		return this.salesInvoices;
-	}
-
-	public void setSalesInvoice(SalesInvoices salesInvoice) {
-		this.salesInvoices = salesInvoice;
+	@Override
+	public String toString() {
+		return "Report{" +
+				"id=" + id +
+				", createdAt=" + createdAt +
+				", dueDate=" + dueDate +
+				", issueDate=" + issueDate +
+				", payments=" + payments +
+				", salesInvoices=" + salesInvoice +
+				'}';
 	}
 
 }

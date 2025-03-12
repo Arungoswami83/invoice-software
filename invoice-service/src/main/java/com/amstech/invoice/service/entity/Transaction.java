@@ -17,9 +17,7 @@ public class Transaction implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-
+	private String id;
 
 	private BigDecimal amount;
 
@@ -37,17 +35,14 @@ public class Transaction implements Serializable {
 	public Transaction() {
 	}
 
-	
-
-	public int getId() {
-		return id;
+	public String getId() {
+		return this.id;
 	}
 
-
-
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
+
 	public BigDecimal getAmount() {
 		return this.amount;
 	}

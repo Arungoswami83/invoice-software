@@ -1,6 +1,5 @@
 package com.amstech.invoice.service.entity;
 
-
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -24,11 +23,7 @@ public class Invoice implements Serializable {
 	@Id
 	private int id;
 
-	private BigDecimal balance;	
-	 @ManyToOne
-	    @JoinColumn(name = "report_id")
-	    private Report report; 
-
+	private BigDecimal balance;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -135,6 +130,11 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to Report
 	@OneToMany(mappedBy="invoice")
 	private List<Report> reports;
+	
+	@ManyToOne
+	@JoinColumn(name = "report_id") // This should match the Report entity
+	private Report report;
+
 
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoice")
@@ -166,7 +166,8 @@ public class Invoice implements Serializable {
 		public void setDeleted(Boolean deleted) {
 			this.deleted = deleted;
 		}
-		Invoice() {
+
+	public Invoice() {
 	}
 
 	public int getId() {
@@ -409,7 +410,7 @@ public class Invoice implements Serializable {
 	public void setClient(Client client) {
 		this.client = client;
 	}
-
+	
 	public Company getCompany() {
 		return this.company;
 	}
@@ -488,35 +489,28 @@ public class Invoice implements Serializable {
 
 	public Payment addPayment(Payment payment) {
 		getPayments().add(payment);
-
-		payment.addInvoice(this);
-
 		payment.setInvoice(this);
 
 		return payment;
 	}
 
 	public Payment removePayment(Payment payment) {
+		getPayments().remove(payment);
+		payment.setInvoice(null);
 
-	    if (payment != null && getPayments() != null) {
-	        getPayments().remove(payment);
-	        // Ensure `payment` class has `setInvoice` method instead of `addInvoice`
-	        payment.addInvoice(null);  
-	    }
-	    return payment;
+		return payment;
 	}
 
 	public List<Report> getReports() {
-	    return this.reports;
+		return this.reports;
 	}
 
-	public void setReports(List<Report> reports) {  // Fixed incorrect type
-	    this.reports = reports;
+	public void setReports(List<Report> reports) {
+		this.reports = reports;
 	}
 
 	public List<TaxDetail> getTaxDetails() {
-		return taxDetails;
-
+		return this.taxDetails;
 	}
 
 	public void setTaxDetails(List<TaxDetail> taxDetails) {
@@ -537,5 +531,13 @@ public class Invoice implements Serializable {
 		return taxDetail;
 	}
 
-}
+	 public boolean isDeleted() {
+	        return deleted;
+	    }
 
+	    public void setDeleted(boolean deleted) {
+	        this.deleted = deleted;
+	    }
+	    
+
+}

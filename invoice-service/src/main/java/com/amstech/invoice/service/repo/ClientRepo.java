@@ -1,5 +1,6 @@
 package com.amstech.invoice.service.repo;
 
+
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
 import com.amstech.invoice.service.entity.SalesInvoices;
+
 @Repository
 public interface ClientRepo extends JpaRepository<Client, Integer> {
 
+		 boolean existsById(int i);   //if user exist then user can be create a invoice
+		
+		 
 	    Optional<Client> findById(int id) ;
 			
 	    @Query("SELECT c FROM Client c WHERE c.city.id = :cityId")

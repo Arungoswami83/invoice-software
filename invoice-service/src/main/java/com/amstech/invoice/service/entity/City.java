@@ -1,8 +1,11 @@
+
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 /**
@@ -10,21 +13,19 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="city")
-
 @NamedQuery(name="City.findAll", query="SELECT c FROM City c")
 public class City implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-
 	private int id;
 
 	private String name;
 
 	//bi-directional many-to-one association to State
 	@ManyToOne
+	 @JoinColumn(name = "state_id")
+    @JsonBackReference
 	private State state;
 
 	//bi-directional many-to-one association to Client
@@ -75,9 +76,7 @@ public class City implements Serializable {
 
 	public Client removeClient(Client client) {
 		getClients().remove(client);
-
-		client.setCity(this);
-		
+		client.setCity(null);
 
 		return client;
 	}

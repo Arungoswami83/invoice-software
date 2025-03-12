@@ -28,10 +28,7 @@ public class ServiceInvoiceController {
     @Autowired
     private ServiceInvoiceService serviceInvoiceService;
     
-    
-
-        // ✅ Signup Service Invoice API
-    	@RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
+        	@RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
         public RestResponse signup(@RequestBody ServiceInvoiceSignupRequestModel requestModel) {
             LOGGER.info("Saving service invoice data: {}", requestModel.getInvoiceNumber());
 

@@ -19,14 +19,15 @@ public class SalesInvoices implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToMany(mappedBy = "salesInvoice", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SalesInvoiceItem> salesInvoiceItems;
+
+    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SalesInvoiceItem> salesInvoiceItems; // ✅ mappedBy अब salesInvoices से match कर रहा है
 
     @Column(name = "is_deleted")
     private int isDeleted;
 
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false) // Ensures NOT NULL
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
     @Column(name = "created_at")
@@ -40,7 +41,7 @@ public class SalesInvoices implements Serializable {
     @Column(name = "payment_term")
     private String paymentTerm;
 
-    private BigDecimal price; // Changed from double to BigDecimal
+    private BigDecimal price;
 
     @Lob
     private String signature;
@@ -68,7 +69,6 @@ public class SalesInvoices implements Serializable {
     @JsonIgnore
     private List<Report> reports;
 
-  
     public SalesInvoices() {}
 
     // Getters and Setters
@@ -90,7 +90,7 @@ public class SalesInvoices implements Serializable {
     public String getPaymentTerm() { return this.paymentTerm; }
     public void setPaymentTerm(String paymentTerm) { this.paymentTerm = paymentTerm; }
 
-    public BigDecimal getPrice() { return this.price; } // Changed getter return type
+    public BigDecimal getPrice() { return this.price; }
     public void setPrice(BigDecimal price) { this.price = price; }
 
     public String getSignature() { return this.signature; }
@@ -127,5 +127,4 @@ public class SalesInvoices implements Serializable {
 
     public int getIsDeleted() { return isDeleted; }
     public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
-    
 }

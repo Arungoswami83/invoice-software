@@ -62,5 +62,3 @@ public interface CompanyRepo extends JpaRepository<Company, Integer> {
 	 
 
 	}
-
-
