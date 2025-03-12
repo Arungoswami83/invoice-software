@@ -17,6 +17,7 @@ public class RecurringService implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name="billing_cycle")
@@ -36,8 +37,6 @@ public class RecurringService implements Serializable {
 	@Column(name="unit_price")
 	private BigDecimal unitPrice;
 
-	//bi-directional many-to-one association to RecurringInvoice
-	@ManyToOne
 	@JoinColumn(name="invoice_id")
 	private RecurringInvoice recurringInvoice;
 
@@ -100,12 +99,13 @@ public class RecurringService implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 
-	public RecurringInvoice getRecurringInvoice() {
+ RecurringInvoice getRecurringInvoice() {
 		return this.recurringInvoice;
 	}
 
 	public void setRecurringInvoice(RecurringInvoice recurringInvoice) {
 		this.recurringInvoice = recurringInvoice;
+
 	}
 
 }

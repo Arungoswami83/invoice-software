@@ -16,6 +16,7 @@ public class ProductInvoiceItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	private String code;
@@ -30,8 +31,7 @@ public class ProductInvoiceItem implements Serializable {
 	@Column(name="unit_price")
 	private BigDecimal unitPrice;
 
-	//bi-directional many-to-one association to ProductInvoice
-	@ManyToOne
+
 	@JoinColumn(name="invoice_id")
 	private ProductInvoice productInvoice;
 
@@ -86,12 +86,13 @@ public class ProductInvoiceItem implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 
-	public ProductInvoice getProductInvoice() {
+	ProductInvoice getProductInvoice() {
 		return this.productInvoice;
 	}
 
 	public void setProductInvoice(ProductInvoice productInvoice) {
 		this.productInvoice = productInvoice;
+
 	}
 
 }

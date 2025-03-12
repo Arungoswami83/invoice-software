@@ -18,7 +18,12 @@ public class Report implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
+	 @ManyToOne
+	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
+	    private SalesInvoice salesInvoice;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -36,8 +41,11 @@ public class Report implements Serializable {
 	private List<Dashboard> dashboards;
 
 	//bi-directional many-to-one association to Invoice
-//	@OneToMany(mappedBy="report")
-//	private List<Invoice> invoices;
+	
+	@OneToMany(mappedBy="report")
+	private List<Invoice> invoices;
+
+
 
 	//bi-directional many-to-one association to Client
 	@ManyToOne
@@ -60,7 +68,17 @@ public class Report implements Serializable {
 	//bi-directional many-to-one association to SalesInvoice
 	@ManyToOne
 	@JoinColumn(name="sales_invoices")
-	private SalesInvoice salesInvoice;
+
+	private SalesInvoices salesInvoices;
+
+
+	public SalesInvoices getSalesInvoices() {
+		return salesInvoices;
+	}
+
+	public void setSalesInvoices(SalesInvoices salesInvoices) {
+		this.salesInvoices = salesInvoices;
+	}
 
 	public Report() {
 	}
@@ -119,27 +137,28 @@ public class Report implements Serializable {
 		return dashboard;
 	}
 
-//	public List<Invoice> getInvoices() {
-//		return this.invoices;
-//	}
-//
-//	public void setInvoices(List<Invoice> invoices) {
-//		this.invoices = invoices;
-//	}
-//
-//	public Invoice addInvoice(Invoice invoice) {
-//		getInvoices().add(invoice);
-//		invoice.setReports(this);
-//
-//		return invoice;
-//	}
+	public List<Invoice> getInvoices() {
+		return this.invoices;
+	}
 
-//	public Invoice removeInvoice(Invoice invoice) {
-//		getInvoices().remove(invoice);
-//		invoice.setReports(null);
-//
-//		return invoice;
-//	}
+	public void setInvoices(List<Invoice> invoices) {
+		this.invoices = invoices;
+	}
+
+	public Invoice addInvoice(Invoice invoice) {
+		getInvoices().add(invoice);
+		invoice.setReports(null);
+
+		return invoice;
+	}
+
+	public Invoice removeInvoice(Invoice invoice) {
+		getInvoices().remove(invoice);
+		invoice.setReports(null);
+
+		return invoice;
+	}
+
 
 	public Client getClient() {
 		return this.client;
@@ -173,12 +192,12 @@ public class Report implements Serializable {
 		this.payment = payment;
 	}
 
-	public SalesInvoice getSalesInvoice() {
-		return this.salesInvoice;
+	public SalesInvoices getSalesInvoice() {
+		return this.salesInvoices;
 	}
 
-	public void setSalesInvoice(SalesInvoice salesInvoice) {
-		this.salesInvoice = salesInvoice;
+	public void setSalesInvoice(SalesInvoices salesInvoice) {
+		this.salesInvoices = salesInvoice;
 	}
 
 }

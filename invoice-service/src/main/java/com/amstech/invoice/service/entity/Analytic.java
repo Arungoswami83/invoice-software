@@ -14,7 +14,6 @@ import java.util.List;
 @NamedQuery(name="Analytic.findAll", query="SELECT a FROM Analytic a")
 public class Analytic implements Serializable {
 	private static final long serialVersionUID = 1L;
-
 	@Id
 	private int id;
 
@@ -24,13 +23,17 @@ public class Analytic implements Serializable {
 
 	//bi-directional many-to-one association to SalesInvoice
 	@ManyToOne
-	@JoinColumn(name="sales_invoices")
-	private SalesInvoice salesInvoice;
+	@JoinColumn(name="sales_invoices_id")
+	private SalesInvoices salesInvoices;
+	
+	 @ManyToOne
+	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
+	    private SalesInvoice salesInvoice; 
+
 
 	//bi-directional many-to-one association to Dashboard
 	@OneToMany(mappedBy="analytic")
 	private List<Dashboard> dashboards;
-
 	public Analytic() {
 	}
 
@@ -40,23 +43,22 @@ public class Analytic implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	
-	public Invoice getInvoice() {
+	}	public Invoice getInvoice() {
 		return this.invoice;
 	}
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
 	}
+	
 
-	public SalesInvoice getSalesInvoice() {
-		return this.salesInvoice;
+
+	public SalesInvoices getSalesInvoices() {
+		return salesInvoices;
 	}
 
-	public void setSalesInvoice(SalesInvoice salesInvoice) {
-		this.salesInvoice = salesInvoice;
+	public void setSalesInvoices(SalesInvoices salesInvoices) {
+		this.salesInvoices = salesInvoices;
 	}
 
 	public List<Dashboard> getDashboards() {

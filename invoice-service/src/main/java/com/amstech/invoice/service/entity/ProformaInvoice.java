@@ -2,6 +2,7 @@ package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
 
+
 import jakarta.annotation.Generated;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -20,8 +21,12 @@ import java.util.List;
 public class ProformaInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
+	@Temporal(TemporalType.DATE)
+	private Date date;
+	
+	
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
 	private int id;
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -29,6 +34,7 @@ public class ProformaInvoice implements Serializable {
 
 	@Column(name="invoice_number")
 	private String invoiceNumber;
+
 
 	@Lob
 	@Column(name="payment_instructions")
@@ -50,6 +56,20 @@ public class ProformaInvoice implements Serializable {
 	private List<InvoiceType> invoiceTypes;
 
 	//bi-directional many-to-one association to ProformaInvoiceItem
+
+
+	public ProformaInvoice() {
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
 	@OneToMany(mappedBy="proformaInvoice")
 	private List<ProformaInvoiceItem> proformaInvoiceItems;
 
@@ -65,6 +85,7 @@ public class ProformaInvoice implements Serializable {
 	private Client client;
 
 
+
 	public Client getClient() {
 		return client;
 	}
@@ -73,8 +94,6 @@ public class ProformaInvoice implements Serializable {
 		this.client = client;
 	}
 
-	public ProformaInvoice() {
-	}
 	@Column(name="is_deleted")
 	private int isDeleted;
 
@@ -86,15 +105,6 @@ public class ProformaInvoice implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	
 
 	public Timestamp getCreatedAt() {
 		return this.createdAt;
@@ -104,6 +114,14 @@ public class ProformaInvoice implements Serializable {
 		this.createdAt = createdAt;
 	}
 
+
+	public Date getDate() {
+		return this.date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
 
 	public String getInvoiceNumber() {

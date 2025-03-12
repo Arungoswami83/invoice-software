@@ -16,7 +16,11 @@ public class Dashboard implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	 @ManyToOne
+	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
+	    private SalesInvoice salesInvoice; 
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -39,8 +43,6 @@ public class Dashboard implements Serializable {
 	@JoinColumn(name="analytics_id")
 	private Analytic analytic;
 
-	
-
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
 	private Invoice invoice;
@@ -53,7 +55,7 @@ public class Dashboard implements Serializable {
 	//bi-directional many-to-one association to SalesInvoice
 	@ManyToOne
 	@JoinColumn(name="sales_invoices")
-	private SalesInvoice salesInvoice;
+	private SalesInvoices salesInvoices;
 
 	public Dashboard() {
 	}
@@ -122,7 +124,6 @@ public class Dashboard implements Serializable {
 		this.analytic = analytic;
 	}
 
-
 	public Invoice getInvoice() {
 		return this.invoice;
 	}
@@ -139,12 +140,12 @@ public class Dashboard implements Serializable {
 		this.report = report;
 	}
 
-	public SalesInvoice getSalesInvoice() {
-		return this.salesInvoice;
+	public SalesInvoices getSalesInvoices() {
+		return this.salesInvoices;
 	}
 
-	public void setSalesInvoice(SalesInvoice salesInvoice) {
-		this.salesInvoice = salesInvoice;
+	public void setSalesInvoices(SalesInvoices salesInvoice) {
+		this.salesInvoices = salesInvoice;
 	}
 
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.amstech.invoice.service.request.model.ProformaInvoiceSignupRequestModel;
 import com.amstech.invoice.service.request.model.ProformaInvoiceUpdateRequestModel;
-import com.amstech.invoice.service.response.message.RestResponse;
+import com.amstech.invoice.service.response.RestResponse;
 import com.amstech.invoice.service.response.model.ProformaInvoiceResponseModel;
 import com.amstech.invoice.service.service.ProformaInvoiceService;
 

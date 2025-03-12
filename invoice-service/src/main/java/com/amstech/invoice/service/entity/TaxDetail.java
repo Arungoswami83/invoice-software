@@ -16,6 +16,7 @@ public class TaxDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	private BigDecimal amount;
@@ -24,6 +25,8 @@ public class TaxDetail implements Serializable {
 
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
+	@JoinColumn(name="invoice_id")
+
 	private Invoice invoice;
 
 	//bi-directional many-to-one association to InvoiceItem
@@ -59,7 +62,9 @@ public class TaxDetail implements Serializable {
 	}
 
 	public Invoice getInvoice() {
-		return this.invoice;
+
+		return invoice;
+
 	}
 
 	public void setInvoice(Invoice invoice) {
@@ -67,7 +72,9 @@ public class TaxDetail implements Serializable {
 	}
 
 	public InvoiceItem getInvoiceItem() {
-		return this.invoiceItem;
+
+		return invoiceItem;
+
 	}
 
 	public void setInvoiceItem(InvoiceItem invoiceItem) {

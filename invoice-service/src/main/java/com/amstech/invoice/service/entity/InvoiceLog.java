@@ -16,6 +16,8 @@ public class InvoiceLog implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	private String action;
@@ -25,6 +27,7 @@ public class InvoiceLog implements Serializable {
 
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
+	@JoinColumn(name="invoice_id")
 	private Invoice invoice;
 
 	public InvoiceLog() {
@@ -55,11 +58,12 @@ public class InvoiceLog implements Serializable {
 	}
 
 	public Invoice getInvoice() {
-		return this.invoice;
+
+		return invoice;
+
 	}
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
 	}
-
 }

@@ -27,7 +27,6 @@ public class StandardInvoice implements Serializable {
 	@JoinColumn(name = "client_id", referencedColumnName = "id")
 	private Client client;
 
-
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
@@ -47,7 +46,11 @@ public class StandardInvoice implements Serializable {
 	private String invoiceNumber;
 
 	@Column(name="is_recurring")
-	private boolean isRecurring;
+
+	private byte isRecurring;
+
+	
+
 
 	@Lob
 	private String notes;
@@ -73,7 +76,6 @@ public class StandardInvoice implements Serializable {
 	//bi-directional many-to-one association to InvoiceType
 	@OneToMany(mappedBy="standardInvoice")
 	private List<InvoiceType> invoiceTypes;
-
 	//bi-directional many-to-one association to Company
 	@ManyToOne
 	@JoinColumn(name = "company_id", nullable = false)
@@ -90,7 +92,7 @@ public class StandardInvoice implements Serializable {
 		this.id = id;
 	}
 
-	
+
 
 	public Timestamp getCreatedAt() {
 		return this.createdAt;
@@ -100,7 +102,6 @@ public class StandardInvoice implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	
 
 	public Client getClient() {
 		return client;
@@ -126,6 +127,7 @@ public class StandardInvoice implements Serializable {
 		this.dueDate = dueDate;
 	}
 
+
 	public int getIsDeleted() {
 		return isDeleted;
 	}
@@ -133,6 +135,7 @@ public class StandardInvoice implements Serializable {
 	public void setIsDeleted(int isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+
 
 	public BigDecimal getGrandTotal() {
 		return this.grandTotal;
@@ -142,7 +145,6 @@ public class StandardInvoice implements Serializable {
 		this.grandTotal = grandTotal;
 	}
 
-
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;
 	}
@@ -151,12 +153,11 @@ public class StandardInvoice implements Serializable {
 		this.invoiceNumber = invoiceNumber;
 	}
 
-
-	public boolean isRecurring() {
-		return isRecurring;
+	public byte getIsRecurring() {
+		return this.isRecurring;
 	}
 
-	public void setRecurring(boolean isRecurring) {
+	public void setIsRecurring(byte isRecurring) {
 		this.isRecurring = isRecurring;
 	}
 

@@ -19,6 +19,8 @@ public class Payment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	private BigDecimal amount;
@@ -42,6 +44,8 @@ public class Payment implements Serializable {
 
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
+	@JoinColumn(name="invoice_id")
+
 	private Invoice invoice;
 
 	//bi-directional many-to-one association to Report

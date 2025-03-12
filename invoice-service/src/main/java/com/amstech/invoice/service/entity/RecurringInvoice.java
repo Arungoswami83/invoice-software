@@ -3,6 +3,14 @@ package com.amstech.invoice.service.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.util.Date;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,11 +20,13 @@ import java.time.LocalDateTime;
  * The persistent class for the recurring_invoices database table.
  * 
  */
+
 @Entity
 @Table(name="recurring_invoices")
 @NamedQuery(name="RecurringInvoice.findAll", query="SELECT r FROM RecurringInvoice r")
 public class RecurringInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 
 
 	@Id
@@ -36,15 +46,16 @@ public class RecurringInvoice implements Serializable {
     private Company company;
 
 
-	
+
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="end_date")
 	private Date endDate;
 
+
+
 	@Column(name="payment_term")
 	private String paymentTerm;
-
 
 
 	@Column(name="total_payable")
@@ -54,7 +65,6 @@ public class RecurringInvoice implements Serializable {
 	@OneToMany(mappedBy="recurringInvoice")
 	private List<InvoiceType> invoiceTypes;
 
-	//bi-directional many-to-one association to RecurringInvoiceItem
 	@OneToMany(mappedBy="recurringInvoice")
 	private List<RecurringInvoiceItem> recurringInvoiceItems;
 
@@ -101,7 +111,6 @@ public class RecurringInvoice implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-
 	public int getId() {
 		return this.id;
 	}
@@ -117,9 +126,6 @@ public class RecurringInvoice implements Serializable {
 	public void setAutoPaymentSetup(byte autoPaymentSetup) {
 		this.autoPaymentSetup = autoPaymentSetup;
 	}
-
-	
-
 
 
 	public Date getEndDate() {
@@ -137,8 +143,6 @@ public class RecurringInvoice implements Serializable {
 	public void setPaymentTerm(String paymentTerm) {
 		this.paymentTerm = paymentTerm;
 	}
-
-
 	public BigDecimal getTotalPayable() {
 		return this.totalPayable;
 	}
@@ -249,6 +253,6 @@ public class RecurringInvoice implements Serializable {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-	  
+
 
 }

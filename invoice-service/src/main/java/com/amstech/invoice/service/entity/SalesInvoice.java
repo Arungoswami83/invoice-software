@@ -20,7 +20,9 @@ public class SalesInvoice implements Serializable {
 
 	@Id
 	private int id;
-
+	 @OneToMany(mappedBy = "salesInvoice", cascade = CascadeType.ALL)
+	    private List<SalesInvoiceItem> salesInvoiceItems;
+	
 	@ManyToOne
     @JoinColumn(name = "client_id", nullable = false) // Ensures NOT NULL
 	private Client client;
@@ -81,8 +83,7 @@ public class SalesInvoice implements Serializable {
 	private List<Report> reports;
 
 	//bi-directional many-to-one association to SalesInvoiceItem
-	@OneToMany(mappedBy="salesInvoice")
-	private List<SalesInvoiceItem> salesInvoiceItems;
+	
 
 	public SalesInvoice() {
 	}
@@ -211,14 +212,14 @@ public class SalesInvoice implements Serializable {
 
 	public Analytic addAnalytic(Analytic analytic) {
 		getAnalytics().add(analytic);
-		analytic.setSalesInvoice(this);
+		analytic.setInvoice(null);
 
 		return analytic;
 	}
 
 	public Analytic removeAnalytic(Analytic analytic) {
 		getAnalytics().remove(analytic);
-		analytic.setSalesInvoice(null);
+		analytic.setInvoice(null);
 
 		return analytic;
 	}
@@ -231,16 +232,11 @@ public class SalesInvoice implements Serializable {
 		this.dashboards = dashboards;
 	}
 
-	public Dashboard addDashboard(Dashboard dashboard) {
-		getDashboards().add(dashboard);
-		dashboard.setSalesInvoice(this);
-
-		return dashboard;
-	}
+	
 
 	public Dashboard removeDashboard(Dashboard dashboard) {
 		getDashboards().remove(dashboard);
-		dashboard.setSalesInvoice(null);
+		dashboard.setInvoice(null);
 
 		return dashboard;
 	}
@@ -253,12 +249,7 @@ public class SalesInvoice implements Serializable {
 		this.reports = reports;
 	}
 
-	public Report addReport(Report report) {
-		getReports().add(report);
-		report.setSalesInvoice(this);
-
-		return report;
-	}
+	
 
 	public Report removeReport(Report report) {
 		getReports().remove(report);

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.amstech.invoice.service.request.model.RecurringInvoiceSignupRequestModel;
 import com.amstech.invoice.service.request.model.RecurringInvoiceUpdateRequestModel;
 import com.amstech.invoice.service.request.model.ServiceInvoiceSignupRequestModel;
-import com.amstech.invoice.service.response.message.RestResponse;
+import com.amstech.invoice.service.response.RestResponse;
 import com.amstech.invoice.service.response.model.RecurringInvoiceResponseModel;
 import com.amstech.invoice.service.service.RecurringInvoiceService;
 import com.amstech.invoice.service.service.ServiceInvoiceService;

@@ -32,7 +32,7 @@ public class StandardInvoiceModelToEntityConverter {
 	    standardInvoice.setStatus(standardInvoiceSignupRequestModel.getStatus());
 	    standardInvoice.setRecurringFrequency(standardInvoiceSignupRequestModel.getRecurringFrequency());
 	    standardInvoice.setSendEmail(standardInvoiceSignupRequestModel.getSendEmail());
-	    standardInvoice.setRecurring("true".equalsIgnoreCase(standardInvoiceSignupRequestModel.getRecurringFrequency()));
+	  //  standardInvoice.setIsRecurring("true".equalsIgnoreCase(standardInvoiceSignupRequestModel.getRecurringFrequency()));
 	    return standardInvoice;
 	}
 	
@@ -41,7 +41,7 @@ public class StandardInvoiceModelToEntityConverter {
 	    standardInvoice.setDiscount(requestModel.getDiscount());
 	    standardInvoice.setDueDate(requestModel.getDueDate());
 	    standardInvoice.setGrandTotal(requestModel.getGrandTotal());
-	    standardInvoice.setRecurring("true".equalsIgnoreCase(requestModel.getRecurringFrequency()));
+	   // standardInvoice.setRecurring("true".equalsIgnoreCase(requestModel.getRecurringFrequency()));
 	    standardInvoice.setNotes(requestModel.getNotes());
 	    standardInvoice.setPaymentTerm(requestModel.getPaymentTerm());
 	    standardInvoice.setRecurringFrequency(requestModel.getRecurringFrequency());
