@@ -18,12 +18,13 @@ import java.util.List;
 public class StandardInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
 	@ManyToOne
-	@JoinColumn(name="client_id",referencedColumnName = "id")
+	@JoinColumn(name = "client_id", referencedColumnName = "id")
 	private Client client;
 
 	@Column(name="created_at")
@@ -31,7 +32,7 @@ public class StandardInvoice implements Serializable {
 
 	@Column(name="is_deleted")
 	private int isDeleted;
-	
+
 	private BigDecimal discount;
 
 	@Temporal(TemporalType.DATE)
@@ -41,12 +42,15 @@ public class StandardInvoice implements Serializable {
 	@Column(name="grand_total")
 	private BigDecimal grandTotal;
 
-
 	@Column(name="invoice_number")
 	private String invoiceNumber;
 
 	@Column(name="is_recurring")
+
 	private byte isRecurring;
+
+	
+
 
 	@Lob
 	private String notes;
@@ -72,7 +76,11 @@ public class StandardInvoice implements Serializable {
 	//bi-directional many-to-one association to InvoiceType
 	@OneToMany(mappedBy="standardInvoice")
 	private List<InvoiceType> invoiceTypes;
-	
+	//bi-directional many-to-one association to Company
+	@ManyToOne
+	@JoinColumn(name = "company_id", nullable = false)
+	private Company company;
+
 	public StandardInvoice() {
 	}
 
@@ -84,15 +92,7 @@ public class StandardInvoice implements Serializable {
 		this.id = id;
 	}
 
-	
-	
-	public Client getClient() {
-		return client;
-	}
 
-	public void setClient(Client client) {
-		this.client = client;
-	}
 
 	public Timestamp getCreatedAt() {
 		return this.createdAt;
@@ -103,6 +103,13 @@ public class StandardInvoice implements Serializable {
 	}
 
 
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
 
 	public BigDecimal getDiscount() {
 		return this.discount;
@@ -120,6 +127,16 @@ public class StandardInvoice implements Serializable {
 		this.dueDate = dueDate;
 	}
 
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+
 	public BigDecimal getGrandTotal() {
 		return this.grandTotal;
 	}
@@ -127,6 +144,7 @@ public class StandardInvoice implements Serializable {
 	public void setGrandTotal(BigDecimal grandTotal) {
 		this.grandTotal = grandTotal;
 	}
+
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;
 	}
@@ -227,6 +245,14 @@ public class StandardInvoice implements Serializable {
 		invoiceType.setStandardInvoice(null);
 
 		return invoiceType;
+	}
+
+	public Company getCompany() {
+		return this.company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 }

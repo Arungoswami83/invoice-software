@@ -3,12 +3,9 @@ package com.amstech.invoice.service.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 
-/**
- * The persistent class for the sales_invoice_items database table.
- * 
- */
 @Entity
 @Table(name="sales_invoice_items")
 @NamedQuery(name="SalesInvoiceItem.findAll", query="SELECT s FROM SalesInvoiceItem s")
@@ -19,28 +16,21 @@ public class SalesInvoiceItem implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
+	@ManyToOne
+	@JoinColumn(name = "sales_invoice_id", nullable = false)
+	private SalesInvoice salesInvoice;
+
 	private String name;
-
 	private int quantity;
-
 	private BigDecimal subtotal;
 
 	@Column(name="unit_price")
 	private BigDecimal unitPrice;
 
-	//bi-directional many-to-one association to SalesInvoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id1")
-	private SalesInvoices salesInvoice1;
-
-	//bi-directional many-to-one association to SalesInvoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id2")
-	private SalesInvoices salesInvoice2;
-
 	public SalesInvoiceItem() {
 	}
 
+	// Getters and Setters
 	public int getId() {
 		return this.id;
 	}
@@ -81,20 +71,11 @@ public class SalesInvoiceItem implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 
-	public SalesInvoices getSalesInvoice1() {
-		return this.salesInvoice1;
+	public SalesInvoice getSalesInvoice() {
+		return salesInvoice;
 	}
 
-	public void setSalesInvoice1(SalesInvoices salesInvoice1) {
-		this.salesInvoice1 = salesInvoice1;
+	public void setSalesInvoice(SalesInvoice salesInvoice) {
+		this.salesInvoice = salesInvoice;
 	}
-
-	public SalesInvoices getSalesInvoice2() {
-		return this.salesInvoice2;
-	}
-
-	public void setSalesInvoice2(SalesInvoices salesInvoice2) {
-		this.salesInvoice2 = salesInvoice2;
-	}
-
 }

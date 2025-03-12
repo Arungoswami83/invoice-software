@@ -20,6 +20,7 @@ public class Transaction implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
+
 	private BigDecimal amount;
 
 	@Temporal(TemporalType.DATE)
@@ -47,9 +48,6 @@ public class Transaction implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-
-
 	public BigDecimal getAmount() {
 		return this.amount;
 	}

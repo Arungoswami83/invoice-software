@@ -17,6 +17,7 @@ public class Saving implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	@Column(name="created_at")

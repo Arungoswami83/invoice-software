@@ -34,15 +34,8 @@ public class ServiceDetail implements Serializable {
 	@Column(name="total_amount")
 	private BigDecimal totalAmount;
 
-	//bi-directional many-to-one association to ServiceInvoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id1")
-	private ServiceInvoice serviceInvoice1;
-
-	//bi-directional many-to-one association to ServiceInvoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id2")
-	private ServiceInvoice serviceInvoice2;
+	@JoinColumn(name="invoice_id")
+	private ServiceInvoice serviceInvoice;
 
 	public ServiceDetail() {
 	}
@@ -95,20 +88,14 @@ public class ServiceDetail implements Serializable {
 		this.totalAmount = totalAmount;
 	}
 
-	public ServiceInvoice getServiceInvoice1() {
-		return this.serviceInvoice1;
+
+	public ServiceInvoice getServiceInvoice() {
+		return this.serviceInvoice;
 	}
 
-	public void setServiceInvoice1(ServiceInvoice serviceInvoice1) {
-		this.serviceInvoice1 = serviceInvoice1;
-	}
+	public void setServiceInvoice(ServiceInvoice serviceInvoice) {
+		this.serviceInvoice = serviceInvoice;
 
-	public ServiceInvoice getServiceInvoice2() {
-		return this.serviceInvoice2;
-	}
-
-	public void setServiceInvoice2(ServiceInvoice serviceInvoice2) {
-		this.serviceInvoice2 = serviceInvoice2;
 	}
 
 }

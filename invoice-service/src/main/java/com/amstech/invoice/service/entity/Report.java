@@ -20,6 +20,10 @@ public class Report implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
+	 @ManyToOne
+	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
+	    private SalesInvoice salesInvoice;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -37,14 +41,15 @@ public class Report implements Serializable {
 	private List<Dashboard> dashboards;
 
 	//bi-directional many-to-one association to Invoice
+	
 	@OneToMany(mappedBy="report")
 	private List<Invoice> invoices;
+
+
 
 	//bi-directional many-to-one association to Client
 	@ManyToOne
 	private Client client;
-	
-	 
 
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
@@ -63,7 +68,17 @@ public class Report implements Serializable {
 	//bi-directional many-to-one association to SalesInvoice
 	@ManyToOne
 	@JoinColumn(name="sales_invoices")
+
 	private SalesInvoices salesInvoices;
+
+
+	public SalesInvoices getSalesInvoices() {
+		return salesInvoices;
+	}
+
+	public void setSalesInvoices(SalesInvoices salesInvoices) {
+		this.salesInvoices = salesInvoices;
+	}
 
 	public Report() {
 	}
@@ -143,6 +158,7 @@ public class Report implements Serializable {
 
 		return invoice;
 	}
+
 
 	public Client getClient() {
 		return this.client;

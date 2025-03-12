@@ -22,7 +22,6 @@ public class CashFlow implements Serializable {
 	@Column(name = "`month`")
 	private String month;
 
-
 	@Column(name="total_expense")
 	private BigDecimal totalExpense;
 

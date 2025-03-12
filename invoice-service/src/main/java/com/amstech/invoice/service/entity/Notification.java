@@ -40,6 +40,7 @@ public class Notification implements Serializable {
 	private Invoice invoice;
 
 
+
 	public Notification() {
 	}
 
@@ -92,12 +93,13 @@ public class Notification implements Serializable {
 	}
 
 	public Invoice getInvoice() {
+
 		return invoice;
 	}
+		
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
 	}
 
-	
 }

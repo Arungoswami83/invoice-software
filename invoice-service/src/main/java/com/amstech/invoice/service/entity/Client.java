@@ -1,309 +1,299 @@
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
-import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
-
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 /**
  * The persistent class for the client database table.
- * 
  */
 @Entity
-@NamedQuery(name="Client.findAll", query="SELECT c FROM Client c")
 @Table(name="client")
+@NamedQuery(name="Client.findAll", query="SELECT c FROM Client c")
 public class Client implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-	@JsonProperty
-	@Column(name="username")
-	private String userName;
-	@JsonProperty
-	@Column(name="password",nullable = false)
-	private String password;
-	
-	@Lob
-	private String address;
-	@Column(name = "phone_number") // Adjust if needed
-	private String phoneNumber;
-	@Lob
-	@Column(name="billing_address")
-	private String billingAddress;
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private int id;
 
-	@Column(name="business_name")
-	private String businessName;
+    @JsonProperty
+    @Column(name="username", nullable = false, unique = true)
+    private String userName;
 
-	@Column(name="company_name")
-	private String companyName;
+    @JsonIgnore // Prevent password exposure in JSON responses
+    @Column(name="password", nullable = false)
+    private String password;
 
-	@Column(name="created_at")
-	private Timestamp createdAt;
+    @Lob
+    private String address;
 
-	private String email;
+    @Lob
+    @Column(name="billing_address")
+    private String billingAddress;
 
-	@Column(name="first_name")
-	private String firstName;
+    @Column(name="business_name")
+    private String businessName;
 
-	@Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-	private Boolean isDeleted = false;
+    @Column(name="company_name")
+    private String companyName;
 
+    @Column(name="phone_number")
+    private String phoneNumber;
 
-	@Column(name="last_name")
-	private String lastName;
+    @Column(name="email", unique = true, nullable = false)
+    private String email;
 
-	@Column(name="linkedin_profile_url")
-	private String linkedinProfileUrl;
+    @Column(name="first_name")
+    private String firstName;
 
-	@Column(name="mobile_number")
-	private String mobileNumber;
+    @Column(name="last_name")
+    private String lastName;
 
-	@Column(name="pan_number")
-	private String panNumber;
+    @Column(name="linkedin_profile_url")
+    private String linkedinProfileUrl;
 
-	@Column(name="postal_zip_code")
-	private String postalZipCode;
+    @Column(name="mobile_number")
+    private String mobileNumber;
 
-	@Lob
-	@Column(name="specific_registration_details")
-	private String specificRegistrationDetails;
+    @Column(name="pan_number")
+    private String panNumber;
 
-	@Column(name="updated_at")
-	private Timestamp updatedAt;
+    @Column(name="postal_zip_code")
+    private String postalZipCode;
 
-	//bi-directional many-to-one association to City
-	 
-	//bi-directional many-to-one association to City
-	@ManyToOne
-	@JoinColumn(name = "city_id", referencedColumnName = "id", nullable = false)
-	private City city;
+    @Lob
+    @Column(name="specific_registration_details")
+    private String specificRegistrationDetails;
 
+    @Column(name="is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean isDeleted = false;
 
-	//bi-directional many-to-one association to Invoice
-	@OneToMany(mappedBy="client")
-	private List<Invoice> invoices;
+    @Column(name="created_at", updatable = false)
+    private Timestamp createdAt;
 
-	//bi-directional many-to-one association to Report
-	@OneToMany(mappedBy="client")
-	private List<Report> reports;
+    @Column(name="updated_at")
+    private Timestamp updatedAt;
 
-	public Client() {
-	}
+    // Many Clients belong to one City
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city;
 
-	public int getId() {
-		return this.id;
-	}
+    // One Client has many Companies
+    @OneToMany(mappedBy="client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Company> companies;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    // One Client has many Invoices
+    @OneToMany(mappedBy="client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Invoice> invoices;
 
-	public String getAddress() {
-		return this.address;
-	}
+    // One Client has many Reports
+    @OneToMany(mappedBy="client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Report> reports;
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    // Default Constructor
+    public Client() {}
 
-	public String getBillingAddress() {
-		return this.billingAddress;
-	}
+    // Auto-update timestamps
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
 
-	public void setBillingAddress(String billingAddress) {
-		this.billingAddress = billingAddress;
-	}
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
 
-	public String getBusinessName() {
-		return this.businessName;
-	}
+    // Getters & Setters
 
-	public void setBusinessName(String businessName) {
-		this.businessName = businessName;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public String getCompanyName() {
-		return this.companyName;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+   
+    public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public String getEmail() {
-		return this.email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public boolean getIsDeleted() {
-		return this.isDeleted;
-	}
-
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getLinkedinProfileUrl() {
-		return this.linkedinProfileUrl;
-	}
-
-	public void setLinkedinProfileUrl(String linkedinProfileUrl) {
-		this.linkedinProfileUrl = linkedinProfileUrl;
-	}
-
-	public String getMobileNumber() {
-		return this.mobileNumber;
-	}
-
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
-	}
-
-	public String getPanNumber() {
-		return this.panNumber;
-	}
-
-	public void setPanNumber(String panNumber) {
-		this.panNumber = panNumber;
-	}
-
-	public String getPostalZipCode() {
-		return this.postalZipCode;
-	}
-
-	public void setPostalZipCode(String postalZipCode) {
-		this.postalZipCode = postalZipCode;
-	}
-
-	public String getSpecificRegistrationDetails() {
-		return this.specificRegistrationDetails;
-	}
-
-	public void setSpecificRegistrationDetails(String specificRegistrationDetails) {
-		this.specificRegistrationDetails = specificRegistrationDetails;
-	}
-
-	public Timestamp getUpdatedAt() {
-		return this.updatedAt;
-	}
-
 	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
-	public List<Invoice> getInvoices() {
-		return this.invoices;
-	}
+	public String getAddress() {
+        return this.address;
+    }
 
-	public void setInvoices(List<Invoice> invoices) {
-		this.invoices = invoices;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public Invoice addInvoice(Invoice invoice) {
-		getInvoices().add(invoice);
-		invoice.setClient(this);
+    public String getBillingAddress() {
+        return this.billingAddress;
+    }
 
-		return invoice;
-	}
+    public void setBillingAddress(String billingAddress) {
+        this.billingAddress = billingAddress;
+    }
 
-	public Invoice removeInvoice(Invoice invoice) {
-		getInvoices().remove(invoice);
-		invoice.setClient(null);
+    public String getBusinessName() {
+        return this.businessName;
+    }
 
-		return invoice;
-	}
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
 
-	public List<Report> getReports() {
-		return this.reports;
-	}
+    public String getCompanyName() {
+        return this.companyName;
+    }
 
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
-	public Report addReport(Report report) {
-		getReports().add(report);
-		report.setClient(this);
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    }
 
-		return report;
-	}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-	public Report removeReport(Report report) {
-		getReports().remove(report);
-		report.setClient(null);
+    public String getEmail() {
+        return this.email;
+    }
 
-		return report;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+    public String getFirstName() {
+        return this.firstName;
+    }
 
-	
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public City getCity() {
-		return city;
-	}
-	
+    public String getLastName() {
+        return this.lastName;
+    }
 
-	public void setCity(City city) {
-		this.city = city;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+    public String getLinkedinProfileUrl() {
+        return this.linkedinProfileUrl;
+    }
 
+    public void setLinkedinProfileUrl(String linkedinProfileUrl) {
+        this.linkedinProfileUrl = linkedinProfileUrl;
+    }
 
+    public String getMobileNumber() {
+        return this.mobileNumber;
+    }
 
-	public String getUserName() {
-		return userName;
-	}
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    public String getPanNumber() {
+        return this.panNumber;
+    }
 
+    public void setPanNumber(String panNumber) {
+        this.panNumber = panNumber;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPostalZipCode() {
+        return this.postalZipCode;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPostalZipCode(String postalZipCode) {
+        this.postalZipCode = postalZipCode;
+    }
 
+    public String getSpecificRegistrationDetails() {
+        return this.specificRegistrationDetails;
+    }
+
+    public void setSpecificRegistrationDetails(String specificRegistrationDetails) {
+        this.specificRegistrationDetails = specificRegistrationDetails;
+    }
+
+    public Boolean getIsDeleted() {
+        return this.isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Timestamp getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public City getCity() {
+        return this.city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public List<Company> getCompanies() {
+        return this.companies;
+    }
+
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
+    }
+
+    public List<Invoice> getInvoices() {
+        return this.invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    public List<Report> getReports() {
+        return this.reports;
+    }
+
+    public void setReports(List<Report> reports) {
+        this.reports = reports;
+    }
 }

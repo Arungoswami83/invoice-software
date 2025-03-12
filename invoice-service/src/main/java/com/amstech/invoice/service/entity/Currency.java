@@ -2,6 +2,8 @@ package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
+import java.util.List;
+
 
 
 /**
@@ -15,13 +17,14 @@ public class Currency implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	private String code;
 
 	private String name;
-
-	public Currency() {
+	 
+	Currency() {
 	}
 
 	public int getId() {

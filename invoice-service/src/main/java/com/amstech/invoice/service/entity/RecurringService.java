@@ -37,15 +37,8 @@ public class RecurringService implements Serializable {
 	@Column(name="unit_price")
 	private BigDecimal unitPrice;
 
-	//bi-directional many-to-one association to RecurringInvoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id1")
-	private RecurringInvoice recurringInvoice1;
-
-	//bi-directional many-to-one association to RecurringInvoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id2")
-	private RecurringInvoice recurringInvoice2;
+	@JoinColumn(name="invoice_id")
+	private RecurringInvoice recurringInvoice;
 
 	public RecurringService() {
 	}
@@ -106,20 +99,13 @@ public class RecurringService implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 
-	public RecurringInvoice getRecurringInvoice1() {
-		return this.recurringInvoice1;
+ RecurringInvoice getRecurringInvoice() {
+		return this.recurringInvoice;
 	}
 
-	public void setRecurringInvoice1(RecurringInvoice recurringInvoice1) {
-		this.recurringInvoice1 = recurringInvoice1;
-	}
+	public void setRecurringInvoice(RecurringInvoice recurringInvoice) {
+		this.recurringInvoice = recurringInvoice;
 
-	public RecurringInvoice getRecurringInvoice2() {
-		return this.recurringInvoice2;
-	}
-
-	public void setRecurringInvoice2(RecurringInvoice recurringInvoice2) {
-		this.recurringInvoice2 = recurringInvoice2;
 	}
 
 }

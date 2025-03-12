@@ -3,26 +3,40 @@ package com.amstech.invoice.service.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
+import java.util.List;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.time.LocalDateTime;
+/**
+ * The persistent class for the recurring_invoices database table.
+ * 
+ */
+
 @Entity
 @Table(name="recurring_invoices")
 @NamedQuery(name="RecurringInvoice.findAll", query="SELECT r FROM RecurringInvoice r")
 public class RecurringInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
+	@Column(name="auto_payment_setup")
+	private byte autoPaymentSetup;
+
 	
-	@Column(name="is_deleted")
-	private int isDeleted;
-
-
 	@ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
@@ -31,23 +45,18 @@ public class RecurringInvoice implements Serializable {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-	@Column(name="auto_payment_setup")
-	private byte autoPaymentSetup;
+
+
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="end_date")
 	private Date endDate;
-	
-	@CreationTimestamp
-    @Column(updatable = false, nullable = false)
-    private LocalDateTime createdAt;
-	
-	 @UpdateTimestamp
-	 @Column(nullable=false)
-	 private LocalDateTime updatedAt;
+
+
 
 	@Column(name="payment_term")
 	private String paymentTerm;
+
 
 	@Column(name="total_payable")
 	private BigDecimal totalPayable;
@@ -56,23 +65,50 @@ public class RecurringInvoice implements Serializable {
 	@OneToMany(mappedBy="recurringInvoice")
 	private List<InvoiceType> invoiceTypes;
 
-	//bi-directional many-to-one association to RecurringInvoiceItem
-	@OneToMany(mappedBy="recurringInvoice1")
-	private List<RecurringInvoiceItem> recurringInvoiceItems1;
+	@OneToMany(mappedBy="recurringInvoice")
+	private List<RecurringInvoiceItem> recurringInvoiceItems;
 
-	//bi-directional many-to-one association to RecurringInvoiceItem
-	@OneToMany(mappedBy="recurringInvoice2")
-	private List<RecurringInvoiceItem> recurringInvoiceItems2;
-
-	//bi-directional many-to-one association to RecurringService
-	@OneToMany(mappedBy="recurringInvoice1")
-	private List<RecurringService> recurringServices1;
+	//bi-directional many-to-one association to RecurringInvoicePayment
+	@OneToMany(mappedBy="recurringInvoice")
+	private List<RecurringInvoicePayment> recurringInvoicePayments;
 
 	//bi-directional many-to-one association to RecurringService
-	@OneToMany(mappedBy="recurringInvoice2")
-	private List<RecurringService> recurringServices2;
+	@OneToMany(mappedBy="recurringInvoice")
+	private List<RecurringService> recurringServices;
 
 	public RecurringInvoice() {
+	}
+	@Column(name="is_deleted")
+	private int isDeleted;
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+	 @CreationTimestamp
+	  @Column(updatable = false, nullable = false)
+	    private LocalDateTime createdAt;
+
+	    public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+		@UpdateTimestamp
+	    @Column(nullable = false)
+	    private LocalDateTime updatedAt;
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public int getId() {
@@ -91,23 +127,6 @@ public class RecurringInvoice implements Serializable {
 		this.autoPaymentSetup = autoPaymentSetup;
 	}
 
-	
-
-	public Client getClient() {
-		return client;
-	}
-
-	public void setClient(Client client) {
-		this.client = client;
-	}
-
-	public Company getCompany() {
-		return company;
-	}
-
-	public void setCompany(Company company) {
-		this.company = company;
-	}
 
 	public Date getEndDate() {
 		return this.endDate;
@@ -124,7 +143,6 @@ public class RecurringInvoice implements Serializable {
 	public void setPaymentTerm(String paymentTerm) {
 		this.paymentTerm = paymentTerm;
 	}
-
 	public BigDecimal getTotalPayable() {
 		return this.totalPayable;
 	}
@@ -155,92 +173,86 @@ public class RecurringInvoice implements Serializable {
 		return invoiceType;
 	}
 
-	public List<RecurringInvoiceItem> getRecurringInvoiceItems1() {
-		return this.recurringInvoiceItems1;
+	public List<RecurringInvoiceItem> getRecurringInvoiceItems() {
+		return this.recurringInvoiceItems;
 	}
 
-	public void setRecurringInvoiceItems1(List<RecurringInvoiceItem> recurringInvoiceItems1) {
-		this.recurringInvoiceItems1 = recurringInvoiceItems1;
+	public void setRecurringInvoiceItems(List<RecurringInvoiceItem> recurringInvoiceItems) {
+		this.recurringInvoiceItems = recurringInvoiceItems;
 	}
 
-	public RecurringInvoiceItem addRecurringInvoiceItems1(RecurringInvoiceItem recurringInvoiceItems1) {
-		getRecurringInvoiceItems1().add(recurringInvoiceItems1);
-		recurringInvoiceItems1.setRecurringInvoice1(this);
+	public RecurringInvoiceItem addRecurringInvoiceItem(RecurringInvoiceItem recurringInvoiceItem) {
+		getRecurringInvoiceItems().add(recurringInvoiceItem);
+		recurringInvoiceItem.setRecurringInvoice(this);
 
-		return recurringInvoiceItems1;
+		return recurringInvoiceItem;
 	}
 
-	public RecurringInvoiceItem removeRecurringInvoiceItems1(RecurringInvoiceItem recurringInvoiceItems1) {
-		getRecurringInvoiceItems1().remove(recurringInvoiceItems1);
-		recurringInvoiceItems1.setRecurringInvoice1(null);
+	public RecurringInvoiceItem removeRecurringInvoiceItem(RecurringInvoiceItem recurringInvoiceItem) {
+		getRecurringInvoiceItems().remove(recurringInvoiceItem);
+		recurringInvoiceItem.setRecurringInvoice(null);
 
-		return recurringInvoiceItems1;
+		return recurringInvoiceItem;
 	}
 
-	public List<RecurringInvoiceItem> getRecurringInvoiceItems2() {
-		return this.recurringInvoiceItems2;
+	public List<RecurringInvoicePayment> getRecurringInvoicePayments() {
+		return this.recurringInvoicePayments;
 	}
 
-	public void setRecurringInvoiceItems2(List<RecurringInvoiceItem> recurringInvoiceItems2) {
-		this.recurringInvoiceItems2 = recurringInvoiceItems2;
+	public void setRecurringInvoicePayments(List<RecurringInvoicePayment> recurringInvoicePayments) {
+		this.recurringInvoicePayments = recurringInvoicePayments;
 	}
 
-	public RecurringInvoiceItem addRecurringInvoiceItems2(RecurringInvoiceItem recurringInvoiceItems2) {
-		getRecurringInvoiceItems2().add(recurringInvoiceItems2);
-		recurringInvoiceItems2.setRecurringInvoice2(this);
+	public RecurringInvoicePayment addRecurringInvoicePayment(RecurringInvoicePayment recurringInvoicePayment) {
+		getRecurringInvoicePayments().add(recurringInvoicePayment);
+		recurringInvoicePayment.setRecurringInvoice(this);
 
-		return recurringInvoiceItems2;
+		return recurringInvoicePayment;
 	}
 
-	public RecurringInvoiceItem removeRecurringInvoiceItems2(RecurringInvoiceItem recurringInvoiceItems2) {
-		getRecurringInvoiceItems2().remove(recurringInvoiceItems2);
-		recurringInvoiceItems2.setRecurringInvoice2(null);
+	public RecurringInvoicePayment removeRecurringInvoicePayment(RecurringInvoicePayment recurringInvoicePayment) {
+		getRecurringInvoicePayments().remove(recurringInvoicePayment);
+		recurringInvoicePayment.setRecurringInvoice(null);
 
-		return recurringInvoiceItems2;
+		return recurringInvoicePayment;
 	}
 
-	public List<RecurringService> getRecurringServices1() {
-		return this.recurringServices1;
+	public List<RecurringService> getRecurringServices() {
+		return this.recurringServices;
 	}
 
-	public void setRecurringServices1(List<RecurringService> recurringServices1) {
-		this.recurringServices1 = recurringServices1;
+	public void setRecurringServices(List<RecurringService> recurringServices) {
+		this.recurringServices = recurringServices;
 	}
 
-	public RecurringService addRecurringServices1(RecurringService recurringServices1) {
-		getRecurringServices1().add(recurringServices1);
-		recurringServices1.setRecurringInvoice1(this);
+	public RecurringService addRecurringService(RecurringService recurringService) {
+		getRecurringServices().add(recurringService);
+		recurringService.setRecurringInvoice(this);
 
-		return recurringServices1;
+		return recurringService;
 	}
 
-	public RecurringService removeRecurringServices1(RecurringService recurringServices1) {
-		getRecurringServices1().remove(recurringServices1);
-		recurringServices1.setRecurringInvoice1(null);
+	public RecurringService removeRecurringService(RecurringService recurringService) {
+		getRecurringServices().remove(recurringService);
+		recurringService.setRecurringInvoice(null);
 
-		return recurringServices1;
+		return recurringService;
+	}
+	public Client getClient() {
+		return client;
 	}
 
-	public List<RecurringService> getRecurringServices2() {
-		return this.recurringServices2;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
-	public void setRecurringServices2(List<RecurringService> recurringServices2) {
-		this.recurringServices2 = recurringServices2;
+	public Company getCompany() {
+		return company;
 	}
 
-	public RecurringService addRecurringServices2(RecurringService recurringServices2) {
-		getRecurringServices2().add(recurringServices2);
-		recurringServices2.setRecurringInvoice2(this);
-
-		return recurringServices2;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
-	public RecurringService removeRecurringServices2(RecurringService recurringServices2) {
-		getRecurringServices2().remove(recurringServices2);
-		recurringServices2.setRecurringInvoice2(null);
-
-		return recurringServices2;
-	}
 
 }

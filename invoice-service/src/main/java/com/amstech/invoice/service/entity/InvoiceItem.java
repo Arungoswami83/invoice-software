@@ -18,6 +18,7 @@ public class InvoiceItem implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	private String category;
@@ -45,7 +46,7 @@ public class InvoiceItem implements Serializable {
 	@OneToMany(mappedBy="invoiceItem")
 	private List<TaxDetail> taxDetails;
 
-	
+
 	public InvoiceItem() {
 	}
 
@@ -151,6 +152,7 @@ public class InvoiceItem implements Serializable {
 		this.taxDetails = taxDetails;
 	}
 
+
 	public TaxDetail addTaxDetails(TaxDetail taxDetails) {
 		getTaxDetails().add(taxDetails);
 		taxDetails.setInvoiceItem(this);
@@ -165,5 +167,5 @@ public class InvoiceItem implements Serializable {
 		return taxDetails;
 	}
 
-	
+
 }

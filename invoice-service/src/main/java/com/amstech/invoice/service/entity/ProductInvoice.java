@@ -11,6 +11,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 
+
+
 /**
  * The persistent class for the product_invoices database table.
  * 
@@ -24,8 +26,6 @@ public class ProductInvoice implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	@Column(name="is_deleted" ,nullable = false)
-	private int is_deleted;
 
 	@Lob
 	@Column(name="account_details")
@@ -34,14 +34,8 @@ public class ProductInvoice implements Serializable {
 	@Column(name="buyer_details")
 	private String buyerDetails;
 
-	@CreationTimestamp
-    @Column(updatable = false, nullable = false)
-    private LocalDateTime createdAt;
 	
-	@UpdateTimestamp
-	@Column(nullable = false)
-	private LocalDateTime updatedAt;
-	    
+
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
 	private Date dueDate;
@@ -73,15 +67,31 @@ public class ProductInvoice implements Serializable {
 	private List<InvoiceType> invoiceTypes;
 
 	//bi-directional many-to-one association to ProductInvoiceItem
-	@OneToMany(mappedBy="productInvoice1")
-	private List<ProductInvoiceItem> productInvoiceItems1;
 
-	//bi-directional many-to-one association to ProductInvoiceItem
-	@OneToMany(mappedBy="productInvoice2")
-	private List<ProductInvoiceItem> productInvoiceItems2;
+	@OneToMany(mappedBy="productInvoice")
+	private List<ProductInvoiceItem> productInvoiceItems;
+	
+	@Column(name="is_deleted")
+	private int isDeleted;
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
 	public ProductInvoice() {
 	}
+	   @CreationTimestamp
+	    @Column(updatable = false, nullable = false)
+	    private LocalDateTime createdAt;
+
+	    @UpdateTimestamp
+	    @Column(nullable = false)
+	    private LocalDateTime updatedAt;
+
 
 	public int getId() {
 		return this.id;
@@ -116,9 +126,7 @@ public class ProductInvoice implements Serializable {
 		this.dueDate = dueDate;
 	}
 
-	public BigDecimal getHandlingCosts() {
-		return this.handlingCosts;
-	}
+	
 	
 
 	public LocalDateTime getCreatedAt() {
@@ -129,6 +137,10 @@ public class ProductInvoice implements Serializable {
 		this.createdAt = createdAt;
 	}
 
+	public BigDecimal getHandlingCosts() {
+		return handlingCosts;
+	}
+
 	public LocalDateTime getUpdatedAt() {
 		return updatedAt;
 	}
@@ -136,6 +148,7 @@ public class ProductInvoice implements Serializable {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
 
 	public void setHandlingCosts(BigDecimal handlingCosts) {
 		this.handlingCosts = handlingCosts;
@@ -219,48 +232,28 @@ public class ProductInvoice implements Serializable {
 		return invoiceType;
 	}
 
-	public List<ProductInvoiceItem> getProductInvoiceItems1() {
-		return this.productInvoiceItems1;
+
+	public List<ProductInvoiceItem> getProductInvoiceItems() {
+		return this.productInvoiceItems;
 	}
 
-	public void setProductInvoiceItems1(List<ProductInvoiceItem> productInvoiceItems1) {
-		this.productInvoiceItems1 = productInvoiceItems1;
+	public void setProductInvoiceItems(List<ProductInvoiceItem> productInvoiceItems) {
+		this.productInvoiceItems = productInvoiceItems;
 	}
 
-	public ProductInvoiceItem addProductInvoiceItems1(ProductInvoiceItem productInvoiceItems1) {
-		getProductInvoiceItems1().add(productInvoiceItems1);
-		productInvoiceItems1.setProductInvoice1(this);
+	public ProductInvoiceItem addProductInvoiceItem(ProductInvoiceItem productInvoiceItem) {
+		getProductInvoiceItems().add(productInvoiceItem);
+		productInvoiceItem.setProductInvoice(this);
 
-		return productInvoiceItems1;
+		return productInvoiceItem;
 	}
 
-	public ProductInvoiceItem removeProductInvoiceItems1(ProductInvoiceItem productInvoiceItems1) {
-		getProductInvoiceItems1().remove(productInvoiceItems1);
-		productInvoiceItems1.setProductInvoice1(null);
+	public ProductInvoiceItem removeProductInvoiceItem(ProductInvoiceItem productInvoiceItem) {
+		getProductInvoiceItems().remove(productInvoiceItem);
+		productInvoiceItem.setProductInvoice(null);
 
-		return productInvoiceItems1;
-	}
+		return productInvoiceItem;
 
-	public List<ProductInvoiceItem> getProductInvoiceItems2() {
-		return this.productInvoiceItems2;
-	}
-
-	public void setProductInvoiceItems2(List<ProductInvoiceItem> productInvoiceItems2) {
-		this.productInvoiceItems2 = productInvoiceItems2;
-	}
-
-	public ProductInvoiceItem addProductInvoiceItems2(ProductInvoiceItem productInvoiceItems2) {
-		getProductInvoiceItems2().add(productInvoiceItems2);
-		productInvoiceItems2.setProductInvoice2(this);
-
-		return productInvoiceItems2;
-	}
-
-	public ProductInvoiceItem removeProductInvoiceItems2(ProductInvoiceItem productInvoiceItems2) {
-		getProductInvoiceItems2().remove(productInvoiceItems2);
-		productInvoiceItems2.setProductInvoice2(null);
-
-		return productInvoiceItems2;
 	}
 
 }

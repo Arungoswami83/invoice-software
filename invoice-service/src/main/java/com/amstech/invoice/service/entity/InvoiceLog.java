@@ -17,6 +17,7 @@ public class InvoiceLog implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	private String action;
@@ -28,7 +29,6 @@ public class InvoiceLog implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="invoice_id")
 	private Invoice invoice;
-
 
 	public InvoiceLog() {
 	}
@@ -58,12 +58,12 @@ public class InvoiceLog implements Serializable {
 	}
 
 	public Invoice getInvoice() {
+
 		return invoice;
+
 	}
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
 	}
-
-	
 }

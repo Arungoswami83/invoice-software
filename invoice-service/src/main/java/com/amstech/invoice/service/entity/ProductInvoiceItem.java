@@ -31,15 +31,9 @@ public class ProductInvoiceItem implements Serializable {
 	@Column(name="unit_price")
 	private BigDecimal unitPrice;
 
-	//bi-directional many-to-one association to ProductInvoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id1")
-	private ProductInvoice productInvoice1;
 
-	//bi-directional many-to-one association to ProductInvoice
-	@ManyToOne
-	@JoinColumn(name="invoice_id2")
-	private ProductInvoice productInvoice2;
+	@JoinColumn(name="invoice_id")
+	private ProductInvoice productInvoice;
 
 	public ProductInvoiceItem() {
 	}
@@ -92,20 +86,13 @@ public class ProductInvoiceItem implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 
-	public ProductInvoice getProductInvoice1() {
-		return this.productInvoice1;
+	ProductInvoice getProductInvoice() {
+		return this.productInvoice;
 	}
 
-	public void setProductInvoice1(ProductInvoice productInvoice1) {
-		this.productInvoice1 = productInvoice1;
-	}
+	public void setProductInvoice(ProductInvoice productInvoice) {
+		this.productInvoice = productInvoice;
 
-	public ProductInvoice getProductInvoice2() {
-		return this.productInvoice2;
-	}
-
-	public void setProductInvoice2(ProductInvoice productInvoice2) {
-		this.productInvoice2 = productInvoice2;
 	}
 
 }

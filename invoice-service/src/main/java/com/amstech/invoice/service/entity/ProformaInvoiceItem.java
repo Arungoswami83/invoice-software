@@ -32,15 +32,9 @@ public class ProformaInvoiceItem implements Serializable {
 	@Column(name="total_amount")
 	private BigDecimal totalAmount;
 
-	//bi-directional many-to-one association to ProformaInvoice
-	@ManyToOne
-	@JoinColumn(name="proforma_id1")
-	private ProformaInvoice proformaInvoice1;
+	@JoinColumn(name="proforma_id")
+	private ProformaInvoice proformaInvoice;
 
-	//bi-directional many-to-one association to ProformaInvoice
-	@ManyToOne
-	@JoinColumn(name="proforma_id2")
-	private ProformaInvoice proformaInvoice2;
 
 	public ProformaInvoiceItem() {
 	}
@@ -93,20 +87,13 @@ public class ProformaInvoiceItem implements Serializable {
 		this.totalAmount = totalAmount;
 	}
 
-	public ProformaInvoice getProformaInvoice1() {
-		return this.proformaInvoice1;
+	public ProformaInvoice getProformaInvoice() {
+		return this.proformaInvoice;
 	}
 
-	public void setProformaInvoice1(ProformaInvoice proformaInvoice1) {
-		this.proformaInvoice1 = proformaInvoice1;
-	}
+	public void setProformaInvoice(ProformaInvoice proformaInvoice) {
+		this.proformaInvoice = proformaInvoice;
 
-	public ProformaInvoice getProformaInvoice2() {
-		return this.proformaInvoice2;
-	}
-
-	public void setProformaInvoice2(ProformaInvoice proformaInvoice2) {
-		this.proformaInvoice2 = proformaInvoice2;
 	}
 
 }

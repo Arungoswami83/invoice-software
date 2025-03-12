@@ -18,6 +18,7 @@ public class Expens implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	private BigDecimal amount;

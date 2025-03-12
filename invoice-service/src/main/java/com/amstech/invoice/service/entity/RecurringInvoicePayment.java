@@ -19,8 +19,9 @@ public class RecurringInvoicePayment implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="payment_id")
 	private int paymentId;
+	
 
-	private int id;
+
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="last_payment_date")
@@ -32,6 +33,10 @@ public class RecurringInvoicePayment implements Serializable {
 
 	@Column(name="payment_status")
 	private String paymentStatus;
+	
+	@ManyToOne
+	@JoinColumn(name="id")
+	private RecurringInvoice recurringInvoice;
 
 	public RecurringInvoicePayment() {
 	}
@@ -44,13 +49,6 @@ public class RecurringInvoicePayment implements Serializable {
 		this.paymentId = paymentId;
 	}
 
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public Date getLastPaymentDate() {
 		return this.lastPaymentDate;
@@ -74,6 +72,14 @@ public class RecurringInvoicePayment implements Serializable {
 
 	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
+	}
+
+	public RecurringInvoice getRecurringInvoice() {
+		return this.recurringInvoice;
+	}
+
+	public void setRecurringInvoice(RecurringInvoice recurringInvoice) {
+		this.recurringInvoice = recurringInvoice;
 	}
 
 }

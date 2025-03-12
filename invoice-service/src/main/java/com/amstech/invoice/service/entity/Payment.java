@@ -20,6 +20,7 @@ public class Payment implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	private BigDecimal amount;
@@ -44,6 +45,7 @@ public class Payment implements Serializable {
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
 	@JoinColumn(name="invoice_id")
+
 	private Invoice invoice;
 
 	//bi-directional many-to-one association to Report
@@ -122,6 +124,15 @@ public class Payment implements Serializable {
 
 		return invoice;
 	}
+
+	public Invoice getInvoice() {
+		return this.invoice;
+	}
+
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
+	}
+
 	public List<Report> getReports() {
 		return this.reports;
 	}

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
+
 import java.util.List;
 
 
@@ -40,6 +41,8 @@ public class ServiceInvoice implements Serializable {
 	@Column(name="invoice_number")
 	private String invoiceNumber;
 
+
+
 	@Lob
 	private String notes;
 
@@ -47,6 +50,7 @@ public class ServiceInvoice implements Serializable {
 	private String paymentTerm;
 
 	private String signature;
+
 	
 	@Column(name="is_deleted",nullable=false)
 	private int isDeleted;
@@ -61,17 +65,14 @@ public class ServiceInvoice implements Serializable {
 	@Column(name="updated_at")
 	private Timestamp updatedAt;
 
+	
+
 	//bi-directional many-to-one association to InvoiceType
 	@OneToMany(mappedBy="serviceInvoice")
 	private List<InvoiceType> invoiceTypes;
 
-	//bi-directional many-to-one association to ServiceDetail
-	@OneToMany(mappedBy="serviceInvoice1")
-	private List<ServiceDetail> serviceDetails1;
-
-	//bi-directional many-to-one association to ServiceDetail
-	@OneToMany(mappedBy="serviceInvoice2")
-	private List<ServiceDetail> serviceDetails2;
+	@OneToMany(mappedBy="serviceInvoice")
+	private List<ServiceDetail> serviceDetails;
 
 	public ServiceInvoice() {
 	}
@@ -100,6 +101,7 @@ public class ServiceInvoice implements Serializable {
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}	
+
 
 	public Date getDueDate() {
 		return this.dueDate;
@@ -150,6 +152,7 @@ public class ServiceInvoice implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
+
 	public String getSignature() {
 		return this.signature;
 	}
@@ -182,6 +185,7 @@ public class ServiceInvoice implements Serializable {
 		this.tax = tax;
 	}
 
+
 	public Timestamp getUpdatedAt() {
 		return this.updatedAt;
 	}
@@ -189,6 +193,7 @@ public class ServiceInvoice implements Serializable {
 	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
 
 	public List<InvoiceType> getInvoiceTypes() {
 		return this.invoiceTypes;
@@ -212,48 +217,26 @@ public class ServiceInvoice implements Serializable {
 		return invoiceType;
 	}
 
-	public List<ServiceDetail> getServiceDetails1() {
-		return this.serviceDetails1;
+	public List<ServiceDetail> getServiceDetails() {
+		return this.serviceDetails;
 	}
 
-	public void setServiceDetails1(List<ServiceDetail> serviceDetails1) {
-		this.serviceDetails1 = serviceDetails1;
+	public void setServiceDetails(List<ServiceDetail> serviceDetails) {
+		this.serviceDetails = serviceDetails;
 	}
 
-	public ServiceDetail addServiceDetails1(ServiceDetail serviceDetails1) {
-		getServiceDetails1().add(serviceDetails1);
-		serviceDetails1.setServiceInvoice1(this);
+	public ServiceDetail addServiceDetail(ServiceDetail serviceDetail) {
+		getServiceDetails().add(serviceDetail);
+		serviceDetail.setServiceInvoice(this);
 
-		return serviceDetails1;
+		return serviceDetail;
 	}
 
-	public ServiceDetail removeServiceDetails1(ServiceDetail serviceDetails1) {
-		getServiceDetails1().remove(serviceDetails1);
-		serviceDetails1.setServiceInvoice1(null);
+	public ServiceDetail removeServiceDetail(ServiceDetail serviceDetail) {
+		getServiceDetails().remove(serviceDetail);
+		serviceDetail.setServiceInvoice(null);
 
-		return serviceDetails1;
-	}
-
-	public List<ServiceDetail> getServiceDetails2() {
-		return this.serviceDetails2;
-	}
-
-	public void setServiceDetails2(List<ServiceDetail> serviceDetails2) {
-		this.serviceDetails2 = serviceDetails2;
-	}
-
-	public ServiceDetail addServiceDetails2(ServiceDetail serviceDetails2) {
-		getServiceDetails2().add(serviceDetails2);
-		serviceDetails2.setServiceInvoice2(this);
-
-		return serviceDetails2;
-	}
-
-	public ServiceDetail removeServiceDetails2(ServiceDetail serviceDetails2) {
-		getServiceDetails2().remove(serviceDetails2);
-		serviceDetails2.setServiceInvoice2(null);
-
-		return serviceDetails2;
+		return serviceDetail;
 	}
 
 }

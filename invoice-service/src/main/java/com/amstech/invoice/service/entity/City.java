@@ -11,12 +11,14 @@ import java.util.List;
  */
 @Entity
 @Table(name="city")
+
 @NamedQuery(name="City.findAll", query="SELECT c FROM City c")
 public class City implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	private int id;
 
 	private String name;
@@ -73,7 +75,9 @@ public class City implements Serializable {
 
 	public Client removeClient(Client client) {
 		getClients().remove(client);
+
 		client.setCity(this);
+		
 
 		return client;
 	}

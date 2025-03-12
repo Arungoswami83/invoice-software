@@ -18,6 +18,9 @@ public class Dashboard implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	 @ManyToOne
+	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
+	    private SalesInvoice salesInvoice; 
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -53,8 +56,6 @@ public class Dashboard implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="sales_invoices")
 	private SalesInvoices salesInvoices;
-
-	
 
 	public Dashboard() {
 	}
@@ -146,7 +147,5 @@ public class Dashboard implements Serializable {
 	public void setSalesInvoices(SalesInvoices salesInvoice) {
 		this.salesInvoices = salesInvoice;
 	}
-
-	
 
 }

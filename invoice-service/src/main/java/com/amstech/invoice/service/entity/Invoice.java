@@ -1,5 +1,6 @@
 package com.amstech.invoice.service.entity;
 
+
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -23,11 +24,11 @@ public class Invoice implements Serializable {
 	@Id
 	private int id;
 
-	private BigDecimal balance;
-	
+	private BigDecimal balance;	
 	 @ManyToOne
 	    @JoinColumn(name = "report_id")
 	    private Report report; 
+
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
@@ -165,8 +166,7 @@ public class Invoice implements Serializable {
 		public void setDeleted(Boolean deleted) {
 			this.deleted = deleted;
 		}
-
-	public Invoice() {
+		Invoice() {
 	}
 
 	public int getId() {
@@ -442,6 +442,20 @@ public class Invoice implements Serializable {
 		this.invoiceLogs = invoiceLogs;
 	}
 
+	public InvoiceLog addInvoiceLog(InvoiceLog invoiceLog) {
+		getInvoiceLogs().add(invoiceLog);
+		invoiceLog.setInvoice(this);
+
+		return invoiceLog;
+	}
+
+	public InvoiceLog removeInvoiceLog(InvoiceLog invoiceLog) {
+		getInvoiceLogs().remove(invoiceLog);
+		invoiceLog.setInvoice(null);
+
+		return invoiceLog;
+	}
+
 	public List<Notification> getNotifications() {
 		return this.notifications;
 	}
@@ -450,6 +464,19 @@ public class Invoice implements Serializable {
 		this.notifications = notifications;
 	}
 
+	public Notification addNotification(Notification notification) {
+		getNotifications().add(notification);
+		notification.setInvoice(this);
+
+		return notification;
+	}
+
+	public Notification removeNotification(Notification notification) {
+		getNotifications().remove(notification);
+		notification.setInvoice(null);
+
+		return notification;
+	}
 
 	public List<Payment> getPayments() {
 		return this.payments;
@@ -461,12 +488,16 @@ public class Invoice implements Serializable {
 
 	public Payment addPayment(Payment payment) {
 		getPayments().add(payment);
+
 		payment.addInvoice(this);
+
+		payment.setInvoice(this);
 
 		return payment;
 	}
 
 	public Payment removePayment(Payment payment) {
+
 	    if (payment != null && getPayments() != null) {
 	        getPayments().remove(payment);
 	        // Ensure `payment` class has `setInvoice` method instead of `addInvoice`
@@ -485,10 +516,26 @@ public class Invoice implements Serializable {
 
 	public List<TaxDetail> getTaxDetails() {
 		return taxDetails;
+
 	}
 
 	public void setTaxDetails(List<TaxDetail> taxDetails) {
 		this.taxDetails = taxDetails;
 	}
 
+	public TaxDetail addTaxDetail(TaxDetail taxDetail) {
+		getTaxDetails().add(taxDetail);
+		taxDetail.setInvoice(this);
+
+		return taxDetail;
+	}
+
+	public TaxDetail removeTaxDetail(TaxDetail taxDetail) {
+		getTaxDetails().remove(taxDetail);
+		taxDetail.setInvoice(null);
+
+		return taxDetail;
+	}
+
 }
+

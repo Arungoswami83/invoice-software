@@ -1,6 +1,9 @@
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
+
+
+import jakarta.annotation.Generated;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,25 +21,20 @@ import java.util.List;
 public class ProformaInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Temporal(TemporalType.DATE)
+	private Date date;
+	
+	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-
-	@ManyToOne
-	@JoinColumn(name="client_id",referencedColumnName = "id")
-	private Client client;
-
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
 
 	@Column(name="invoice_number")
 	private String invoiceNumber;
-	
-	@Column(name="is_deleted",nullable = false)
-	private int isDeleted;
+
 
 	@Lob
 	@Column(name="payment_instructions")
@@ -58,12 +56,7 @@ public class ProformaInvoice implements Serializable {
 	private List<InvoiceType> invoiceTypes;
 
 	//bi-directional many-to-one association to ProformaInvoiceItem
-	@OneToMany(mappedBy="proformaInvoice1")
-	private List<ProformaInvoiceItem> proformaInvoiceItems1;
 
-	//bi-directional many-to-one association to ProformaInvoiceItem
-	@OneToMany(mappedBy="proformaInvoice2")
-	private List<ProformaInvoiceItem> proformaInvoiceItems2;
 
 	public ProformaInvoice() {
 	}
@@ -77,6 +70,21 @@ public class ProformaInvoice implements Serializable {
 	}
 
 
+	@OneToMany(mappedBy="proformaInvoice")
+	private List<ProformaInvoiceItem> proformaInvoiceItems;
+
+	//bi-directional many-to-one association to Company
+	@ManyToOne
+	//
+	@JoinColumn(name="company_id", nullable = false)
+	private Company company;
+	
+	
+	@ManyToOne
+	@JoinColumn(name="client_id", nullable = false)
+	private Client client;
+
+
 
 	public Client getClient() {
 		return client;
@@ -86,6 +94,18 @@ public class ProformaInvoice implements Serializable {
 		this.client = client;
 	}
 
+	@Column(name="is_deleted")
+	private int isDeleted;
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+
 	public Timestamp getCreatedAt() {
 		return this.createdAt;
 	}
@@ -94,6 +114,7 @@ public class ProformaInvoice implements Serializable {
 		this.createdAt = createdAt;
 	}
 
+
 	public Date getDate() {
 		return this.date;
 	}
@@ -101,6 +122,7 @@ public class ProformaInvoice implements Serializable {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+
 
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;
@@ -172,50 +194,34 @@ public class ProformaInvoice implements Serializable {
 		return invoiceType;
 	}
 
-	public List<ProformaInvoiceItem> getProformaInvoiceItems1() {
-		return this.proformaInvoiceItems1;
+	public List<ProformaInvoiceItem> getProformaInvoiceItems() {
+		return this.proformaInvoiceItems;
 	}
 
-	public void setProformaInvoiceItems1(List<ProformaInvoiceItem> proformaInvoiceItems1) {
-		this.proformaInvoiceItems1 = proformaInvoiceItems1;
+	public void setProformaInvoiceItems(List<ProformaInvoiceItem> proformaInvoiceItems) {
+		this.proformaInvoiceItems = proformaInvoiceItems;
 	}
 
-	public ProformaInvoiceItem addProformaInvoiceItems1(ProformaInvoiceItem proformaInvoiceItems1) {
-		getProformaInvoiceItems1().add(proformaInvoiceItems1);
-		proformaInvoiceItems1.setProformaInvoice1(this);
+	public ProformaInvoiceItem addProformaInvoiceItem(ProformaInvoiceItem proformaInvoiceItem) {
+		getProformaInvoiceItems().add(proformaInvoiceItem);
+		proformaInvoiceItem.setProformaInvoice(this);
 
-		return proformaInvoiceItems1;
+		return proformaInvoiceItem;
 	}
 
-	public ProformaInvoiceItem removeProformaInvoiceItems1(ProformaInvoiceItem proformaInvoiceItems1) {
-		getProformaInvoiceItems1().remove(proformaInvoiceItems1);
-		proformaInvoiceItems1.setProformaInvoice1(null);
+	public ProformaInvoiceItem removeProformaInvoiceItem(ProformaInvoiceItem proformaInvoiceItem) {
+		getProformaInvoiceItems().remove(proformaInvoiceItem);
+		proformaInvoiceItem.setProformaInvoice(null);
 
-		return proformaInvoiceItems1;
+		return proformaInvoiceItem;
 	}
 
-	public List<ProformaInvoiceItem> getProformaInvoiceItems2() {
-		return this.proformaInvoiceItems2;
+	public Company getCompany() {
+		return this.company;
 	}
 
-	public void setProformaInvoiceItems2(List<ProformaInvoiceItem> proformaInvoiceItems2) {
-		this.proformaInvoiceItems2 = proformaInvoiceItems2;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
-
-	public ProformaInvoiceItem addProformaInvoiceItems2(ProformaInvoiceItem proformaInvoiceItems2) {
-		getProformaInvoiceItems2().add(proformaInvoiceItems2);
-		proformaInvoiceItems2.setProformaInvoice2(this);
-
-		return proformaInvoiceItems2;
-	}
-
-	public ProformaInvoiceItem removeProformaInvoiceItems2(ProformaInvoiceItem proformaInvoiceItems2) {
-		getProformaInvoiceItems2().remove(proformaInvoiceItems2);
-		proformaInvoiceItems2.setProformaInvoice2(null);
-
-		return proformaInvoiceItems2;
-	}
-
-
 
 }
