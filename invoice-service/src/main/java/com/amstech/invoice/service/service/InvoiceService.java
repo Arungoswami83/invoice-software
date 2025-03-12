@@ -25,7 +25,9 @@ import com.amstech.invoice.service.repo.InvoiceTypeRepo;
 import com.amstech.invoice.service.repo.PaymentRepo;
 import com.amstech.invoice.service.request.model.InvoiceRequest;
 import com.amstech.invoice.service.request.model.UpdateRequest;
+import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.InvoiceResponseModel;
+
 
 @Service
 public class InvoiceService {
@@ -141,10 +143,35 @@ public class InvoiceService {
 	        return invoiceRepo.countAllInvoice();
 	    }
 		
-		public List<InvoiceResponseModel>findByClientId(){
-			return null;
-			
+		public ClientResponseModel findByClientId(Integer clientId) throws Exception{
+	        Optional<Invoice> invoiceOptional = invoiceRepo.findById(clientId);
+	        if (invoiceOptional.isEmpty()) {
+	            throw new Exception("The client does not exist.");
+	        }
+	        Invoice invoice = invoiceOptional.get();
+	        Client client = invoice.getClient();
+
+	        if (client == null) {
+	            throw new Exception("Client information is missing for this invoice.");
+	        }
+	        if (invoice.getDeleted()) {
+	            throw new Exception("Your client account has been deactivated. Please contact the administrator.");
+	        }
+	        int invoiceCount = invoiceRepo.countByClientId(clientId);
+	        Double totalAmount = invoiceRepo.TotalAmountByClientId(clientId);
+	        List<Object[]> clientNameList = invoiceRepo.findByClientName(clientId);
+
+	        String firstName = "";
+	        String lastName = "";
+	        if (!clientNameList.isEmpty()) {
+	            Object[] nameData = clientNameList.get(0);
+	            firstName = (String) nameData[0];
+	            lastName = (String) nameData[1];
+	        }
+
+			return invoiceEntityToModelConverter.getfindByClientId(invoice);
 		}
+		
 		
 		public void softDeleteById(Integer id) throws Exception {
 	        Optional<Invoice> optionalInvoice = invoiceRepo.findById(id);

@@ -15,6 +15,7 @@ import com.amstech.invoice.service.entity.Invoice;
 import com.amstech.invoice.service.request.model.InvoiceRequest;
 import com.amstech.invoice.service.request.model.UpdateRequest;
 import com.amstech.invoice.service.response.message.ResponseMessage;
+import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.InvoiceResponseModel;
 import com.amstech.invoice.service.service.InvoiceService;
 
@@ -71,6 +72,17 @@ public class InvoiceController {
         	return ResponseMessage.build().withSuccess("Invoice Found Successfully",FindInvoice);
         }catch (Exception e) {
 			LOGGER.error("Failed to find Invoice due to :{}",e.getMessage(),e);
+			return ResponseMessage.build().withError(e.getMessage());
+		} 
+    }
+    @RequestMapping(method=RequestMethod.GET,value="/findByClientId/{clientId}",produces="application/json")
+    public ResponseMessage findByClientId(@PathVariable("clientId") Integer clientId) {
+        LOGGER.info("Fetching invoice detail by id: {}",clientId);
+        try {
+        ClientResponseModel clientResponseModel= invoiceService.findByClientId(clientId);
+        	return ResponseMessage.build().withSuccess("Invoice Found with clientId Successfully",clientResponseModel);
+        }catch (Exception e) {
+			LOGGER.error("Failed to find Client Invoice due to :{}",e.getMessage(),e);
 			return ResponseMessage.build().withError(e.getMessage());
 		} 
     }

@@ -14,16 +14,22 @@ import ch.qos.logback.core.net.server.Client;
 @Repository
 public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
 	
-     @Query("SELECT i FROM Invoice i WHERE i.deleted = false") 
+     @Query("SELECT e FROM Invoice e WHERE e.deleted = false") 
 	 List<Invoice>findAllInvoice(Pageable pageable);
 	      
 	 @Query("SELECT e FROM Invoice e WHERE e.id = :id AND e.deleted = false")
 	 Optional<Invoice>findById(@Param("id") Integer id);
 	 
-  	 Optional<Invoice>findByClientId(int Id);
-  	 
+	 @Query("SELECT e.firstName, e.lastName FROM Client e WHERE e.id = :clientId")
+	 List<Object[]> findByClientName(@Param("clientId") Integer clientId);
+
+	 @Query("SELECT SUM(e.totalAmount) FROM Invoice e WHERE e.client.id = :clientId")
+	 Double TotalAmountByClientId(@Param("clientId") Integer clientId);
+
   	 @Query("SELECT COUNT(e) FROM Invoice e WHERE e.deleted = false")  
   	 int countAllInvoice();
+  	 
+  	 int countByClientId(Integer clientId);
   	 
   	 @Query("SELECT e FROM Invoice e WHERE e.invoiceNumber = :invoiceNumber AND e.deleted=false")
   	 Optional<Invoice>findByInvoiceNumber(@Param("invoiceNumber")String invoiceNumber);
