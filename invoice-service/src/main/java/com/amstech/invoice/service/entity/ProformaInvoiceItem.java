@@ -17,7 +17,6 @@ public class ProformaInvoiceItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	private BigDecimal cost;
@@ -32,9 +31,10 @@ public class ProformaInvoiceItem implements Serializable {
 	@Column(name="total_amount")
 	private BigDecimal totalAmount;
 
+	//bi-directional many-to-one association to ProformaInvoice
+	@ManyToOne
 	@JoinColumn(name="proforma_id")
 	private ProformaInvoice proformaInvoice;
-
 
 	public ProformaInvoiceItem() {
 	}
@@ -93,7 +93,6 @@ public class ProformaInvoiceItem implements Serializable {
 
 	public void setProformaInvoice(ProformaInvoice proformaInvoice) {
 		this.proformaInvoice = proformaInvoice;
-
 	}
 
 }

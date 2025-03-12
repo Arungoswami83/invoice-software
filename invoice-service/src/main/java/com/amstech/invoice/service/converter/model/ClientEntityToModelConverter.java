@@ -27,9 +27,6 @@ public class ClientEntityToModelConverter {
 	            responseModel.setEmailAddress(client.getEmail());
 	            responseModel.setMobileNumber(client.getMobileNumber());
 	            responseModel.setCompanyName(client.getCompanyName());
-	            responseModel.setIsDeleted(client.getIsDeleted());
-	            
-	           
 
 	            clientResponseModels.add(responseModel);
 	        }
@@ -48,7 +45,6 @@ public class ClientEntityToModelConverter {
         responseModel.setEmailAddress(client.getEmail());
         responseModel.setMobileNumber(client.getMobileNumber());
         responseModel.setCompanyName(client.getCompanyName());
-        responseModel.setIsDeleted(client.getIsDeleted());
        
 	return responseModel;
 

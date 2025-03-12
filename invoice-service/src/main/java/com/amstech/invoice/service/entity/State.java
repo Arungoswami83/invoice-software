@@ -3,6 +3,7 @@ package com.amstech.invoice.service.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 /**
@@ -15,14 +16,13 @@ public class State implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-
 	private int id;
 
 	private String name;
 
 	//bi-directional many-to-one association to City
 	@OneToMany(mappedBy="state")
+	@JsonManagedReference
 	private List<City> cities;
 
 	//bi-directional many-to-one association to Country

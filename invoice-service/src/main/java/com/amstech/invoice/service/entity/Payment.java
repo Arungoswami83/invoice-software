@@ -1,3 +1,4 @@
+
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
@@ -5,7 +6,6 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
-import java.util.List;
 
 
 /**
@@ -18,15 +18,13 @@ import java.util.List;
 public class Payment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-
-	private int id;
-
 	private BigDecimal amount;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
+
+	@Id
+	private int id;
 
 	@Lob
 	private String notes;
@@ -39,28 +37,10 @@ public class Payment implements Serializable {
 	private String paymentMethod;
 
 	//bi-directional many-to-one association to Invoice
-	@OneToMany(mappedBy="payment")
-	private List<Invoice> invoices;
-
-	//bi-directional many-to-one association to Invoice
 	@ManyToOne
-	@JoinColumn(name="invoice_id")
-
 	private Invoice invoice;
 
-	//bi-directional many-to-one association to Report
-	@OneToMany(mappedBy="payment")
-	private List<Report> reports;
-
 	public Payment() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public BigDecimal getAmount() {
@@ -77,6 +57,14 @@ public class Payment implements Serializable {
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getNotes() {
@@ -103,56 +91,12 @@ public class Payment implements Serializable {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public List<Invoice> getInvoices() {
-		return this.invoices;
-	}
-
-	public void setInvoices(List<Invoice> invoices) {
-		this.invoices = invoices;
-	}
-
-	public Invoice addInvoice(Invoice invoice) {
-		getInvoices().add(invoice);
-		invoice.setPayment(this);
-
-		return invoice;
-	}
-
-	public Invoice removeInvoice(Invoice invoice) {
-		getInvoices().remove(invoice);
-		invoice.setPayment(null);
-
-		return invoice;
-	}
-
 	public Invoice getInvoice() {
 		return this.invoice;
 	}
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
-	}
-
-	public List<Report> getReports() {
-		return this.reports;
-	}
-
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
-
-	public Report addReport(Report report) {
-		getReports().add(report);
-		report.setPayment(this);
-
-		return report;
-	}
-
-	public Report removeReport(Report report) {
-		getReports().remove(report);
-		report.setPayment(null);
-
-		return report;
 	}
 
 }

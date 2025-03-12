@@ -56,18 +56,14 @@ public class SalesInvoices implements Serializable {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Analytic> analytics;
 
-    @OneToMany(mappedBy = "salesInvoices")
-    @JsonIgnore
+    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Dashboard> dashboards;
 
-    @OneToMany(mappedBy = "salesInvoices")
-    @JsonIgnore
+    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Report> reports;
-
   
     public SalesInvoices() {}
 
@@ -124,6 +120,7 @@ public class SalesInvoices implements Serializable {
     public void setSalesInvoiceItems(List<SalesInvoiceItem> salesInvoiceItems) {
         this.salesInvoiceItems = salesInvoiceItems;
     }
+    
 
     public int getIsDeleted() { return isDeleted; }
     public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
