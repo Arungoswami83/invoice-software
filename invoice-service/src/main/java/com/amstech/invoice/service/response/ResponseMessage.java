@@ -1,4 +1,4 @@
-package com.amstech.invoice.service.response.message;
+package com.amstech.invoice.service.response;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
