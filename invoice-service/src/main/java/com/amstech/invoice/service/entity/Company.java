@@ -30,15 +30,15 @@ public class Company implements Serializable {
 	    @Column(name = "password", nullable = false)
 	    private String password;
 
-
-	@Column(name="business_types_id")
-	private int businessTypesId;
+	@ManyToOne
+	@JoinColumn(name="business_types_id",nullable = false)
+	private BusinessTypes businessTypes;
 
 	@Column(name="cin_no")
 	private String cinNo;
-
-	@Column(name="client_id")
-	private int clientId;
+	@ManyToOne
+    @JoinColumn(name = "client_id", nullable = false) 
+    private Client client;
 
 	@Column(name="company_phone")
 	private String companyPhone;
@@ -46,11 +46,8 @@ public class Company implements Serializable {
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	
-
 	private String email;
 	
-
 	@Column(name="is_email_verified")
 	private byte isEmailVerified;
 
@@ -117,9 +114,6 @@ public class Company implements Serializable {
 		this.isEmailUpdate = isEmailUpdate;
 	}
 
-	
-	 
-
 	    public byte getIsDeleted() {
 	        return isDeleted;
 	    }
@@ -145,12 +139,12 @@ public class Company implements Serializable {
 		this.adminUserName = adminUserName;
 	}
 
-	public int getBusinessTypesId() {
-		return this.businessTypesId;
+	public BusinessTypes getBusinessTypes() {
+		return businessTypes;
 	}
 
-	public void setBusinessTypesId(int businessTypesId) {
-		this.businessTypesId = businessTypesId;
+	public void setBusinessTypes(BusinessTypes businessTypes) {
+		this.businessTypes = businessTypes;
 	}
 
 	public String getCinNo() {
@@ -161,12 +155,25 @@ public class Company implements Serializable {
 		this.cinNo = cinNo;
 	}
 
-	public int getClientId() {
-		return this.clientId;
+
+	public Boolean getIsEmailUpdate() {
+		return isEmailUpdate;
 	}
 
-	public void setClientId(int clientId) {
-		this.clientId = clientId;
+	public void setIsEmailUpdate(Boolean isEmailUpdate) {
+		this.isEmailUpdate = isEmailUpdate;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
+	public void setIsDeleted(Byte isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public String getCompanyPhone() {
@@ -193,9 +200,6 @@ public class Company implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-
-	
 
 	public byte getIsEmailVerified() {
 		return this.isEmailVerified;

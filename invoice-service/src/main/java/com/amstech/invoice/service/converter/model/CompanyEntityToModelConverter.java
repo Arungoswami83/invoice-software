@@ -33,10 +33,12 @@ public class CompanyEntityToModelConverter {
 	            responseModel.setCompanyPhone(company.getCompanyPhone());
 	            responseModel.setWebsite(company.getWebsite());
 	            responseModel.setAddress(company.getAddress());
-	            responseModel.setBusinessTypesId(company.getBusinessTypesId());
+	            responseModel.setBusinessTypesId(company.getBusinessTypes().getId());
 	            responseModel.setTaxIdentificationNumber(company.getTaxIdentificationNumber());
 	            responseModel.setTaxPayer(company.getTaxPayer());
 	            responseModel.setLogo(company.getLogo());
+	            responseModel.setClientId(company.getClient().getId());
+	            
 
 	            // Corrected: Convert byte to boolean
 	            responseModel.setIsDeleted(company.getIsDeleted() != (byte) 0);
@@ -61,8 +63,8 @@ public class CompanyEntityToModelConverter {
 	        responseModel.setCompanyPhone(company.getCompanyPhone());
 	        responseModel.setWebsite(company.getWebsite());
 	        responseModel.setAddress(company.getAddress());
-	        responseModel.setBusinessTypesId(company.getBusinessTypesId());
-	      
+	        responseModel.setBusinessTypesId(company.getBusinessTypes().getId());
+	        responseModel.setClientId(company.getClient().getId());
 	        responseModel.setTaxIdentificationNumber(company.getTaxIdentificationNumber());
 	        responseModel.setTaxPayer(company.getTaxPayer());
 	        responseModel.setLogo(company.getLogo());

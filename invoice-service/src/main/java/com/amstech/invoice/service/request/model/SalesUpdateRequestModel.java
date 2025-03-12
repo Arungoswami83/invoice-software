@@ -13,7 +13,7 @@ public class SalesUpdateRequestModel {
     private BigDecimal tax; 
     private BigDecimal total; 
     private String signature; 
-    private int clientId;
+    //private int clientId;
     private String status;
     
    }

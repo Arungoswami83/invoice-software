@@ -10,7 +10,7 @@ public class CompanyUpdateRequestModel {
 	private int id;
 	private String name;
 	private String address;
-    private int businessTypesId;
+   // private int businessTypesId;
     private String companyPhone;
     private String email;
     private String logo;
@@ -21,6 +21,6 @@ public class CompanyUpdateRequestModel {
     private boolean isEmailVerified;
     private String adminUserName;
     private Date updated_At;
-    private int clientId;
+   // private int clientId;
    
 }

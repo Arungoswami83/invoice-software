@@ -172,11 +172,6 @@ public class CompanyService {
 	            company.setAddress(companyUpdateRequestModel.getAddress());
 	        }
 
-	        if (companyUpdateRequestModel.getBusinessTypesId() != 0) {
-	            logger.info("Updating business type for company ID: {}", company.getId());
-	            company.setBusinessTypesId(companyUpdateRequestModel.getBusinessTypesId());
-	        }
-
 	        if (companyUpdateRequestModel.getCompanyPhone() != null) {
 	            logger.info("Updating phone number for company ID: {}", company.getId());
 	            company.setCompanyPhone(companyUpdateRequestModel.getCompanyPhone());

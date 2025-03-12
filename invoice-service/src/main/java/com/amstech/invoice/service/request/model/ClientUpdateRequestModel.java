@@ -12,7 +12,7 @@ public class ClientUpdateRequestModel {
 	    private String address;
 	    private String mobileNumber;
 	    private String companyName;
-	    private Integer cityId;
+	  
 				
 		
 

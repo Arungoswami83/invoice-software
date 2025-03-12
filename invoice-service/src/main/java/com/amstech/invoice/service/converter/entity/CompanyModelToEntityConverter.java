@@ -18,9 +18,9 @@ public class CompanyModelToEntityConverter {
 	        company.setPassword(companySignupRequestModel.getPassword());
 	        company.setAddress(companySignupRequestModel.getAddress());
 	        company.setAdminUserName(companySignupRequestModel.getAdminUserName());
-	        company.setBusinessTypesId(companySignupRequestModel.getBusinessTypesId());
+	        //company.setBusinessTypesId(companySignupRequestModel.getBusinessTypesId());
 	        company.setCinNo(companySignupRequestModel.getCinNo());
-	        company.setClientId(companySignupRequestModel.getClientId());
+	        //company.setClientId(companySignupRequestModel.getClientId());
 	        company.setCompanyPhone(companySignupRequestModel.getCompanyPhone());
 	        company.setWebsite(companySignupRequestModel.getWebsite());
 	        company.setLogo(companySignupRequestModel.getLogo());
@@ -46,8 +46,8 @@ public class CompanyModelToEntityConverter {
 		company.setLogo(companyUpdateRequestModel.getLogo());
 		company.setAdminUserName(companyUpdateRequestModel.getAdminUserName());
 		company.setPassword(companyUpdateRequestModel.getPassword());
-		company.setClientId(companyUpdateRequestModel.getClientId());
-		company.setBusinessTypesId(companyUpdateRequestModel.getBusinessTypesId());
+		//company.setClientId(companyUpdateRequestModel.getClientId());
+		//company.setBusinessTypesId(companyUpdateRequestModel.getBusinessTypesId());
 
 		
 		return company;

@@ -109,19 +109,20 @@ public ClientResponseModel updateClient(ClientUpdateRequestModel clientUpdateReq
         throw new Exception("Error checking email.");
     }
 
-    if (clientUpdateRequestModel.getCityId() != null && clientUpdateRequestModel.getCityId() != 0) {
-        try {
-            City city = cityRepo.findById(clientUpdateRequestModel.getCityId()).get();
-            client.setCity(city);
-        } catch (Exception e) {
-            throw new Exception("City not found.");
-        }
-    }    
+//    if (clientUpdateRequestModel.getCityId() != null && clientUpdateRequestModel.getCityId() != 0) {
+//        try {
+//            City city = cityRepo.findById(clientUpdateRequestModel.getCityId()).get();
+//            client.setCity(city);
+//        } catch (Exception e) {
+//            throw new Exception("City not found.");
+//        }
+//    }    
     client.setEmail(clientUpdateRequestModel.getEmail());
     client.setCompanyName(clientUpdateRequestModel.getCompanyName());
     
     client = clientModelToEntityConverter.getUpdateConvert(clientUpdateRequestModel,client);
     Client savedClient = clientRepo.save(client);
+    
     return clientEntityToModelConverter.getfindById(savedClient);
 }
 

@@ -68,9 +68,9 @@ public class SalesService {
 	        }
 
 	        SalesInvoices salesInvoices = optionalSalesInvoices.get();
-	        Client client = clientRepo.findById(salesUpdateRequestModel.getClientId())
-	                .orElseThrow(() -> new Exception("Client does not exist"));
-	        
+//	        Client client = clientRepo.findById(salesUpdateRequestModel.getClientId())
+//	                .orElseThrow(() -> new Exception("Client does not exist"));
+//	        
 	        salesInvoices = salesModelToEntityConverter.getupdate(salesUpdateRequestModel, salesInvoices);
 	        SalesInvoices savedSales = salesRepo.save(salesInvoices);
 	        return salesEntityToModelConverter.getfindBySalesInvoiceId(savedSales);

@@ -20,8 +20,24 @@ public class CompanyResponseModel {
     private String taxPayer;
     private String logo;
     private boolean isDeleted;
+    private int clientId;
     
-    @Column(name = "updated_at")
+    
+    
+    
+    public int getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(int clientId) {
+		this.clientId = clientId;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	@Column(name = "updated_at")
     private Timestamp updatedAt;
 
     public Timestamp getUpdatedAt() {
