@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
+
 import java.util.List;
 
 
@@ -19,11 +20,17 @@ public class ServiceInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
+
+	@ManyToOne
+	@JoinColumn(name="client_id",referencedColumnName = "id")
+	private Client client;
+
+
 	@Column(name="created_at")
 	private Timestamp createdAt;
-
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
 	private Date dueDate;
@@ -34,6 +41,8 @@ public class ServiceInvoice implements Serializable {
 	@Column(name="invoice_number")
 	private String invoiceNumber;
 
+
+
 	@Lob
 	private String notes;
 
@@ -42,13 +51,9 @@ public class ServiceInvoice implements Serializable {
 
 	private String signature;
 
-	public Client getClient() {
-		return client;
-	}
-
-	public void setClient(Client client) {
-		this.client = client;
-	}
+	
+	@Column(name="is_deleted",nullable=false)
+	private int isDeleted;
 
 	private String status;
 
@@ -56,29 +61,16 @@ public class ServiceInvoice implements Serializable {
 	private BigDecimal subTotal;
 
 	private BigDecimal tax;
-	
-	@Column(name="client_id")
-	private Client client;
-
-	@Column(name="is_deleted")
-	private int isDeleted;
-
-	public int getIsDeleted() {
-		return isDeleted;
-	}
-
-	public void setIsDeleted(int isDeleted) {
-		this.isDeleted = isDeleted;
-	}
 
 	@Column(name="updated_at")
 	private Timestamp updatedAt;
+
+	
 
 	//bi-directional many-to-one association to InvoiceType
 	@OneToMany(mappedBy="serviceInvoice")
 	private List<InvoiceType> invoiceTypes;
 
-	//bi-directional many-to-one association to ServiceDetail
 	@OneToMany(mappedBy="serviceInvoice")
 	private List<ServiceDetail> serviceDetails;
 
@@ -92,13 +84,24 @@ public class ServiceInvoice implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
 	public Timestamp getCreatedAt() {
 		return this.createdAt;
 	}
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
-	}
+	}	
+
 
 	public Date getDueDate() {
 		return this.dueDate;
@@ -139,6 +142,16 @@ public class ServiceInvoice implements Serializable {
 	public void setPaymentTerm(String paymentTerm) {
 		this.paymentTerm = paymentTerm;
 	}
+	
+	
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
 
 	public String getSignature() {
 		return this.signature;
@@ -172,6 +185,7 @@ public class ServiceInvoice implements Serializable {
 		this.tax = tax;
 	}
 
+
 	public Timestamp getUpdatedAt() {
 		return this.updatedAt;
 	}
@@ -179,6 +193,7 @@ public class ServiceInvoice implements Serializable {
 	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+
 
 	public List<InvoiceType> getInvoiceTypes() {
 		return this.invoiceTypes;

@@ -6,9 +6,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+
 
 
 /**
@@ -22,6 +23,7 @@ public class ProductInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	@Lob
@@ -30,6 +32,8 @@ public class ProductInvoice implements Serializable {
 
 	@Column(name="buyer_details")
 	private String buyerDetails;
+
+	
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
@@ -46,14 +50,6 @@ public class ProductInvoice implements Serializable {
 
 	@Column(name="payment_term")
 	private String paymentTerm;
-	
-	@CreationTimestamp
-    @Column(updatable = false, nullable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 
 	private BigDecimal shipping;
 
@@ -70,6 +66,7 @@ public class ProductInvoice implements Serializable {
 	private List<InvoiceType> invoiceTypes;
 
 	//bi-directional many-to-one association to ProductInvoiceItem
+
 	@OneToMany(mappedBy="productInvoice")
 	private List<ProductInvoiceItem> productInvoiceItems;
 	
@@ -86,6 +83,14 @@ public class ProductInvoice implements Serializable {
 
 	public ProductInvoice() {
 	}
+	   @CreationTimestamp
+	    @Column(updatable = false, nullable = false)
+	    private LocalDateTime createdAt;
+
+	    @UpdateTimestamp
+	    @Column(nullable = false)
+	    private LocalDateTime updatedAt;
+
 
 	public int getId() {
 		return this.id;
@@ -111,6 +116,7 @@ public class ProductInvoice implements Serializable {
 		this.buyerDetails = buyerDetails;
 	}
 
+
 	public Date getDueDate() {
 		return this.dueDate;
 	}
@@ -119,9 +125,29 @@ public class ProductInvoice implements Serializable {
 		this.dueDate = dueDate;
 	}
 
-	public BigDecimal getHandlingCosts() {
-		return this.handlingCosts;
+	
+	
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public BigDecimal getHandlingCosts() {
+		return handlingCosts;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 
 	public void setHandlingCosts(BigDecimal handlingCosts) {
 		this.handlingCosts = handlingCosts;
@@ -174,22 +200,6 @@ public class ProductInvoice implements Serializable {
 	public void setTaxCalculation(BigDecimal taxCalculation) {
 		this.taxCalculation = taxCalculation;
 	}
-	
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
 
 	public BigDecimal getTotalPayable() {
 		return this.totalPayable;
@@ -221,6 +231,7 @@ public class ProductInvoice implements Serializable {
 		return invoiceType;
 	}
 
+
 	public List<ProductInvoiceItem> getProductInvoiceItems() {
 		return this.productInvoiceItems;
 	}
@@ -241,6 +252,7 @@ public class ProductInvoice implements Serializable {
 		productInvoiceItem.setProductInvoice(null);
 
 		return productInvoiceItem;
+
 	}
 
 }

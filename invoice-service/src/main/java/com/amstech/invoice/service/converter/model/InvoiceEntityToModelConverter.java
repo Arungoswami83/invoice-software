@@ -88,29 +88,29 @@ public class InvoiceEntityToModelConverter {
         
         return responseModel;
     }
-    public ClientResponseModel getfindByClientId(Invoice invoice) {
-        ClientResponseModel clientResponseModel = new ClientResponseModel();
-
-        Client client = invoice.getClient(); 
-        if (client == null) {
-            throw new IllegalArgumentException("Client information is missing for this invoice.");
-        }
-        clientResponseModel.setClientId(client.getId());
-        clientResponseModel.setClientFirstName(client.getFirstName());
-        clientResponseModel.setClientLastName(client.getLastName());
-
-        clientResponseModel.setInvoiceNumber(invoice.getInvoiceNumber());
-        clientResponseModel.setIssueDate(invoice.getIssueDate());
-        clientResponseModel.setDueDate(invoice.getDueDate());
-        clientResponseModel.setTotalAmount(invoice.getTotalAmount());
-        clientResponseModel.setStatus(invoice.getStatus());
-        clientResponseModel.setDiscount(invoice.getDiscount());
-        clientResponseModel.setTax(invoice.getTax());
-        clientResponseModel.setQuantity(invoice.getQuantity());
-        clientResponseModel.setProductCode(invoice.getProductCode());
-
-        return clientResponseModel;
-    }
+//    public ClientResponseModel getfindByClientId(Invoice invoice) {
+//        ClientResponseModel clientResponseModel = new ClientResponseModel();
+//
+//        Client client = invoice.getClient(); 
+//        if (client == null) {
+//            throw new IllegalArgumentException("Client information is missing for this invoice.");
+//        }
+//        clientResponseModel.setClientId(client.getId());
+//        clientResponseModel.setClientFirstName(client.getFirstName());
+//        clientResponseModel.setClientLastName(client.getLastName());
+//
+//        clientResponseModel.setInvoiceNumber(invoice.getInvoiceNumber());
+//        clientResponseModel.setIssueDate(invoice.getIssueDate());
+//        clientResponseModel.setDueDate(invoice.getDueDate());
+//        clientResponseModel.setTotalAmount(invoice.getTotalAmount());
+//        clientResponseModel.setStatus(invoice.getStatus());
+//        clientResponseModel.setDiscount(invoice.getDiscount());
+//        clientResponseModel.setTax(invoice.getTax());
+//        clientResponseModel.setQuantity(invoice.getQuantity());
+//        clientResponseModel.setProductCode(invoice.getProductCode());
+//
+//        return clientResponseModel;
+//    }
 
     
 }

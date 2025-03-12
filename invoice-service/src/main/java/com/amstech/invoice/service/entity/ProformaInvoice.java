@@ -1,6 +1,9 @@
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
+
+
+import jakarta.annotation.Generated;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,16 +21,20 @@ import java.util.List;
 public class ProformaInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Temporal(TemporalType.DATE)
+	private Date date;
+	
+	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private int id;
-
-
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-     
+
 	@Column(name="invoice_number")
 	private String invoiceNumber;
+
 
 	@Lob
 	@Column(name="payment_instructions")
@@ -49,16 +56,35 @@ public class ProformaInvoice implements Serializable {
 	private List<InvoiceType> invoiceTypes;
 
 	//bi-directional many-to-one association to ProformaInvoiceItem
+
+
+	public ProformaInvoice() {
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
 	@OneToMany(mappedBy="proformaInvoice")
 	private List<ProformaInvoiceItem> proformaInvoiceItems;
 
 	//bi-directional many-to-one association to Company
 	@ManyToOne
+	//
+	@JoinColumn(name="company_id", nullable = false)
 	private Company company;
 	
+	
 	@ManyToOne
-	@JoinColumn(name = "client_id", referencedColumnName = "id")
-	private Client client; 
+	@JoinColumn(name="client_id", nullable = false)
+	private Client client;
+
+
 
 	public Client getClient() {
 		return client;
@@ -68,8 +94,6 @@ public class ProformaInvoice implements Serializable {
 		this.client = client;
 	}
 
-	public ProformaInvoice() {
-	}
 	@Column(name="is_deleted")
 	private int isDeleted;
 
@@ -81,13 +105,6 @@ public class ProformaInvoice implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public Timestamp getCreatedAt() {
 		return this.createdAt;
@@ -96,6 +113,16 @@ public class ProformaInvoice implements Serializable {
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
+
+
+	public Date getDate() {
+		return this.date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
 
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;

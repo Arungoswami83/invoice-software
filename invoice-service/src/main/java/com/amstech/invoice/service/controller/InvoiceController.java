@@ -75,17 +75,17 @@ public class InvoiceController {
 			return ResponseMessage.build().withError(e.getMessage());
 		} 
     }
-    @RequestMapping(method=RequestMethod.GET,value="/findByClientId/{clientId}",produces="application/json")
-    public ResponseMessage findByClientId(@PathVariable("clientId") Integer clientId) {
-        LOGGER.info("Fetching invoice detail by id: {}",clientId);
-        try {
-        ClientResponseModel clientResponseModel= invoiceService.findByClientId(clientId);
-        	return ResponseMessage.build().withSuccess("Invoice Found with clientId Successfully",clientResponseModel);
-        }catch (Exception e) {
-			LOGGER.error("Failed to find Client Invoice due to :{}",e.getMessage(),e);
-			return ResponseMessage.build().withError(e.getMessage());
-		} 
-    }
+//    @RequestMapping(method=RequestMethod.GET,value="/findByClientId/{clientId}",produces="application/json")
+//    public ResponseMessage findByClientId(@PathVariable("clientId") Integer clientId) {
+//        LOGGER.info("Fetching invoice detail by id: {}",clientId);
+//        try {
+//        ClientResponseModel clientResponseModel= invoiceService.findByClientId(clientId);
+//        	return ResponseMessage.build().withSuccess("Invoice Found with clientId Successfully",clientResponseModel);
+//        }catch (Exception e) {
+//			LOGGER.error("Failed to find Client Invoice due to :{}",e.getMessage(),e);
+//			return ResponseMessage.build().withError(e.getMessage());
+//		} 
+//    }
     @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
     public ResponseMessage FindAll(@RequestParam("page")Integer page,@RequestParam("size")Integer size) {
         LOGGER.info("Fetching all invoices.");

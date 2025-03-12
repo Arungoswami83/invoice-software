@@ -52,6 +52,11 @@ public class Dashboard implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="sales_invoices")
 	private SalesInvoice salesInvoice;
+	
+	@ManyToOne
+	@JoinColumn(name = "sales_invoice_id")  // Ensure this column name is correct
+	private SalesInvoices salesInvoices;
+
 
 	public Dashboard() {
 	}
@@ -98,6 +103,14 @@ public class Dashboard implements Serializable {
 
 	public BigDecimal getTotalIncome() {
 		return this.totalIncome;
+	}
+
+	public SalesInvoices getSalesInvoices() {
+		return salesInvoices;
+	}
+
+	public void setSalesInvoices(SalesInvoices salesInvoices) {
+		this.salesInvoices = salesInvoices;
 	}
 
 	public void setTotalIncome(BigDecimal totalIncome) {

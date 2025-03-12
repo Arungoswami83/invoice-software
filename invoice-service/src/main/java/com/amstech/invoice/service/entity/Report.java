@@ -34,8 +34,14 @@ public class Report implements Serializable {
 
 	private int payments;
 
-	@Column(name="sales_invoices")
-	private int salesInvoices;
+	@ManyToOne
+    @JoinColumn(name = "sales_invoice_id")  
+    private SalesInvoice salesInvoice;
+	
+	@ManyToOne
+	@JoinColumn(name = "sales_invoices")  
+	private SalesInvoices salesInvoices;
+
 
 	//bi-directional many-to-one association to Dashboard
 	@OneToMany(mappedBy="report")
@@ -104,13 +110,12 @@ public class Report implements Serializable {
 		this.invoice = invoice;
 	}
 
-
-	public int getSalesInvoices() {
-		return this.salesInvoices;
+	public SalesInvoice getSalesInvoice() {
+		return salesInvoice;
 	}
 
-	public void setSalesInvoices(int salesInvoices) {
-		this.salesInvoices = salesInvoices;
+	public void setSalesInvoice(SalesInvoice salesInvoice) {
+		this.salesInvoice = salesInvoice;
 	}
 
 	public List<Dashboard> getDashboards() {
@@ -158,7 +163,7 @@ public class Report implements Serializable {
 				", dueDate=" + dueDate +
 				", issueDate=" + issueDate +
 				", payments=" + payments +
-				", salesInvoices=" + salesInvoices +
+				", salesInvoices=" + salesInvoice +
 				'}';
 	}
 

@@ -130,6 +130,11 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to Report
 	@OneToMany(mappedBy="invoice")
 	private List<Report> reports;
+	
+	@ManyToOne
+	@JoinColumn(name = "report_id") // This should match the Report entity
+	private Report report;
+
 
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoice")

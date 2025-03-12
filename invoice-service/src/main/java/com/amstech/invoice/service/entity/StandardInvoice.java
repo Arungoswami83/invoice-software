@@ -18,7 +18,9 @@ import java.util.List;
 public class StandardInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@ManyToOne
@@ -28,7 +30,7 @@ public class StandardInvoice implements Serializable {
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Column(name="is_deleted" )
+	@Column(name="is_deleted")
 	private int isDeleted;
 
 	private BigDecimal discount;
@@ -44,7 +46,11 @@ public class StandardInvoice implements Serializable {
 	private String invoiceNumber;
 
 	@Column(name="is_recurring")
+
 	private byte isRecurring;
+
+	
+
 
 	@Lob
 	private String notes;
@@ -70,9 +76,9 @@ public class StandardInvoice implements Serializable {
 	//bi-directional many-to-one association to InvoiceType
 	@OneToMany(mappedBy="standardInvoice")
 	private List<InvoiceType> invoiceTypes;
-
 	//bi-directional many-to-one association to Company
 	@ManyToOne
+	@JoinColumn(name = "company_id", nullable = false)
 	private Company company;
 
 	public StandardInvoice() {
@@ -85,13 +91,17 @@ public class StandardInvoice implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
+
+
+
 	public Timestamp getCreatedAt() {
-		return createdAt;
+		return this.createdAt;
 	}
 
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
+
 
 	public Client getClient() {
 		return client;
@@ -117,6 +127,7 @@ public class StandardInvoice implements Serializable {
 		this.dueDate = dueDate;
 	}
 
+
 	public int getIsDeleted() {
 		return isDeleted;
 	}
@@ -124,6 +135,7 @@ public class StandardInvoice implements Serializable {
 	public void setIsDeleted(int isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+
 
 	public BigDecimal getGrandTotal() {
 		return this.grandTotal;

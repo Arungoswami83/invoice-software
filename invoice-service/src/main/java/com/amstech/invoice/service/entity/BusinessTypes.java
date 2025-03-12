@@ -1,6 +1,8 @@
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
+import java.util.Optional;
+
 import jakarta.persistence.*;
 
 
@@ -9,17 +11,18 @@ import jakarta.persistence.*;
  * 
  */
 @Entity
-@Table(name="business_type")
-@NamedQuery(name="BusinessType.findAll", query="SELECT b FROM BusinessType b")
-public class BusinessType implements Serializable {
+@Table(name="business_types")
+@NamedQuery(name="BusinessTypes.findAll", query="SELECT b FROM BusinessTypes b")
+public class BusinessTypes implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	private String name;
 
-	public BusinessType() {
+	public BusinessTypes() {
 	}
 
 	public int getId() {
@@ -37,5 +40,11 @@ public class BusinessType implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public Optional<Currency> findById(int businessTypesId) {
+		return this.findById(businessTypesId);
+	}
+
+	
 
 }

@@ -5,23 +5,14 @@ import java.util.Date;
 
 import lombok.Data;
 
+
 @Data
 public class ClientResponseModel {
-	
-	private int clientId;
-	private String clientFirstName;
-	private String clientLastName;
-	private String invoiceNumber;
-	private long invoiceCount;
-	private Date issueDate;
-	private Date dueDate;
-	private BigDecimal totalAmount;
-	private String status;
-	private BigDecimal discount;
-	private BigDecimal tax;
-	private int quantity;
-	private String productCode;
-	
-	
-
+	private int id;
+    private String firstName;
+    private String lastName;
+    private String emailAddress;
+    private String mobileNumber;
+    private String companyName;
+    private String address;
 }

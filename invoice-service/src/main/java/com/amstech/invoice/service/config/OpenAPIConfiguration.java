@@ -13,7 +13,5 @@ public class OpenAPIConfiguration {
 	Info information=new Info().title("Invoice Service").version("1.0").description("This is a demo project to develop a invoice managment system");
      return new OpenAPI().info(information);
  }
- 
-	
-	
+
 }
