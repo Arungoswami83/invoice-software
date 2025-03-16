@@ -1,6 +1,9 @@
 package com.amstech.invoice.service.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -31,12 +34,17 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
         LOGGER.info("InvoiceController: Object Created");
     }
-    @RequestMapping(method = RequestMethod.POST, value = "/create", consumes = "application/json", produces = "application/json")
-    public ResponseMessage createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
-	       LOGGER.info("Invoice created with :{}",invoiceRequest.getClientId());
-    	try {            
-    		InvoiceResponseModel invoiceResponse =invoiceService.createInvoice(invoiceRequest);
-            return ResponseMessage.build().withSuccess("Invoice Created successfully",invoiceResponse);
+    @RequestMapping(method = RequestMethod.POST, value = "/create", consumes = "application/json", produces = "application/json")    public ResponseMessage createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
+        LOGGER.info("Invoice created with Client ID: {}", invoiceRequest.getClientId());
+        try {
+            InvoiceResponseModel invoiceResponse = invoiceService.createInvoice(invoiceRequest);
+
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("invoice", invoiceResponse);
+            responseMap.put("pdfUrl", invoiceResponse.getPdfUrl());
+
+   //         responseMap.put("emailStatus", "Invoice email sent successfully!");
+            return ResponseMessage.build().withSuccess("Invoice Created Successfully", responseMap);
         } catch (Exception e) {
             LOGGER.error("Failed to Create user invoice due to: {}", e.getMessage(), e);
             return ResponseMessage.build().withError(e.getMessage());
@@ -75,17 +83,21 @@ public class InvoiceController {
 			return ResponseMessage.build().withError(e.getMessage());
 		} 
     }
-//    @RequestMapping(method=RequestMethod.GET,value="/findByClientId/{clientId}",produces="application/json")
-//    public ResponseMessage findByClientId(@PathVariable("clientId") Integer clientId) {
-//        LOGGER.info("Fetching invoice detail by id: {}",clientId);
-//        try {
-//        ClientResponseModel clientResponseModel= invoiceService.findByClientId(clientId);
-//        	return ResponseMessage.build().withSuccess("Invoice Found with clientId Successfully",clientResponseModel);
-//        }catch (Exception e) {
-//			LOGGER.error("Failed to find Client Invoice due to :{}",e.getMessage(),e);
-//			return ResponseMessage.build().withError(e.getMessage());
-//		} 
-//    }
+    @RequestMapping(method = RequestMethod.GET, value = "/findByClientId/{clientId}", produces = "application/json")
+    public ResponseMessage findByClientId(@PathVariable("clientId") Integer clientId) {
+        LOGGER.info("Fetching invoice details by clientId: {}", clientId);
+        try {
+            List<ClientResponseModel> clientResponseModels = invoiceService.findByClientId(clientId); 
+            
+            if (clientResponseModels.isEmpty()) {
+                return ResponseMessage.build().withError("No invoices found for the given client ID.");
+            }
+            return ResponseMessage.build().withSuccess("Invoices found successfully", clientResponseModels); 
+        } catch (Exception e) {
+            LOGGER.error("Failed to find Client Invoice due to: {}", e.getMessage(), e);
+            return ResponseMessage.build().withError(e.getMessage());
+        }
+    }
     @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
     public ResponseMessage FindAll(@RequestParam("page")Integer page,@RequestParam("size")Integer size) {
         LOGGER.info("Fetching all invoices.");

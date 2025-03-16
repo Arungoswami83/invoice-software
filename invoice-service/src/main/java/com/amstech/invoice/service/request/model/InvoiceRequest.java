@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class InvoiceRequest {
 	
+//	private int id;
 	private Integer clientId;
 	private Integer companyId;
 	private Integer invoiceItemsId;
@@ -19,7 +20,6 @@ public class InvoiceRequest {
 	private Date issueDate;
 	private Date dueDate;
 	private BigDecimal totalAmount;
-	private String status;
 	private BigDecimal subTotal;
 	private BigDecimal discount;
 	private BigDecimal tax;
@@ -29,8 +29,8 @@ public class InvoiceRequest {
 	private BigDecimal balance;
 	private int quantity;
 	private String productCode;
-	private Boolean deleted;
-	
+	private String paymentStatus;
+	private String PaymentMethod;
 	
 	
 	

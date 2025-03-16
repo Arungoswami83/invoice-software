@@ -1,4 +1,3 @@
-
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
@@ -6,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 
 /**
@@ -18,85 +18,85 @@ import java.sql.Timestamp;
 public class Payment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private BigDecimal amount;
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Integer id;
 
-	@Column(name="created_at")
-	private Timestamp createdAt;
+	    @ManyToOne(fetch = FetchType.LAZY)  
+	    @JoinColumn(name = "invoice_id", nullable = false)
+	    private Invoice invoice;
 
-	@Id
-	private int id;
+	    @Enumerated(EnumType.STRING)
+	    @Column(name = "payment_method")
+	    private PaymentMethod paymentMethod;
 
-	@Lob
-	private String notes;
+	    @Column(nullable = false, precision = 12, scale = 2)
+	    private BigDecimal amount;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name="payment_date")
-	private Date paymentDate;
+	    @Column(name = "payment_date", nullable = false)
+	    private LocalDate paymentDate;
 
-	@Column(name="payment_method")
-	private String paymentMethod;
+	    @Lob
+	    private String notes;
 
-	//bi-directional many-to-one association to Invoice
-	@ManyToOne
-	private Invoice invoice;
+	    @Column(name = "created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	    private java.sql.Timestamp createdAt;
 
-	public Payment() {
+		public Integer getId() {
+			return id;
+		}
+
+		public void setId(Integer id) {
+			this.id = id;
+		}
+
+		public Invoice getInvoice() {
+			return invoice;
+		}
+
+		public void setInvoice(Invoice invoice) {
+			this.invoice = invoice;
+		}
+
+		public PaymentMethod getPaymentMethod() {
+			return paymentMethod;
+		}
+
+		public void setPaymentMethod(PaymentMethod paymentMethod) {
+			this.paymentMethod = paymentMethod;
+		}
+
+		public BigDecimal getAmount() {
+			return amount;
+		}
+
+		public void setAmount(BigDecimal amount) {
+			this.amount = amount;
+		}
+
+		public LocalDate getPaymentDate() {
+			return paymentDate;
+		}
+
+		public void setPaymentDate(LocalDate paymentDate) {
+			this.paymentDate = paymentDate;
+		}
+
+		public String getNotes() {
+			return notes;
+		}
+
+		public void setNotes(String notes) {
+			this.notes = notes;
+		}
+
+		public java.sql.Timestamp getCreatedAt() {
+			return createdAt;
+		}
+
+		public void setCreatedAt(java.sql.Timestamp createdAt) {
+			this.createdAt = createdAt;
+		}
+	    
 	}
 
-	public BigDecimal getAmount() {
-		return this.amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getNotes() {
-		return this.notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	public Date getPaymentDate() {
-		return this.paymentDate;
-	}
-
-	public void setPaymentDate(Date paymentDate) {
-		this.paymentDate = paymentDate;
-	}
-
-	public String getPaymentMethod() {
-		return this.paymentMethod;
-	}
-
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
-
-	public Invoice getInvoice() {
-		return this.invoice;
-	}
-
-	public void setInvoice(Invoice invoice) {
-		this.invoice = invoice;
-	}
-
-}

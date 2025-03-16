@@ -9,6 +9,7 @@ import com.amstech.invoice.service.entity.Invoice;
 import com.amstech.invoice.service.entity.InvoiceItem;
 import com.amstech.invoice.service.entity.InvoiceType;
 import com.amstech.invoice.service.entity.Payment;
+import com.amstech.invoice.service.entity.PaymentStatus;
 import com.amstech.invoice.service.request.model.InvoiceRequest;
 import com.amstech.invoice.service.request.model.UpdateRequest;
 
@@ -26,7 +27,6 @@ public class InvoiceModelToEntityConverter {
         invoice.setIssueDate(invoiceRequest.getIssueDate());
         invoice.setDueDate(invoiceRequest.getDueDate());
         invoice.setTotalAmount(invoiceRequest.getTotalAmount());
-        invoice.setStatus(invoiceRequest.getStatus());
         invoice.setSubTotal(invoiceRequest.getSubTotal());
         invoice.setDiscount(invoiceRequest.getDiscount());
         invoice.setTax(invoiceRequest.getTax());
@@ -36,6 +36,8 @@ public class InvoiceModelToEntityConverter {
         invoice.setBalance(invoiceRequest.getBalance());
         invoice.setQuantity(invoiceRequest.getQuantity());
         invoice.setProductCode(invoiceRequest.getProductCode());
+        invoice.setPaymentStatus(PaymentStatus.PENDING);  
+        
 
         //  Auto-generate Invoice Number if missing
         if (invoiceRequest.getInvoiceNumber() == null || invoiceRequest.getInvoiceNumber().isEmpty()) {
@@ -49,7 +51,6 @@ public class InvoiceModelToEntityConverter {
 
     public static Invoice updateInvoiceModel(Invoice invoice, UpdateRequest updateRequest) {
         
-    	invoice.setStatus(updateRequest.getStatus());
         invoice.setGrandTotal(updateRequest.getGrandTotal());
         invoice.setSubTotal(updateRequest.getSubTotal());
         invoice.setDiscount(updateRequest.getDiscount());

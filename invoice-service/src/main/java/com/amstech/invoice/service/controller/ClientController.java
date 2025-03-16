@@ -42,7 +42,7 @@ public class ClientController {
 	 private ClientService clientService;
 		
 		public ClientController() {
-	     System.out.println("ClientController: Object Created");
+			logger.info("ClientController: Object Created");
 	    }
 
 

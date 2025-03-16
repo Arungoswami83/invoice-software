@@ -23,10 +23,10 @@ public class ClientEntityToModelConverter {
 	            responseModel.setId(client.getId());
 	            responseModel.setFirstName(client.getFirstName());
 	            responseModel.setLastName(client.getLastName());
-	            responseModel.setAddress(client.getAddress());
-	            responseModel.setEmailAddress(client.getEmail());
-	            responseModel.setMobileNumber(client.getMobileNumber());
-	            responseModel.setCompanyName(client.getCompanyName());
+//	            responseModel.setAddress(client.getAddress());
+//	            responseModel.setEmailAddress(client.getEmail());
+//	            responseModel.setMobileNumber(client.getMobileNumber());
+//	            responseModel.setCompanyName(client.getCompanyName());
 
 	            clientResponseModels.add(responseModel);
 	        }
@@ -41,11 +41,11 @@ public class ClientEntityToModelConverter {
 		responseModel.setId(client.getId());
         responseModel.setFirstName(client.getFirstName());
         responseModel.setLastName(client.getLastName());
-        responseModel.setAddress(client.getAddress());
-        responseModel.setEmailAddress(client.getEmail());
-        responseModel.setMobileNumber(client.getMobileNumber());
-        responseModel.setCompanyName(client.getCompanyName());
-       
+//        responseModel.setAddress(client.getAddress());
+//        responseModel.setEmailAddress(client.getEmail());
+//        responseModel.setMobileNumber(client.getMobileNumber());
+//        responseModel.setCompanyName(client.getCompanyName());
+//       
 	return responseModel;
 
 }

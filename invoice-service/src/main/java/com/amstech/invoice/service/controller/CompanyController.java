@@ -34,15 +34,12 @@ import org.springframework.http.HttpStatus;
 public class CompanyController {
 	
 	  private static final Logger logger = LoggerFactory.getLogger(CompanyController.class);
-
 	    
 	@Autowired
 	private  CompanyService companyService;
-
     
     public CompanyController() {
-        
-        System.out.println("InvoiceCompanyController: Object Created");
+    	logger.info("CompanyController: Object Created");
 }
 
     @Operation(summary = "you can use this method for company/signup",description = "this is company signup")

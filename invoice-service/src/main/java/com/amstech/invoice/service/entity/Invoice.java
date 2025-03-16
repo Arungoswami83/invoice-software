@@ -21,6 +21,7 @@ public class Invoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private BigDecimal balance;
@@ -48,12 +49,19 @@ public class Invoice implements Serializable {
 
 	@Column(name = "invoice_number", unique = true)
     private String invoiceNumber;
+	
+	@Column(name = "pdf_path")
+	private String pdfPath;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="issue_date")
 	private Date issueDate;
 
 	private BigDecimal paid;
+
+	 @Enumerated(EnumType.STRING)  
+	    @Column(nullable = false)
+	    private PaymentStatus paymentStatus;  
 
 	@ManyToOne
 	@JoinColumn(name = "payments_id", nullable = false)
@@ -66,9 +74,7 @@ public class Invoice implements Serializable {
 	private int quantity;
 
 	private BigDecimal shipping;
-
-	private String status;
-
+	
 	@Column(name="sub_total")
 	private BigDecimal subTotal;
 
@@ -124,8 +130,8 @@ public class Invoice implements Serializable {
 	private List<Notification> notifications;
 
 	//bi-directional many-to-one association to Payment
-	@OneToMany(mappedBy="invoice")
-	private List<Payment> payments;
+	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Payment> payments;
 
 	//bi-directional many-to-one association to Report
 	@OneToMany(mappedBy="invoice")
@@ -168,6 +174,28 @@ public class Invoice implements Serializable {
 		}
 
 	public Invoice() {
+	}	
+	public PaymentStatus getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(PaymentStatus paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+	public String getPdfPath() {
+		return pdfPath;
+	}
+
+	public void setPdfPath(String pdfPath) {
+		this.pdfPath = pdfPath;
+	}
+
+	public Report getReport() {
+		return report;
+	}
+
+	public void setReport(Report report) {
+		this.report = report;
 	}
 
 	public int getId() {
@@ -295,14 +323,6 @@ public class Invoice implements Serializable {
 
 	public void setShipping(BigDecimal shipping) {
 		this.shipping = shipping;
-	}
-
-	public String getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 	public BigDecimal getSubTotal() {

@@ -8,11 +8,19 @@ import lombok.Data;
 
 @Data
 public class ClientResponseModel {
+	
 	private int id;
-    private String firstName;
-    private String lastName;
-    private String emailAddress;
-    private String mobileNumber;
-    private String companyName;
-    private String address;
+	private Integer invoiceId;
+	private Integer clientId;
+	private String firstName;
+	private String lastName;
+	private String invoiceNumber;
+	private Date issueDate;
+	private Date dueDate;
+	private BigDecimal totalAmount;
+	private String status;
+	private BigDecimal tax;
+	private int quantity;
+	private String productCode;
+    
 }

@@ -5,15 +5,16 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-
 public class InvoiceResponseModel  {
 	
-	private int Id;
+	private int id;
 	private String invoiceNumber;
+	private String PaymentMethod;
 	private Date issueDate;
 	private Date dueDate;
 	private BigDecimal totalAmount;
 	private String status;
+	private String PdfUrl;
 	private BigDecimal subTotal;
 	private BigDecimal discount;
 	private BigDecimal tax;

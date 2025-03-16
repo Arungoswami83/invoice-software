@@ -20,12 +20,8 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
 	 @Query("SELECT e FROM Invoice e WHERE e.id = :id AND e.deleted = false")
 	 Optional<Invoice>findById(@Param("id") Integer id);
 	 
-	 @Query("SELECT e.firstName, e.lastName FROM Client e WHERE e.id = :clientId")
-	 List<Object[]> findByClientName(@Param("clientId") Integer clientId);
-
-	 @Query("SELECT SUM(e.totalAmount) FROM Invoice e WHERE e.client.id = :clientId")
-	 Double TotalAmountByClientId(@Param("clientId") Integer clientId);
-
+	 List<Invoice> findByClientId(Integer clientId);
+	 
   	 @Query("SELECT COUNT(e) FROM Invoice e WHERE e.deleted = false")  
   	 int countAllInvoice();
   	 
