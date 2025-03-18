@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -21,7 +25,7 @@ public class SalesInvoices implements Serializable {
     private int id;
 
     @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SalesInvoiceItem> salesInvoiceItems; // ✅ mappedBy अब salesInvoices से match कर रहा है
+    private List<SalesInvoiceItem> salesInvoiceItems; 
 
     @Column(name = "is_deleted")
     private int isDeleted;
@@ -30,7 +34,8 @@ public class SalesInvoices implements Serializable {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
     private BigDecimal discount;
@@ -41,7 +46,7 @@ public class SalesInvoices implements Serializable {
     @Column(name = "payment_term")
     private String paymentTerm;
 
-    private BigDecimal price;
+    private double price;
 
     @Lob
     private String signature;
@@ -54,7 +59,8 @@ public class SalesInvoices implements Serializable {
 
     private BigDecimal total;
 
-    @Column(name = "updated_at")
+    @UpdateTimestamp
+	 @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
 
     @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -90,8 +96,8 @@ public class SalesInvoices implements Serializable {
     public String getPaymentTerm() { return this.paymentTerm; }
     public void setPaymentTerm(String paymentTerm) { this.paymentTerm = paymentTerm; }
 
-    public BigDecimal getPrice() { return this.price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
+    public double getPrice() { return this.price; }
+    public void setPrice(double price) { this.price = price; }
 
     public String getSignature() { return this.signature; }
     public void setSignature(String signature) { this.signature = signature; }

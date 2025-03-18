@@ -7,6 +7,9 @@ import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,16 +49,18 @@ public class Client implements Serializable {
 	@Column(name="company_name")
 	private String companyName;
 
-	@Column(name="created_at")
+	@CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
 	private Timestamp createdAt;
-
+	
+	@Column(name="email")
 	private String email;
 
 	@Column(name="first_name")
 	private String firstName;
 
-	@Column(name="is_deleted")
-	private boolean isDeleted;
+	@Column(name = "is_deleted", nullable = false)
+	private Boolean isDeleted = false; // ✅ डिफ़ॉल्ट वैल्यू सेट करें
 
 	@Column(name="last_name")
 	private String lastName;
@@ -68,6 +73,9 @@ public class Client implements Serializable {
 
 	@Column(name="pan_number")
 	private String panNumber;
+	
+	@Column(name= "phone_number")
+	private String phoneNumber;
 
 	@Column(name="postal_zip_code")
 	private String postalZipCode;
@@ -76,7 +84,8 @@ public class Client implements Serializable {
 	@Column(name="specific_registration_details")
 	private String specificRegistrationDetails;
 
-	@Column(name="updated_at")
+	 @UpdateTimestamp
+	 @Column(name = "updated_at", nullable = false)
 	private Timestamp updatedAt;
 
 	//bi-directional many-to-one association to City
@@ -86,10 +95,6 @@ public class Client implements Serializable {
 	//bi-directional many-to-one association to Company
 	@OneToMany(mappedBy="client")
 	private List<Company> companies;
-
-	//bi-directional many-to-one association to GenerateInvoice
-//	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
-//	private List<GenerateInvoice> generateInvoices;
 
 	//bi-directional many-to-one association to Invoice
 	@OneToMany(mappedBy="client")
@@ -167,13 +172,15 @@ public class Client implements Serializable {
 		this.firstName = firstName;
 	}
 
+
 	public boolean getIsDeleted() {
-		return this.getIsDeleted();
+	    return Boolean.TRUE.equals(isDeleted); // ✅ अगर isDeleted null होगा तो false लौटेगा
 	}
-	
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
 	public String getLastName() {
 		return this.lastName;
@@ -205,6 +212,15 @@ public class Client implements Serializable {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getUserName() {
@@ -280,14 +296,7 @@ public class Client implements Serializable {
 
 		return company;
 	}
-//
-//	public List<GenerateInvoice> getGenerateInvoices() {
-//		return this.generateInvoices;
-//	}
-//
-//	public void setGenerateInvoices(List<GenerateInvoice> generateInvoices) {
-//		this.generateInvoices = generateInvoices;
-//	}
+
 	public List<Invoice> getInvoices() {
 		return this.invoices;
 	}
