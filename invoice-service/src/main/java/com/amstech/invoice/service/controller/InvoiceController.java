@@ -34,7 +34,9 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
         LOGGER.info("InvoiceController: Object Created");
     }
-    @RequestMapping(method = RequestMethod.POST, value = "/create", consumes = "application/json", produces = "application/json")    public ResponseMessage createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/create", consumes = "application/json", produces = "application/json")    
+    public ResponseMessage createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
         LOGGER.info("Invoice created with Client ID: {}", invoiceRequest.getClientId());
         try {
             InvoiceResponseModel invoiceResponse = invoiceService.createInvoice(invoiceRequest);

@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Invoice;
+import com.amstech.invoice.service.entity.Payment;
 import com.amstech.invoice.service.request.model.InvoiceRequest;
 import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.InvoiceResponseModel;
+import com.amstech.invoice.service.response.model.PaymentResponseMoodel;
 
 @Component
 public class InvoiceEntityToModelConverter {
@@ -25,7 +27,6 @@ public class InvoiceEntityToModelConverter {
 	        
 	        response.setInvoiceNumber(invoice.getInvoiceNumber());
 	        invoice.getClient();
-	        invoice.getPayment();
 	        invoice.getInvoiceType();
 	        invoice.getInvoiceItem();
 	        response.setDiscount(invoice.getDiscount());
@@ -139,10 +140,10 @@ public class InvoiceEntityToModelConverter {
         responseModel.setBalance(invoice.getBalance());
         responseModel.setQuantity(invoice.getQuantity());
         responseModel.setProductCode(invoice.getProductCode());
-        responseModel.setPaymentMethod(invoice.getPayment().getPaymentMethod().name());
         responseModel.setPdfUrl(invoice.getPdfPath());
 
         return responseModel;
     }
+    
 }
       

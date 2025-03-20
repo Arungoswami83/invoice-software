@@ -9,6 +9,5 @@ public class InvoiceManagmentApplicationMain {
 	public static void main(String args[]) {
 	SpringApplication.run(InvoiceManagmentApplicationMain.class,args);
 	}
-
-} 
+}
  

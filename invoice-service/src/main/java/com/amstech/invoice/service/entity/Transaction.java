@@ -1,86 +1,123 @@
 package com.amstech.invoice.service.entity;
 
-import java.io.Serializable;
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
-
-/**
- * The persistent class for the transactions database table.
- * 
- */
 @Entity
-@Table(name="transactions")
-@NamedQuery(name="Transaction.findAll", query="SELECT t FROM Transaction t")
-public class Transaction implements Serializable {
-	private static final long serialVersionUID = 1L;
+@Table(name = "transactions")
+@NoArgsConstructor
+public class Transaction {
 
-	@Id
-	private String id;
+    @Id
+    @Column(name = "id", nullable = false, length = 255)
+    private String id; // UUID or unique string for transaction ID
 
-	private BigDecimal amount;
+    @Column(name = "type", length = 255)
+    private String type; // Optional: Transaction type
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
+    @Column(name = "amount", precision = 38, scale = 2, nullable = false)
+    private BigDecimal amount; // Transaction amount
 
-	@Lob
-	private String description;
+    @ManyToOne
+    @JoinColumn(name = "invoice_id", nullable = false)
+    private Invoice invoice; // Relation with Invoice
 
-	private String type;
+    @ManyToOne
+    @JoinColumn(name = "payment_id", nullable = false)
+    private Payment payment; // Relation with Payment
 
-	@Column(name="user_id")
-	private int userId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private TransactionStatus status = TransactionStatus.PENDING; // Default: PENDING
 
-	public Transaction() {
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method")
+    private PaymentMethod paymentMethod; 
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
 	public String getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	public BigDecimal getAmount() {
-		return this.amount;
-	}
-
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public String getType() {
-		return this.type;
+		return type;
 	}
 
 	public void setType(String type) {
 		this.type = type;
 	}
 
-	public int getUserId() {
-		return this.userId;
+	public BigDecimal getAmount() {
+		return amount;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
 	}
 
+	public Invoice getInvoice() {
+		return invoice;
+	}
+
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
+	}
+
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
+
+	public TransactionStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TransactionStatus status) {
+		this.status = status;
+	}
+
+	public PaymentMethod getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(PaymentMethod paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+    
 }

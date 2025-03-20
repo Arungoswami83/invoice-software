@@ -82,14 +82,14 @@ public class Client implements Serializable {
 	//bi-directional many-to-one association to City
 	@ManyToOne
 	private City city;
+	
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Dashboard> dashboard; 
+
 
 	//bi-directional many-to-one association to Company
 	@OneToMany(mappedBy="client")
 	private List<Company> companies;
-
-	//bi-directional many-to-one association to GenerateInvoice
-//	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
-//	private List<GenerateInvoice> generateInvoices;
 
 	//bi-directional many-to-one association to Invoice
 	@OneToMany(mappedBy="client")
@@ -181,6 +181,14 @@ public class Client implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public List<Dashboard> getDashboard() {
+		return dashboard;
+	}
+
+	public void setDashboard(List<Dashboard> dashboard) {
+		this.dashboard = dashboard;
 	}
 
 	public String getLinkedinProfileUrl() {

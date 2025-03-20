@@ -63,10 +63,6 @@ public class SalesInvoice implements Serializable {
 	@OneToMany(mappedBy="salesInvoice")
 	private List<Analytic> analytics;
 
-	//bi-directional many-to-one association to Dashboard
-	@OneToMany(mappedBy="salesInvoice")
-	private List<Dashboard> dashboards;
-
 	//bi-directional many-to-one association to SalesInvoiceItem
 	@OneToMany(mappedBy="salesInvoice")
 	private List<SalesInvoiceItem> salesInvoiceItems;
@@ -216,27 +212,20 @@ public class SalesInvoice implements Serializable {
 		return analytic;
 	}
 
-	public List<Dashboard> getDashboards() {
-		return this.dashboards;
-	}
 
-	public void setDashboards(List<Dashboard> dashboards) {
-		this.dashboards = dashboards;
-	}
-
-	public Dashboard addDashboard(Dashboard dashboard) {
-		getDashboards().add(dashboard);
-		dashboard.setSalesInvoice(this);
-
-		return dashboard;
-	}
-
-	public Dashboard removeDashboard(Dashboard dashboard) {
-		getDashboards().remove(dashboard);
-		dashboard.setSalesInvoice(null);
-
-		return dashboard;
-	}
+//	public Dashboard addDashboard(Dashboard dashboard) {
+//		getDashboards().add(dashboard);
+//		dashboard.setSalesInvoice(this);
+//
+//		return dashboard;
+//	}
+//
+//	public Dashboard removeDashboard(Dashboard dashboard) {
+//		getDashboards().remove(dashboard);
+//		dashboard.setSalesInvoice(null);
+//
+//		return dashboard;
+//	}
 
 	public List<SalesInvoiceItem> getSalesInvoiceItems() {
 		return this.salesInvoiceItems;

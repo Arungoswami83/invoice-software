@@ -27,6 +27,9 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
   	 
   	 int countByClientId(Integer clientId);
   	 
+  	  @Query("SELECT i FROM Invoice i WHERE i.id = :id")
+      Invoice findInvoiceById(@Param("id") Integer id);
+  	 
   	 @Query("SELECT e FROM Invoice e WHERE e.invoiceNumber = :invoiceNumber AND e.deleted=false")
   	 Optional<Invoice>findByInvoiceNumber(@Param("invoiceNumber")String invoiceNumber);
   

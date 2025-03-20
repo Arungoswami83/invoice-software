@@ -1,5 +1,7 @@
 package com.amstech.invoice.service.converter.entity;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -9,20 +11,22 @@ import com.amstech.invoice.service.entity.Invoice;
 import com.amstech.invoice.service.entity.InvoiceItem;
 import com.amstech.invoice.service.entity.InvoiceType;
 import com.amstech.invoice.service.entity.Payment;
+import com.amstech.invoice.service.entity.PaymentMethod;
 import com.amstech.invoice.service.entity.PaymentStatus;
 import com.amstech.invoice.service.request.model.InvoiceRequest;
+import com.amstech.invoice.service.request.model.PaymentRequest;
 import com.amstech.invoice.service.request.model.UpdateRequest;
+import com.amstech.invoice.service.response.model.PaymentResponseMoodel;
 
 @Component
 public class InvoiceModelToEntityConverter {
 
-    public  Invoice getsaveconvertToInvoiceEntity(InvoiceRequest invoiceRequest,Optional <Client> clientOptional,Optional <Company> companyOptional,Optional <Payment> paymentOptional,Optional <InvoiceItem> invoiceItemOptional,Optional <InvoiceType> invoiceTypeOptional) {
+    public  Invoice getsaveconvertToInvoiceEntity(InvoiceRequest invoiceRequest,Optional <Client> clientOptional,Optional <Company> companyOptional,Optional <InvoiceItem> invoiceItemOptional,Optional <InvoiceType> invoiceTypeOptional) {
         Invoice invoice = new Invoice();
 
         invoice.setClient(clientOptional.get());
         invoice.setInvoiceType(invoiceTypeOptional.get());  
         invoice.setCompany(companyOptional.get());
-        invoice.setPayment(paymentOptional.get());
         invoice.setInvoiceItem(invoiceItemOptional.get());
         invoice.setIssueDate(invoiceRequest.getIssueDate());
         invoice.setDueDate(invoiceRequest.getDueDate());
@@ -32,7 +36,6 @@ public class InvoiceModelToEntityConverter {
         invoice.setTax(invoiceRequest.getTax());
         invoice.setShipping(invoiceRequest.getShipping());
         invoice.setGrandTotal(invoiceRequest.getGrandTotal());
-        invoice.setPaid(invoiceRequest.getPaid());
         invoice.setBalance(invoiceRequest.getBalance());
         invoice.setQuantity(invoiceRequest.getQuantity());
         invoice.setProductCode(invoiceRequest.getProductCode());
@@ -62,5 +65,4 @@ public class InvoiceModelToEntityConverter {
         
         return invoice;
     }
-    
-}
+  }

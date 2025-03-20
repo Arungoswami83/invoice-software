@@ -61,10 +61,7 @@ public class InvoiceService {
 	 @Autowired
 	 private PDFGenerationService pdfGenerationService;
 	 
-	 @Autowired
-	 private EmailService emailService;
-	
-	 public InvoiceResponseModel createInvoice(InvoiceRequest invoiceRequest) throws Exception {	 
+	 	public InvoiceResponseModel createInvoice(InvoiceRequest invoiceRequest) throws Exception {	 
 		    Optional<Client> clientOptional = clientRepo.findById(invoiceRequest.getClientId());
 		    if (!clientOptional.isPresent()) {
 		        LOGGER.error("Client doesn't Exist For These Id :{}", invoiceRequest.getClientId());
@@ -85,39 +82,19 @@ public class InvoiceService {
 		        LOGGER.error("Company doesn't Exist For These Id :{}", invoiceRequest.getCompanyId());
 		        throw new Exception("Company does not exist");
 		    }
-		    Optional<Payment> paymentOptional = paymentRepo.findById(invoiceRequest.getPaymentId());
-		    if (!paymentOptional.isPresent()) {
-		        LOGGER.error("Payment doesn't Exist For These Id :{}", invoiceRequest.getPaymentId());
-		        throw new Exception("Payment does not exist");
-		    }
-		    Payment payment = paymentOptional.get();
-		    if (invoiceRequest.getPaymentMethod() != null && !invoiceRequest.getPaymentMethod().isEmpty()) {
-		        payment.setPaymentMethod(PaymentMethod.fromString(invoiceRequest.getPaymentMethod()));
-		        LOGGER.info("Received Payment Method: {}", invoiceRequest.getPaymentMethod());
-		    } else {
-		        throw new Exception("Payment Method is required");
-		    }
-		    paymentRepo.save(payment);
-
-		    Invoice invoice = invoiceModelToEntityConverter.getsaveconvertToInvoiceEntity(invoiceRequest, clientOptional, companyOptional, paymentOptional, invoiceitemOptional, invoiceTypesOptional);
+     	    Invoice invoice = invoiceModelToEntityConverter.getsaveconvertToInvoiceEntity(invoiceRequest, clientOptional, companyOptional, invoiceitemOptional, invoiceTypesOptional);
 		    invoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
 
 		    Invoice savedInvoice = invoiceRepo.save(invoice);
 		    LOGGER.info("Saving Invoice with ID: {}", savedInvoice.getId()); 
-
+		    
 		    String pdfPath = pdfGenerationService.generateInvoicePDF(savedInvoice);
 		    savedInvoice.setPdfPath(pdfPath);
 		    invoiceRepo.save(savedInvoice); 
 
 		    InvoiceResponseModel responseModel = invoiceEntityToModelConverter.convertEntityToModel(savedInvoice); 
 		    responseModel.setPdfUrl(pdfPath); 
-		    
-//		    String toEmail=clientOptional.get().getEmail();
-//		    String subject ="Your Invoice-"+savedInvoice.getInvoiceNumber();
-//		    String body = "Dear Customer,\n\nPlease find attached your invoice. \n\nThank you!";
-//
-//		    emailService.sendInvoiceEmail(toEmail, subject, body, pdfPath);  
-		    return responseModel;
+     	    return responseModel;
 		}
 	
 	 	public InvoiceResponseModel updateInvoice(UpdateRequest updateRequest) throws Exception { 

@@ -4,8 +4,10 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 /**
@@ -18,30 +20,45 @@ import java.time.LocalDate;
 public class Payment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	 @Id
+	 	@Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Integer id;
+	    private int id;
 
-	    @ManyToOne(fetch = FetchType.LAZY)  
-	    @JoinColumn(name = "invoice_id", nullable = false)
-	    private Invoice invoice;
+	 	 @ManyToOne
+	     @JoinColumn(name = "invoice_id", nullable = false)
+	     private Invoice invoice; 
+	 	 
+	 	 @Column(name = "payment_status", nullable = false)
+	     @Enumerated(EnumType.STRING)
+	     private PaymentStatus paymentStatus;
 
 	    @Enumerated(EnumType.STRING)
 	    @Column(name = "payment_method")
 	    private PaymentMethod paymentMethod;
+	    
+	    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<Transaction> transactions;
 
-	    @Column(nullable = false, precision = 12, scale = 2)
-	    private BigDecimal amount;
+	    @Column(name = "notes", columnDefinition = "TEXT")
+	    private String notes;
+	    
+	    @Column(name = "amount_paid", nullable = false, precision = 12, scale = 2)
+	    private BigDecimal amountPaid;
 
 	    @Column(name = "payment_date", nullable = false)
-	    private LocalDate paymentDate;
+	    private LocalDateTime paymentDate;
+	    
+	    @Column(name = "created_at", updatable = false)
+	    private LocalDateTime createdAt = LocalDateTime.now();
 
-	    @Lob
-	    private String notes;
+	    @Column(name = "updated_at")
+	    private LocalDateTime updatedAt = LocalDateTime.now();
 
-	    @Column(name = "created_at", updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	    private java.sql.Timestamp createdAt;
-
+	    @PreUpdate
+	    public void setLastUpdate() {
+	    this.updatedAt = LocalDateTime.now();
+	    }
+	    
 		public Integer getId() {
 			return id;
 		}
@@ -58,6 +75,14 @@ public class Payment implements Serializable {
 			this.invoice = invoice;
 		}
 
+		public PaymentStatus getPaymentStatus() {
+			return paymentStatus;
+		}
+
+		public void setPaymentStatus(PaymentStatus paymentStatus) {
+			this.paymentStatus = paymentStatus;
+		}
+
 		public PaymentMethod getPaymentMethod() {
 			return paymentMethod;
 		}
@@ -66,20 +91,12 @@ public class Payment implements Serializable {
 			this.paymentMethod = paymentMethod;
 		}
 
-		public BigDecimal getAmount() {
-			return amount;
+		public List<Transaction> getTransactions() {
+			return transactions;
 		}
 
-		public void setAmount(BigDecimal amount) {
-			this.amount = amount;
-		}
-
-		public LocalDate getPaymentDate() {
-			return paymentDate;
-		}
-
-		public void setPaymentDate(LocalDate paymentDate) {
-			this.paymentDate = paymentDate;
+		public void setTransactions(List<Transaction> transactions) {
+			this.transactions = transactions;
 		}
 
 		public String getNotes() {
@@ -90,13 +107,36 @@ public class Payment implements Serializable {
 			this.notes = notes;
 		}
 
-		public java.sql.Timestamp getCreatedAt() {
+		public BigDecimal getAmountPaid() {
+			return amountPaid;
+		}
+
+		public void setAmountPaid(BigDecimal amountPaid) {
+			this.amountPaid = amountPaid;
+		}
+
+		public LocalDateTime getPaymentDate() {
+			return paymentDate;
+		}
+
+		public void setPaymentDate(LocalDateTime paymentDate) {
+			this.paymentDate = paymentDate;
+		}
+
+		public LocalDateTime getCreatedAt() {
 			return createdAt;
 		}
 
-		public void setCreatedAt(java.sql.Timestamp createdAt) {
+		public void setCreatedAt(LocalDateTime createdAt) {
 			this.createdAt = createdAt;
 		}
-	    
-	}
 
+		public LocalDateTime getUpdatedAt() {
+			return updatedAt;
+		}
+
+		public void setUpdatedAt(LocalDateTime updatedAt) {
+			this.updatedAt = updatedAt;
+		}
+}
+	

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,15 +31,6 @@ public class Invoice implements Serializable {
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	@Column(name="customer_email")
-	private String customerEmail;
-
-	@Column(name="customer_name")
-	private String customerName;
-
-	@Column(name="customer_phone")
-	private String customerPhone;
-
 	private BigDecimal discount;
 
 	@Temporal(TemporalType.DATE)
@@ -59,13 +52,12 @@ public class Invoice implements Serializable {
 
 	private BigDecimal paid;
 
-	 @Enumerated(EnumType.STRING)  
-	    @Column(nullable = false)
-	    private PaymentStatus paymentStatus;  
-
-	@ManyToOne
-	@JoinColumn(name = "payments_id", nullable = false)
-	private Payment payment;
+	@Enumerated(EnumType.STRING)  
+	 @Column(nullable = false)
+	 private PaymentStatus paymentStatus; 
+	 
+//	@Column(name = "payment_method", length = 20)
+//	private String paymentMethod;
 
 	@Column(name="product_code")
 	private String productCode;
@@ -74,6 +66,10 @@ public class Invoice implements Serializable {
 	private int quantity;
 
 	private BigDecimal shipping;
+	
+	private String customerEmail;
+    private String customerPhone;
+    private String customerName;
 	
 	@Column(name="sub_total")
 	private BigDecimal subTotal;
@@ -90,9 +86,9 @@ public class Invoice implements Serializable {
 	@OneToMany(mappedBy="invoice")
 	private List<Analytic> analytics;
 
-	//bi-directional many-to-one association to Dashboard
-	@OneToMany(mappedBy="invoice")
-	private List<Dashboard> dashboards;
+//	//bi-directional many-to-one association to Dashboard
+//	@OneToMany(mappedBy="invoice")
+//	private List<Dashboard> dashboards;
 
 	//bi-directional many-to-one association to EmailLog
 	@OneToMany(mappedBy="invoice")
@@ -132,6 +128,9 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to Payment
 	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Payment> payments;
+	
+	  @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<Transaction> transactions;
 
 	//bi-directional many-to-one association to Report
 	@OneToMany(mappedBy="invoice")
@@ -141,6 +140,36 @@ public class Invoice implements Serializable {
 	@JoinColumn(name = "report_id") // This should match the Report entity
 	private Report report;
 
+	public String getCustomerEmail() {
+		return customerEmail;
+	}
+
+	public void setCustomerEmail(String customerEmail) {
+		this.customerEmail = customerEmail;
+	}
+	
+	public String getCustomerPhone() {
+		return customerPhone;
+	}
+
+	public void setCustomerPhone(String customerPhone) {
+		this.customerPhone = customerPhone;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+//	public String getPaymentMethod() {
+//		return paymentMethod;
+//	}
+//
+//	public void setPaymentMethod(String paymentMethod) {
+//		this.paymentMethod = paymentMethod;
+//	}
 
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoice")
@@ -222,40 +251,12 @@ public class Invoice implements Serializable {
 		this.createdAt = createdAt;
 	}
 
-	public String getCustomerEmail() {
-		return this.customerEmail;
-	}
-
-	public void setCustomerEmail(String customerEmail) {
-		this.customerEmail = customerEmail;
-	}
-
-	public String getCustomerName() {
-		return this.customerName;
-	}
-
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
-
-	public String getCustomerPhone() {
-		return this.customerPhone;
-	}
-
-	public void setCustomerPhone(String customerPhone) {
-		this.customerPhone = customerPhone;
-	}
-
 	public BigDecimal getDiscount() {
 		return this.discount;
 	}
 
 	public void setDiscount(BigDecimal discount) {
 		this.discount = discount;
-	}
-
-	public Date getDueDate() {
-		return this.dueDate;
 	}
 
 	public void setDueDate(Date dueDate) {
@@ -293,12 +294,17 @@ public class Invoice implements Serializable {
 	public void setPaid(BigDecimal paid) {
 		this.paid = paid;
 	}
-	public Payment getPayment() {
-		return payment;
+
+	public List<Transaction> getTransactions() {
+		return transactions;
 	}
 
-	public void setPayment(Payment payment) {
-		this.payment = payment;
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+	public Date getDueDate() {
+		return dueDate;
 	}
 
 	public String getProductCode() {
@@ -308,7 +314,6 @@ public class Invoice implements Serializable {
 	public void setProductCode(String productCode) {
 		this.productCode = productCode;
 	}
-
 	public int getQuantity() {
 		return this.quantity;
 	}
@@ -379,27 +384,20 @@ public class Invoice implements Serializable {
 		return analytic;
 	}
 
-	public List<Dashboard> getDashboards() {
-		return this.dashboards;
-	}
-
-	public void setDashboards(List<Dashboard> dashboards) {
-		this.dashboards = dashboards;
-	}
-
-	public Dashboard addDashboard(Dashboard dashboard) {
-		getDashboards().add(dashboard);
-		dashboard.setInvoice(this);
-
-		return dashboard;
-	}
-
-	public Dashboard removeDashboard(Dashboard dashboard) {
-		getDashboards().remove(dashboard);
-		dashboard.setInvoice(null);
-
-		return dashboard;
-	}
+//
+//	public Dashboard addDashboard(Dashboard dashboard) {
+//		getDashboards().add(dashboard);
+//		dashboard.setInvoice(this);
+//
+//		return dashboard;
+//	}
+//
+//	public Dashboard removeDashboard(Dashboard dashboard) {
+//		getDashboards().remove(dashboard);
+//		dashboard.setInvoice(null);
+//
+//		return dashboard;
+//	}
 
 	public List<EmailLog> getEmailLogs() {
 		return this.emailLogs;

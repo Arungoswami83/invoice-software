@@ -9,7 +9,6 @@ public class InvoiceResponseModel  {
 	
 	private int id;
 	private String invoiceNumber;
-	private String PaymentMethod;
 	private Date issueDate;
 	private Date dueDate;
 	private BigDecimal totalAmount;
@@ -24,6 +23,8 @@ public class InvoiceResponseModel  {
 	private BigDecimal balance;
 	private int quantity;
 	private String productCode;
+	private String paymentMethod;
+	private String paymentStatus;
 
 }
 

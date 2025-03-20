@@ -47,9 +47,9 @@ public class Analytic implements Serializable {
 	    @Column(name = "created_at", updatable = false)
 	    private LocalDateTime createdAt = LocalDateTime.now();
 
-	//bi-directional many-to-one association to Dashboard
-	@OneToMany(mappedBy="analytic")
-	private List<Dashboard> dashboards;
+//	//bi-directional many-to-one association to Dashboard
+//	@OneToMany(mappedBy="analytic")
+//	private List<Dashboard> dashboards;
 
 	public Analytic() {
 	}
@@ -85,14 +85,6 @@ public class Analytic implements Serializable {
 		this.salesInvoice = salesInvoice;
 	}
 
-	public List<Dashboard> getDashboards() {
-		return this.dashboards;
-	}
-
-	public void setDashboards(List<Dashboard> dashboards) {
-		this.dashboards = dashboards;
-	}
-
 	public SalesInvoices getSalesInvoices() {
 		return salesInvoices;
 	}
@@ -125,18 +117,18 @@ public class Analytic implements Serializable {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-	public Dashboard addDashboard(Dashboard dashboard) {
-		getDashboards().add(dashboard);
-		dashboard.setAnalytic(this);
-
-		return dashboard;
-	}
-
-	public Dashboard removeDashboard(Dashboard dashboard) {
-		getDashboards().remove(dashboard);
-		dashboard.setAnalytic(null);
-
-		return dashboard;
-	}
+//	public Dashboard addDashboard(Dashboard dashboard) {
+//		getDashboards().add(dashboard);
+//		dashboard.setAnalytic(this);
+//
+//		return dashboard;
+//	}
+//
+//	public Dashboard removeDashboard(Dashboard dashboard) {
+//		getDashboards().remove(dashboard);
+//		dashboard.setAnalytic(null);
+//
+//		return dashboard;
+//	}
 
 }
