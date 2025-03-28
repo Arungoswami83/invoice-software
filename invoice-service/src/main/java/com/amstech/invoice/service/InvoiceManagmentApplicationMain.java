@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = "com.amstech.invoice.service")
 public class InvoiceManagmentApplicationMain {
-	
+
 	public static void main(String args[]) {
 	SpringApplication.run(InvoiceManagmentApplicationMain.class,args);
 	}

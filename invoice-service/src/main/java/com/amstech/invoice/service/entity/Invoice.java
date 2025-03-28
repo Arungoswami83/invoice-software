@@ -85,6 +85,13 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to Analytic
 	@OneToMany(mappedBy="invoice")
 	private List<Analytic> analytics;
+	
+	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<InvoiceHistory> invoiceHistories;
+
+	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<PaymentHistory> paymentHistories;
+
 
 //	//bi-directional many-to-one association to Dashboard
 //	@OneToMany(mappedBy="invoice")
@@ -130,7 +137,7 @@ public class Invoice implements Serializable {
     private List<Payment> payments;
 	
 	  @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<Transaction> transactions;
+	  private List<Transaction> transactions;
 
 	//bi-directional many-to-one association to Report
 	@OneToMany(mappedBy="invoice")
@@ -163,13 +170,6 @@ public class Invoice implements Serializable {
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
-//	public String getPaymentMethod() {
-//		return paymentMethod;
-//	}
-//
-//	public void setPaymentMethod(String paymentMethod) {
-//		this.paymentMethod = paymentMethod;
-//	}
 
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoice")
@@ -181,9 +181,7 @@ public class Invoice implements Serializable {
 	  @PrePersist
 	    public void generateInvoiceNumber() {
 	        if (this.invoiceNumber == null) {
-	            this.invoiceNumber = "INV-" + id; // This will be NULL initially
-		   //     this.invoiceNumber = "INV-" + (id == null ? "1001" : String.format("%04d", id));
-
+	            this.invoiceNumber = "INV-" + id; 
 	        }
 	    }
 
@@ -384,20 +382,21 @@ public class Invoice implements Serializable {
 		return analytic;
 	}
 
-//
-//	public Dashboard addDashboard(Dashboard dashboard) {
-//		getDashboards().add(dashboard);
-//		dashboard.setInvoice(this);
-//
-//		return dashboard;
-//	}
-//
-//	public Dashboard removeDashboard(Dashboard dashboard) {
-//		getDashboards().remove(dashboard);
-//		dashboard.setInvoice(null);
-//
-//		return dashboard;
-//	}
+	public List<InvoiceHistory> getInvoiceHistories() {
+		return invoiceHistories;
+	}
+
+	public void setInvoiceHistories(List<InvoiceHistory> invoiceHistories) {
+		this.invoiceHistories = invoiceHistories;
+	}
+
+	public List<PaymentHistory> getPaymentHistories() {
+		return paymentHistories;
+	}
+
+	public void setPaymentHistories(List<PaymentHistory> paymentHistories) {
+		this.paymentHistories = paymentHistories;
+	}
 
 	public List<EmailLog> getEmailLogs() {
 		return this.emailLogs;

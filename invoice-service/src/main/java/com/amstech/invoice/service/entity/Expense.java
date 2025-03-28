@@ -19,7 +19,7 @@ public class Expense  implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "expense_type", nullable = false)
@@ -33,12 +33,15 @@ public class Expense  implements Serializable {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+    
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false; 
 
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -73,6 +76,15 @@ public class Expense  implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+	
     
     
 

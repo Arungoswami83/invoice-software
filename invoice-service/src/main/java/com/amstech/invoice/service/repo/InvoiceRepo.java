@@ -1,6 +1,7 @@
 
 package com.amstech.invoice.service.repo;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,11 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
   	 @Query("SELECT e FROM Invoice e WHERE e.invoiceNumber = :invoiceNumber AND e.deleted=false")
   	 Optional<Invoice>findByInvoiceNumber(@Param("invoiceNumber")String invoiceNumber);
   
+//  	  @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.status = 'PAID'")
+//      BigDecimal getTotalSales();
+//
+//      @Query("SELECT COALESCE(SUM(i.totalAmount - i.paidAmount), 0) FROM Invoice i WHERE i.status != 'PAID'")
+//      BigDecimal getTotalReceivables();
   	 
 }
 

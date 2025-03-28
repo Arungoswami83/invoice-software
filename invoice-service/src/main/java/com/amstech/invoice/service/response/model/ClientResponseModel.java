@@ -15,6 +15,7 @@ public class ClientResponseModel {
 	private String firstName;
 	private String lastName;
 	private String invoiceNumber;
+	private String gender;
 	private Date issueDate;
 	private Date dueDate;
 	private BigDecimal totalAmount;

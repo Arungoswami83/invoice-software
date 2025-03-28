@@ -67,59 +67,141 @@ public class SalesInvoices implements Serializable {
   
     public SalesInvoices() {}
 
-    // Getters and Setters
-    public int getId() { return this.id; }
-    public void setId(int id) { this.id = id; }
+	public int getId() {
+		return id;
+	}
 
-    public Client getClient() { return client; }
-    public void setClient(Client client) { this.client = client; }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public Timestamp getCreatedAt() { return this.createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+	public List<SalesInvoiceItem> getSalesInvoiceItems() {
+		return salesInvoiceItems;
+	}
 
-    public BigDecimal getDiscount() { return this.discount; }
-    public void setDiscount(BigDecimal discount) { this.discount = discount; }
+	public void setSalesInvoiceItems(List<SalesInvoiceItem> salesInvoiceItems) {
+		this.salesInvoiceItems = salesInvoiceItems;
+	}
 
-    public String getInvoiceNumber() { return this.invoiceNumber; }
-    public void setInvoiceNumber(String invoiceNumber) { this.invoiceNumber = invoiceNumber; }
+	public int getIsDeleted() {
+		return isDeleted;
+	}
 
-    public String getPaymentTerm() { return this.paymentTerm; }
-    public void setPaymentTerm(String paymentTerm) { this.paymentTerm = paymentTerm; }
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
-    public BigDecimal getPrice() { return this.price; } // Changed getter return type
-    public void setPrice(BigDecimal price) { this.price = price; }
+	public Client getClient() {
+		return client;
+	}
 
-    public String getSignature() { return this.signature; }
-    public void setSignature(String signature) { this.signature = signature; }
+	public void setClient(Client client) {
+		this.client = client;
+	}
 
-    public String getStatus() { return this.status; }
-    public void setStatus(String status) { this.status = status; }
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
 
-    public BigDecimal getSubtotal() { return this.subtotal; }
-    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public BigDecimal getTax() { return this.tax; }
-    public void setTax(BigDecimal tax) { this.tax = tax; }
+	public BigDecimal getDiscount() {
+		return discount;
+	}
 
-    public BigDecimal getTotal() { return this.total; }
-    public void setTotal(BigDecimal total) { this.total = total; }
+	public void setDiscount(BigDecimal discount) {
+		this.discount = discount;
+	}
 
-    public Timestamp getUpdatedAt() { return this.updatedAt; }
-    public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
 
-    public List<Analytic> getAnalytics() { return this.analytics; }
-    public void setAnalytics(List<Analytic> analytics) { this.analytics = analytics; }
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
 
-    public List<Report> getReports() { return this.reports; }
-    public void setReports(List<Report> reports) { this.reports = reports; }
+	public String getPaymentTerm() {
+		return paymentTerm;
+	}
 
-    public List<SalesInvoiceItem> getSalesInvoiceItems() { return salesInvoiceItems; }
-    public void setSalesInvoiceItems(List<SalesInvoiceItem> salesInvoiceItems) {
-        this.salesInvoiceItems = salesInvoiceItems;
-    }
-    
+	public void setPaymentTerm(String paymentTerm) {
+		this.paymentTerm = paymentTerm;
+	}
 
-    public int getIsDeleted() { return isDeleted; }
-    public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
-    
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public BigDecimal getSubtotal() {
+		return subtotal;
+	}
+
+	public void setSubtotal(BigDecimal subtotal) {
+		this.subtotal = subtotal;
+	}
+
+	public BigDecimal getTax() {
+		return tax;
+	}
+
+	public void setTax(BigDecimal tax) {
+		this.tax = tax;
+	}
+
+	public BigDecimal getTotal() {
+		return total;
+	}
+
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
+
+	public Timestamp getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Timestamp updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public List<Analytic> getAnalytics() {
+		return analytics;
+	}
+
+	public void setAnalytics(List<Analytic> analytics) {
+		this.analytics = analytics;
+	}
+
+	public List<Report> getReports() {
+		return reports;
+	}
+
+	public void setReports(List<Report> reports) {
+		this.reports = reports;
+	}
+
+      
 }

@@ -65,6 +65,9 @@ public class Client implements Serializable {
 
 	@Column(name="mobile_number")
 	private String mobileNumber;
+	
+	@Column(name="gender")
+	private String gender;
 
 	@Column(name="pan_number")
 	private String panNumber;
@@ -339,5 +342,14 @@ public class Client implements Serializable {
 
 		return report;
 	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
 
 }

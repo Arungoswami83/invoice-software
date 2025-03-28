@@ -1,107 +1,122 @@
-
 package com.amstech.invoice.service.entity;
 
-import java.io.Serializable;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
-
-/**
- * The persistent class for the reports database table.
- * 
- */
 @Entity
-@Table(name="reports")
-@NamedQuery(name="Report.findAll", query="SELECT r FROM Report r")
+@Table(name = "reports")
+@NamedQuery(name = "Report.findAll", query = "SELECT r FROM Report r")
 public class Report implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	@Column(name="created_at")
-	private Timestamp createdAt;
+    @Column(name = "issue_date", nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date issueDate;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name="due_date")
-	private Date dueDate;
+    @Column(name = "due_date")
+    @Temporal(TemporalType.DATE)
+    private Date dueDate;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name="issue_date")
-	private Date issueDate;
+    @Column(name = "created_at", updatable = false, insertable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
+    private Date createdAt;
 
-	private int payments;
+    @ManyToOne
+    @JoinColumn(name = "invoice_type_id", nullable = false)
+    private InvoiceType invoiceType;
 
-	@ManyToOne
-    @JoinColumn(name = "sales_invoice_id")  
-    private SalesInvoice salesInvoice;
-	
-	@ManyToOne
-	@JoinColumn(name = "sales_invoices")  
-	private SalesInvoices salesInvoices;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private InvoiceStatus status;
 
-//
-//	//bi-directional many-to-one association to Dashboard
-//	@OneToMany(mappedBy="report")
-//	private List<Dashboard> dashboards;
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 
-	//bi-directional many-to-one association to Client
-	@ManyToOne
-	private Client client;
-	
-	@ManyToOne
-	@JoinColumn(name = "invoice_id", nullable = false)
-	private Invoice invoice;
-	
-	//bi-directional many-to-one association to InvoiceType
-	@ManyToOne
-	@JoinColumn(name="invoice_types")
-	private InvoiceType invoiceType;
+    @ManyToOne
+    @JoinColumn(name = "invoice_id", nullable = false)
+    private Invoice invoice;
 
-	public Report() {
-	}
+
+    @ManyToOne
+    @JoinColumn(name = "payment_id", nullable = false)
+    private Payment payment;
+
+    @ManyToOne
+    @JoinColumn(name = "sales_invoices_id", nullable = true)
+    private SalesInvoices salesInvoices;
+
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
+    private List<ReportHistory> history;
+
+    @Column(name = "remarks")
+    private String remarks;
 
 	public int getId() {
-		return this.id;
+		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Date getDueDate() {
-		return this.dueDate;
-	}
-
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
-
 	public Date getIssueDate() {
-		return this.issueDate;
+		return issueDate;
 	}
 
 	public void setIssueDate(Date issueDate) {
 		this.issueDate = issueDate;
 	}
 
-	public int getPayments() {
-		return this.payments;
+	public Date getDueDate() {
+		return dueDate;
 	}
 
-	public void setPayments(int payments) {
-		this.payments = payments;
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
 	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public InvoiceType getInvoiceType() {
+		return invoiceType;
+	}
+
+	public void setInvoiceType(InvoiceType invoiceType) {
+		this.invoiceType = invoiceType;
+	}
+
+	public InvoiceStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(InvoiceStatus status) {
+		this.status = status;
+	}
+
+	public Client getClient() {
+		return client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
 	public Invoice getInvoice() {
 		return invoice;
 	}
@@ -110,54 +125,38 @@ public class Report implements Serializable {
 		this.invoice = invoice;
 	}
 
-	public SalesInvoice getSalesInvoice() {
-		return salesInvoice;
+
+	public Payment getPayment() {
+		return payment;
 	}
 
-	public void setSalesInvoice(SalesInvoice salesInvoice) {
-		this.salesInvoice = salesInvoice;
+	public void setPayment(Payment payment) {
+		this.payment = payment;
 	}
 
-//
-//	public Dashboard addDashboard(Dashboard dashboard) {
-//		getDashboards().add(dashboard);
-//		dashboard.setReport(this);
-//
-//		return dashboard;
-//	}
-//
-//	public Dashboard removeDashboard(Dashboard dashboard) {
-//		getDashboards().remove(dashboard);
-//		dashboard.setReport(null);
-//
-//		return dashboard;
-//	}
 
-	public Client getClient() {
-		return this.client;
+	public SalesInvoices getSalesInvoices() {
+		return salesInvoices;
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void setSalesInvoices(SalesInvoices salesInvoices) {
+		this.salesInvoices = salesInvoices;
 	}
 
-	public InvoiceType getInvoiceType() {
-		return this.invoiceType;
+	public List<ReportHistory> getHistory() {
+		return history;
 	}
 
-	public void setInvoiceType(InvoiceType invoiceType) {
-		this.invoiceType = invoiceType;
+	public void setHistory(List<ReportHistory> history) {
+		this.history = history;
 	}
-	@Override
-	public String toString() {
-		return "Report{" +
-				"id=" + id +
-				", createdAt=" + createdAt +
-				", dueDate=" + dueDate +
-				", issueDate=" + issueDate +
-				", payments=" + payments +
-				", salesInvoices=" + salesInvoice +
-				'}';
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 
 }

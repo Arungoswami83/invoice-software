@@ -26,6 +26,7 @@ public class ClientModelToEntityConverter {
         client.setMobileNumber(clientSignupRequestModel.getMobileNumber());
         client.setUserName(clientSignupRequestModel.getUsername());
         client.setPassword(clientSignupRequestModel.getPassword());
+        client.setGender(clientSignupRequestModel.getGender());
         
         
         return client;
@@ -40,6 +41,8 @@ public class ClientModelToEntityConverter {
         client.setAddress(clientUpdateRequestModel.getAddress());
         client.setMobileNumber(clientUpdateRequestModel.getMobileNumber());
         client.setCompanyName(clientUpdateRequestModel.getCompanyName());
+       client.setGender(clientUpdateRequestModel.getGender());
+
         
         return client;
 	}

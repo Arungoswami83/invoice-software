@@ -16,31 +16,39 @@ import java.time.LocalDateTime;
 public class Dashboard implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	 @Id
+		@Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Integer id;
 
-	    @Column(name = "total_income", nullable = false)
-	    private BigDecimal totalIncome = BigDecimal.ZERO;
+		@Column(name = "total_revenue", precision = 38, scale = 2, nullable = false)
+		private BigDecimal totalRevenue = BigDecimal.ZERO;
 
-	    @Column(name = "total_expense", nullable = false)
-	    private BigDecimal totalExpense = BigDecimal.ZERO;
+		@Column(name = "total_expenditure", precision = 38, scale = 2, nullable = false)
+		private BigDecimal totalExpenditure = BigDecimal.ZERO;
 
-	    @Column(name = "total_receivables", nullable = false)
-	    private BigDecimal totalReceivables = BigDecimal.ZERO;
+		 @Column(name = "total_receivables", precision = 38, scale = 2, nullable = false)
+		 private BigDecimal totalReceivables = BigDecimal.ZERO;
 
-	    @Column(name = "total_payments_received", nullable = false)
-	    private BigDecimal totalPaymentsReceived = BigDecimal.ZERO;
+		 @Column(name = "total_payments_received", precision = 38, scale = 2, nullable = false)
+		 private BigDecimal totalPaymentsReceived = BigDecimal.ZERO;
 
-	    @ManyToOne
-	    @JoinColumn(name = "client_id", nullable = false)
-	    private Client client;  
+		 @Column(name = "total_sales", precision = 38, scale = 2, nullable = false)
+		 private BigDecimal totalSales = BigDecimal.ZERO;
+
+		 @Column(name = "profit", precision = 38, scale = 2, nullable = false)
+		 private BigDecimal profit = BigDecimal.ZERO;
+
+		 @ManyToOne
+		 @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
+		 private Client client; 
 
 	    @Column(name = "created_at", updatable = false)
-	    private LocalDateTime createdAt = LocalDateTime.now();
-
+	    @Temporal(TemporalType.TIMESTAMP)
+	    private LocalDateTime createdAt;
+	    
 	    @Column(name = "updated_at")
-	    private LocalDateTime updatedAt= LocalDateTime.now();
+	    @Temporal(TemporalType.TIMESTAMP)
+	    private LocalDateTime updatedAt;
 
 	    public Dashboard() {
 	    	
@@ -53,22 +61,16 @@ public class Dashboard implements Serializable {
 		public void setId(Integer id) {
 			this.id = id;
 		}
+		 @PrePersist
+		    protected void onCreate() {
+		        this.createdAt = LocalDateTime.now();
+		        this.updatedAt = LocalDateTime.now();
+		    }
 
-		public BigDecimal getTotalIncome() {
-			return totalIncome;
-		}
-
-		public void setTotalIncome(BigDecimal totalIncome) {
-			this.totalIncome = totalIncome;
-		}
-
-		public BigDecimal getTotalExpense() {
-			return totalExpense;
-		}
-
-		public void setTotalExpense(BigDecimal totalExpense) {
-			this.totalExpense = totalExpense;
-		}
+		  @PreUpdate
+		    protected void onUpdate() {
+		        this.updatedAt = LocalDateTime.now();
+		    }
 
 		public BigDecimal getTotalReceivables() {
 			return totalReceivables;
@@ -109,6 +111,37 @@ public class Dashboard implements Serializable {
 		public void setUpdatedAt(LocalDateTime updatedAt) {
 			this.updatedAt = updatedAt;
 		}
-	    
 
+		public BigDecimal getTotalRevenue() {
+			return totalRevenue;
+		}
+
+		public void setTotalRevenue(BigDecimal totalRevenue) {
+			this.totalRevenue = totalRevenue;
+		}
+
+		public BigDecimal getTotalExpenditure() {
+			return totalExpenditure;
+		}
+
+		public void setTotalExpenditure(BigDecimal totalExpenditure) {
+			this.totalExpenditure = totalExpenditure;
+		}
+
+		public BigDecimal getTotalSales() {
+			return totalSales;
+		}
+
+		public void setTotalSales(BigDecimal totalSales) {
+			this.totalSales = totalSales;
+		}
+
+		public BigDecimal getProfit() {
+			return profit;
+		}
+
+		public void setProfit(BigDecimal profit) {
+			this.profit = profit;
+		}
+		
 }
