@@ -17,7 +17,6 @@ public class ServiceDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name="created_at")
@@ -34,6 +33,8 @@ public class ServiceDetail implements Serializable {
 	@Column(name="total_amount")
 	private BigDecimal totalAmount;
 
+	//bi-directional many-to-one association to ServiceInvoice
+	@ManyToOne
 	@JoinColumn(name="invoice_id")
 	private ServiceInvoice serviceInvoice;
 
@@ -88,14 +89,12 @@ public class ServiceDetail implements Serializable {
 		this.totalAmount = totalAmount;
 	}
 
-
 	public ServiceInvoice getServiceInvoice() {
 		return this.serviceInvoice;
 	}
 
 	public void setServiceInvoice(ServiceInvoice serviceInvoice) {
 		this.serviceInvoice = serviceInvoice;
-
 	}
 
 }

@@ -20,27 +20,16 @@ public class SalesInvoice implements Serializable {
 
 	@Id
 	private int id;
-	 @OneToMany(mappedBy = "salesInvoice", cascade = CascadeType.ALL)
-	    private List<SalesInvoiceItem> salesInvoiceItems;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "client_id", nullable = false) // Ensures NOT NULL
-	private Client client;
+    @JoinColumn(name = "client_id", nullable = false) 
+    private Client client;
 
 	@Column(name="created_at")
 	private Timestamp createdAt;
-
+	
 	@Column(name="is_deleted")
 	private int isDeleted;
-	
-	
-	public int getIsDeleted() {
-		return isDeleted;
-	}
-
-	public void setIsDeleted(int isDeleted) {
-		this.isDeleted = isDeleted;
-	}
 
 	private BigDecimal discount;
 
@@ -78,12 +67,9 @@ public class SalesInvoice implements Serializable {
 	@OneToMany(mappedBy="salesInvoice")
 	private List<Dashboard> dashboards;
 
-	//bi-directional many-to-one association to Report
-	@OneToMany(mappedBy="salesInvoice")
-	private List<Report> reports;
-
 	//bi-directional many-to-one association to SalesInvoiceItem
-	
+	@OneToMany(mappedBy="salesInvoice")
+	private List<SalesInvoiceItem> salesInvoiceItems;
 
 	public SalesInvoice() {
 	}
@@ -95,7 +81,7 @@ public class SalesInvoice implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-
+	
 	public Client getClient() {
 		return client;
 	}
@@ -111,8 +97,6 @@ public class SalesInvoice implements Serializable {
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
-
-
 
 	public BigDecimal getDiscount() {
 		return this.discount;
@@ -160,6 +144,14 @@ public class SalesInvoice implements Serializable {
 
 	public void setSignature(String signature) {
 		this.signature = signature;
+	}
+
+	public int getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(int isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public String getStatus() {
@@ -212,14 +204,14 @@ public class SalesInvoice implements Serializable {
 
 	public Analytic addAnalytic(Analytic analytic) {
 		getAnalytics().add(analytic);
-		analytic.setInvoice(null);
+		analytic.setSalesInvoice(this);
 
 		return analytic;
 	}
 
 	public Analytic removeAnalytic(Analytic analytic) {
 		getAnalytics().remove(analytic);
-		analytic.setInvoice(null);
+		analytic.setSalesInvoice(null);
 
 		return analytic;
 	}
@@ -232,30 +224,18 @@ public class SalesInvoice implements Serializable {
 		this.dashboards = dashboards;
 	}
 
-	
-
-	public Dashboard removeDashboard(Dashboard dashboard) {
-		getDashboards().remove(dashboard);
-		dashboard.setInvoice(null);
+	public Dashboard addDashboard(Dashboard dashboard) {
+		getDashboards().add(dashboard);
+		dashboard.setSalesInvoice(this);
 
 		return dashboard;
 	}
 
-	public List<Report> getReports() {
-		return this.reports;
-	}
+	public Dashboard removeDashboard(Dashboard dashboard) {
+		getDashboards().remove(dashboard);
+		dashboard.setSalesInvoice(null);
 
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
-
-	
-
-	public Report removeReport(Report report) {
-		getReports().remove(report);
-		report.setSalesInvoice(null);
-
-		return report;
+		return dashboard;
 	}
 
 	public List<SalesInvoiceItem> getSalesInvoiceItems() {

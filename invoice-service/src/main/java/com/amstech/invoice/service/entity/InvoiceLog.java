@@ -4,6 +4,8 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 /**
  * The persistent class for the invoice_logs database table.
@@ -16,8 +18,6 @@ public class InvoiceLog implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-
 	private int id;
 
 	private String action;
@@ -28,7 +28,9 @@ public class InvoiceLog implements Serializable {
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
 	@JoinColumn(name="invoice_id")
+	@JsonBackReference
 	private Invoice invoice;
+
 
 	public InvoiceLog() {
 	}
@@ -58,12 +60,11 @@ public class InvoiceLog implements Serializable {
 	}
 
 	public Invoice getInvoice() {
-
-		return invoice;
-
+		return this.invoice;
 	}
 
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
 	}
+
 }

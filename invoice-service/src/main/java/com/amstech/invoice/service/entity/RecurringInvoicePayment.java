@@ -16,12 +16,8 @@ public class RecurringInvoicePayment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="payment_id")
 	private int paymentId;
-	
-
-
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="last_payment_date")
@@ -33,7 +29,8 @@ public class RecurringInvoicePayment implements Serializable {
 
 	@Column(name="payment_status")
 	private String paymentStatus;
-	
+
+	//bi-directional many-to-one association to RecurringInvoice
 	@ManyToOne
 	@JoinColumn(name="id")
 	private RecurringInvoice recurringInvoice;
@@ -48,7 +45,6 @@ public class RecurringInvoicePayment implements Serializable {
 	public void setPaymentId(int paymentId) {
 		this.paymentId = paymentId;
 	}
-
 
 	public Date getLastPaymentDate() {
 		return this.lastPaymentDate;

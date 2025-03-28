@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.util.List;
 
 
-
 /**
  * The persistent class for the currency database table.
  * 
@@ -16,15 +15,17 @@ public class Currency implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-
 	private int id;
 
 	private String code;
 
 	private String name;
-	 
-	Currency() {
+
+//	//bi-directional many-to-one association to Company
+//	@OneToMany(mappedBy="currency")
+//	private List<Company> companies;
+
+	public Currency() {
 	}
 
 	public int getId() {
@@ -51,4 +52,11 @@ public class Currency implements Serializable {
 		this.name = name;
 	}
 
+//	public List<Company> getCompanies() {
+//		return this.companies;
+//	}
+//
+//	public void setCompanies(List<Company> companies) {
+//		this.companies = companies;
+//	}
 }

@@ -1,3 +1,4 @@
+
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
@@ -16,10 +17,8 @@ public class CashFlow implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	@Column(name = "`month`")
 	private String month;
 
 	@Column(name="total_expense")

@@ -1,8 +1,11 @@
 package com.amstech.invoice.service.response.model;
 
-import com.amstech.invoice.service.entity.Client;
+import java.math.BigDecimal;
+import java.util.Date;
 
 import lombok.Data;
+
+
 @Data
 public class ClientResponseModel {
 	private int id;
@@ -12,5 +15,4 @@ public class ClientResponseModel {
     private String mobileNumber;
     private String companyName;
     private String address;
-    private Boolean isDeleted;
 }

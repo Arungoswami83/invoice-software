@@ -17,8 +17,6 @@ public class InvoiceItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-
 	private int id;
 
 	private String category;
@@ -45,7 +43,6 @@ public class InvoiceItem implements Serializable {
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoiceItem")
 	private List<TaxDetail> taxDetails;
-
 
 	public InvoiceItem() {
 	}
@@ -152,20 +149,18 @@ public class InvoiceItem implements Serializable {
 		this.taxDetails = taxDetails;
 	}
 
+	public TaxDetail addTaxDetail(TaxDetail taxDetail) {
+		getTaxDetails().add(taxDetail);
+		taxDetail.setInvoiceItem(this);
 
-	public TaxDetail addTaxDetails(TaxDetail taxDetails) {
-		getTaxDetails().add(taxDetails);
-		taxDetails.setInvoiceItem(this);
-
-		return taxDetails;
+		return taxDetail;
 	}
 
-	public TaxDetail removeTaxDetails(TaxDetail taxDetails) {
-		getTaxDetails().remove(taxDetails);
-		taxDetails.setInvoiceItem(null);
+	public TaxDetail removeTaxDetail(TaxDetail taxDetail) {
+		getTaxDetails().remove(taxDetail);
+		taxDetail.setInvoiceItem(null);
 
-		return taxDetails;
+		return taxDetail;
 	}
-
 
 }
