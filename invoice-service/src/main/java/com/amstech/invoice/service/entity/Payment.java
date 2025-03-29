@@ -42,13 +42,13 @@ public class Payment implements Serializable {
 	    @Column(name = "notes", columnDefinition = "TEXT")
 	    private String notes;
 	    
-	    @Column(name = "amount_paid", nullable = false, precision = 12, scale = 2)
+	    @Column(name = "amount_paid")
 	    private BigDecimal amountPaid;
 
-	    @Column(name = "payment_date", nullable = false)
+	    @Column(name = "payment_date")
 	    private LocalDateTime paymentDate;
 	    
-	    @Column(name = "created_at", updatable = false)
+	    @Column(name = "created_at")
 	    private LocalDateTime createdAt = LocalDateTime.now();
 
 	    @Column(name = "updated_at")

@@ -23,7 +23,7 @@ public class ProductInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	@Lob
@@ -32,8 +32,6 @@ public class ProductInvoice implements Serializable {
 
 	@Column(name="buyer_details")
 	private String buyerDetails;
-
-	
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")

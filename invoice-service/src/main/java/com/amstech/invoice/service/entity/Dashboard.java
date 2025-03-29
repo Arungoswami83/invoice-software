@@ -20,23 +20,23 @@ public class Dashboard implements Serializable {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Integer id;
 
-		@Column(name = "total_revenue", precision = 38, scale = 2, nullable = false)
-		private BigDecimal totalRevenue = BigDecimal.ZERO;
+		@Column(name = "total_revenue")
+		private BigDecimal totalRevenue;
 
-		@Column(name = "total_expenditure", precision = 38, scale = 2, nullable = false)
-		private BigDecimal totalExpenditure = BigDecimal.ZERO;
+		@Column(name = "total_expenditure")
+		private BigDecimal totalExpenditure;
 
-		 @Column(name = "total_receivables", precision = 38, scale = 2, nullable = false)
-		 private BigDecimal totalReceivables = BigDecimal.ZERO;
+		 @Column(name = "total_receivables")
+		 private BigDecimal totalReceivables;
 
-		 @Column(name = "total_payments_received", precision = 38, scale = 2, nullable = false)
-		 private BigDecimal totalPaymentsReceived = BigDecimal.ZERO;
+		 @Column(name = "total_payments_received")
+		 private BigDecimal totalPaymentsReceived;
 
-		 @Column(name = "total_sales", precision = 38, scale = 2, nullable = false)
-		 private BigDecimal totalSales = BigDecimal.ZERO;
+		 @Column(name = "total_sales")
+		 private BigDecimal totalSales;
 
-		 @Column(name = "profit", precision = 38, scale = 2, nullable = false)
-		 private BigDecimal profit = BigDecimal.ZERO;
+		 @Column(name = "profit")
+		 private BigDecimal profit;
 
 		 @ManyToOne
 		 @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)

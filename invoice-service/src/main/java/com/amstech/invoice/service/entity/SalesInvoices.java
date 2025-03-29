@@ -59,9 +59,6 @@ public class SalesInvoices implements Serializable {
     @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Analytic> analytics;
 
-//    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Dashboard> dashboards;
-
     @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Report> reports;
   

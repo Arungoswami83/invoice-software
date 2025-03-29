@@ -1,6 +1,7 @@
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
@@ -26,14 +27,14 @@ public class PaymentHistory implements Serializable{
 		private int id;
 	
 		@ManyToOne
-	    @JoinColumn(name = "invoice_id", nullable = false)
+	    @JoinColumn(name = "invoice_id")
 	    private Invoice invoice;
 
 	    @Column(name = "payment_method", length = 100)
 	    private String paymentMethod;
 
-	    @Column(name = "amount", nullable = false, precision = 38, scale = 2)
-	    private Double amount;
+	    @Column(name = "amount")
+	    private BigDecimal amount;
 
 	    @Column(name = "transaction_date", nullable = false, updatable = false)
 	    private Timestamp transactionDate;
@@ -72,11 +73,11 @@ public class PaymentHistory implements Serializable{
 			this.paymentMethod = paymentMethod;
 		}
 
-		public Double getAmount() {
+		public BigDecimal getAmount() {
 			return amount;
 		}
 
-		public void setAmount(Double amount) {
+		public void setAmount(BigDecimal amount) {
 			this.amount = amount;
 		}
 

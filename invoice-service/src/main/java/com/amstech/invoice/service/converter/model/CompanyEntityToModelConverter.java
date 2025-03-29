@@ -16,7 +16,6 @@ import com.amstech.invoice.service.response.model.CompanyResponseModel;
 
 @Component
 public class CompanyEntityToModelConverter {
-
 	
 	
 	public List<CompanyResponseModel> getFindAllConvert(List<Company> companyList){
@@ -39,8 +38,6 @@ public class CompanyEntityToModelConverter {
 	            responseModel.setLogo(company.getLogo());
 	            responseModel.setClientId(company.getClient().getId());
 	            
-
-	            // Corrected: Convert byte to boolean
 	            responseModel.setIsDeleted(company.getIsDeleted() != (byte) 0);
 	            responseModel.setUpdatedAt(Timestamp.from(Instant.now()));
 	            //responseModel.setUpdatedAt(company.getUpdatedAt());
@@ -51,7 +48,6 @@ public class CompanyEntityToModelConverter {
 
 	}
 	public CompanyResponseModel getfindById(Company company){
-		
 	
 	        CompanyResponseModel responseModel = new CompanyResponseModel();
 

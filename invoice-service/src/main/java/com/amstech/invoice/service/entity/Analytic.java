@@ -34,10 +34,10 @@ public class Analytic implements Serializable {
 	@JoinColumn(name = "sales_invoice_id")
 	private SalesInvoices salesInvoices;
 	
-	 @Column(name = "total_amount", nullable = false, precision = 38, scale = 2)
+	 @Column(name = "total_amount")
 	    private BigDecimal totalAmount;
 
-	    @Column(name = "tax_amount", nullable = false, precision = 38, scale = 2)
+	    @Column(name = "tax_amount")
 	    private BigDecimal taxAmount;
 
 	    @Enumerated(EnumType.STRING)
@@ -47,19 +47,9 @@ public class Analytic implements Serializable {
 	    @Column(name = "created_at", updatable = false)
 	    private LocalDateTime createdAt = LocalDateTime.now();
 
-//	//bi-directional many-to-one association to Dashboard
-//	@OneToMany(mappedBy="analytic")
-//	private List<Dashboard> dashboards;
-
-	public Analytic() {
+	    
+	    public Analytic() {
 	}
-	 public void Analytics(Invoice invoice, SalesInvoice salesInvoice, BigDecimal totalAmount, BigDecimal taxAmount, PaymentStatus paymentStatus) {
-	        this.invoice = invoice;
-	        this.salesInvoice = salesInvoice;
-	        this.totalAmount = totalAmount;
-	        this.taxAmount = taxAmount;
-	        this.paymentStatus = paymentStatus;
-	    }
 
 	public int getId() {
 		return this.id;
