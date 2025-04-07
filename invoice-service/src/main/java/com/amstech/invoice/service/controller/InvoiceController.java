@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,7 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
         LOGGER.info("InvoiceController: Object Created");
     }
+    @CrossOrigin(origins = "http://localhost:4200")
     
     @RequestMapping(method = RequestMethod.POST, value = "/create", consumes = "application/json", produces = "application/json")    
     public ResponseMessage createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
@@ -45,7 +47,6 @@ public class InvoiceController {
             responseMap.put("invoice", invoiceResponse);
             responseMap.put("pdfUrl", invoiceResponse.getPdfUrl());
 
-   //         responseMap.put("emailStatus", "Invoice email sent successfully!");
             return ResponseMessage.build().withSuccess("Invoice Created Successfully", responseMap);
         } catch (Exception e) {
             LOGGER.error("Failed to Create user invoice due to: {}", e.getMessage(), e);
@@ -151,3 +152,4 @@ public class InvoiceController {
     }   
 }
 }
+

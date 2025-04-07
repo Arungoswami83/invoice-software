@@ -27,19 +27,12 @@ public class InvoiceEntityToModelConverter {
 	        
 	        response.setInvoiceNumber(invoice.getInvoiceNumber());
 	        invoice.getClient();
-	        invoice.getInvoiceType();
-	        invoice.getInvoiceItem();
 	        response.setDiscount(invoice.getDiscount());
 	        response.setDueDate(invoice.getDueDate());
-	        response.setIssueDate(invoice.getIssueDate());
-	        response.setGrandTotal(invoice.getGrandTotal());
-	        response.setBalance(invoice.getBalance());
-	        response.setPaid(invoice.getPaid());
-	        response.setProductCode(invoice.getProductCode());
+	        response.setCreatedAt(invoice.getCreatedAt());
 	        response.setQuantity(invoice.getQuantity());
 	        response.setTax(invoice.getTax());
 	        response.setTotalAmount(invoice.getTotalAmount());
-//	        response.setId(invoice.getId());
 	        invoiceResponse.add(response);
 	        }
 	    return invoiceResponse;
@@ -51,18 +44,13 @@ public class InvoiceEntityToModelConverter {
 
         responseModel.setId(invoice.getId());
         responseModel.setInvoiceNumber(invoice.getInvoiceNumber());
-        responseModel.setIssueDate(invoice.getIssueDate());
+        responseModel.setCreatedAt(invoice.getCreatedAt());
         responseModel.setDueDate(invoice.getDueDate());
         responseModel.setTotalAmount(invoice.getTotalAmount());
         responseModel.setSubTotal(invoice.getSubTotal());
         responseModel.setDiscount(invoice.getDiscount());
         responseModel.setTax(invoice.getTax());
-        responseModel.setShipping(invoice.getShipping());
-        responseModel.setGrandTotal(invoice.getGrandTotal());
-        responseModel.setPaid(invoice.getPaid());
-        responseModel.setBalance(invoice.getBalance());
         responseModel.setQuantity(invoice.getQuantity());
-        responseModel.setProductCode(invoice.getProductCode());
         
         return responseModel;
     }
@@ -73,18 +61,13 @@ public class InvoiceEntityToModelConverter {
 
         responseModel.setId(invoice.getId());
         responseModel.setInvoiceNumber(invoice.getInvoiceNumber());
-        responseModel.setIssueDate(invoice.getIssueDate());
+        responseModel.setCreatedAt(invoice.getCreatedAt());
         responseModel.setDueDate(invoice.getDueDate());
         responseModel.setTotalAmount(invoice.getTotalAmount());
         responseModel.setSubTotal(invoice.getSubTotal());
         responseModel.setDiscount(invoice.getDiscount());
         responseModel.setTax(invoice.getTax());
-        responseModel.setShipping(invoice.getShipping());
-        responseModel.setGrandTotal(invoice.getGrandTotal());
-        responseModel.setPaid(invoice.getPaid());
-        responseModel.setBalance(invoice.getBalance());
         responseModel.setQuantity(invoice.getQuantity());
-        responseModel.setProductCode(invoice.getProductCode());
         
         return responseModel;
     }
@@ -103,15 +86,12 @@ public class InvoiceEntityToModelConverter {
             Client client = invoice.getClient();
             ClientResponseModel clientResponseModel = new ClientResponseModel();
 
-            clientResponseModel.setInvoiceId(invoice.getId()); 
             clientResponseModel.setClientId(client.getId());
             clientResponseModel.setFirstName(client.getFirstName());
             clientResponseModel.setLastName(client.getLastName());
-            clientResponseModel.setInvoiceNumber(invoice.getInvoiceNumber());
-            clientResponseModel.setIssueDate(invoice.getIssueDate());
+            clientResponseModel.setCreatedAt(invoice.getCreatedAt());
             clientResponseModel.setDueDate(invoice.getDueDate());
             clientResponseModel.setTotalAmount(invoice.getTotalAmount());
-            clientResponseModel.setProductCode(invoice.getProductCode());
             clientResponseModel.setQuantity(invoice.getQuantity());
             clientResponseModel.setTax(invoice.getTax());
 
@@ -128,22 +108,22 @@ public class InvoiceEntityToModelConverter {
         InvoiceResponseModel responseModel = new InvoiceResponseModel();
         responseModel.setId(invoice.getId()); 
         responseModel.setInvoiceNumber(invoice.getInvoiceNumber());
-        responseModel.setIssueDate(invoice.getIssueDate());
+        responseModel.setCreatedAt(invoice.getCreatedAt());
         responseModel.setDueDate(invoice.getDueDate());
         responseModel.setTotalAmount(invoice.getTotalAmount());
         responseModel.setSubTotal(invoice.getSubTotal());
         responseModel.setDiscount(invoice.getDiscount());
         responseModel.setTax(invoice.getTax());
-        responseModel.setShipping(invoice.getShipping());
-        responseModel.setGrandTotal(invoice.getGrandTotal());
-        responseModel.setPaid(invoice.getPaid());
-        responseModel.setBalance(invoice.getBalance());
         responseModel.setQuantity(invoice.getQuantity());
-        responseModel.setProductCode(invoice.getProductCode());
         responseModel.setPdfUrl(invoice.getPdfPath());
+        responseModel.setBalance(invoice.getBalance());
+        responseModel.setPaid(invoice.getPaid());
+        responseModel.setCategory(invoice.getCategory().name());
+        responseModel.setProductCode(invoice.getProductCode());
 
         return responseModel;
     }
+    
     
 }
       

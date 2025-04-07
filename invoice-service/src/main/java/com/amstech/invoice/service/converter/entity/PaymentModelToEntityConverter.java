@@ -1,5 +1,6 @@
 package com.amstech.invoice.service.converter.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -23,8 +24,8 @@ public class PaymentModelToEntityConverter {
 		    payment.setAmountPaid(paymentRequest.getAmountPaid());
 		    
 		    if (paymentRequest.getPaymentDate() != null && !paymentRequest.getPaymentDate().isEmpty()) {
-		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		        LocalDateTime paymentDate = LocalDateTime.parse(paymentRequest.getPaymentDate(), formatter);
+		        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		        LocalDate paymentDate = LocalDate.parse(paymentRequest.getPaymentDate(), formatter);
 		        payment.setPaymentDate(paymentDate);
 		    }
 		    

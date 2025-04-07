@@ -83,8 +83,7 @@ public class ReportService {
         }
 
         Report report = reportModelToEntityConverter.getAddReport(
-            reportRequestModel, optionalClient, optionalInvoice, optionalPayment, invoiceTypesOptional, optionalSales
-        );
+         reportRequestModel, optionalClient, optionalInvoice, optionalPayment, invoiceTypesOptional, optionalSales);
 
         Report savedReport = reportRepo.save(report);
         LOGGER.info("Saving Report with ID: {}", savedReport.getId());

@@ -6,8 +6,12 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -25,32 +29,18 @@ public class Invoice implements Serializable {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
-	private BigDecimal balance;
-
+	
+	@CreationTimestamp
 	@Column(name="created_at")
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 
 	private BigDecimal discount;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="due_date")
-	private Date dueDate;
-
-	@Column(name="grand_total")
-	private BigDecimal grandTotal;
 
 	@Column(name = "invoice_number", unique = true)
     private String invoiceNumber;
 	
 	@Column(name = "pdf_path")
 	private String pdfPath;
-
-	@Temporal(TemporalType.DATE)
-	@Column(name="issue_date")
-	private Date issueDate;
-
-	private BigDecimal paid;
 
 	@Enumerated(EnumType.STRING)  
 	 @Column(nullable = false)
@@ -59,33 +49,48 @@ public class Invoice implements Serializable {
 //	@Column(name = "payment_method", length = 20)
 //	private String paymentMethod;
 
-	@Column(name="product_code")
-	private String productCode;
-
 	@Lob
 	private int quantity;
-
-	private BigDecimal shipping;
 	
 	private String customerEmail;
+	
     private String customerPhone;
+    
     private String customerName;
 	
 	@Column(name="sub_total")
 	private BigDecimal subTotal;
+	
+	@Column(name = "note")
+    private String note;  
 
 	private BigDecimal tax;
+	
+	private Date dueDate;
 
 	@Column(name="total_amount")
 	private BigDecimal totalAmount;
 
 	@Column(name="updated_at")
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 
 	//bi-directional many-to-one association to Analytic
 	@OneToMany(mappedBy="invoice")
 	private List<Analytic> analytics;
 	
+	@Column(name = "paid")
+	private BigDecimal paid;
+
+	@Column(name = "balance")
+	private BigDecimal balance;
+
+	 @Enumerated(EnumType.STRING)
+	 @Column(name = "category", columnDefinition = "ENUM('Service', 'Product', 'Other') DEFAULT 'Service'")
+	 private Category category = Category.SERVICE;
+
+	 @Column(name = "product_code")
+	 private String productCode;
+	    
 	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InvoiceHistory> invoiceHistories;
 
@@ -112,17 +117,8 @@ public class Invoice implements Serializable {
 	 @JoinColumn(name = "company_id", nullable = false)
 	private Company company;
 
-	//bi-directional many-to-one association to InvoiceItem
-	@ManyToOne
-	@JoinColumn(name="invoice_items")
-	private InvoiceItem invoiceItem;
-
 	//bi-directional many-to-one association to InvoiceType
-	@ManyToOne
-	@JoinColumn(name="invoice_types_id")
-	@JsonIgnore
-	private InvoiceType invoiceType;
-
+	
 	//bi-directional many-to-one association to InvoiceLog
 	@OneToMany(mappedBy = "invoice")
 	@JsonManagedReference
@@ -142,10 +138,22 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to Report
 	@OneToMany(mappedBy="invoice")
 	private List<Report> reports;
-	
-	@ManyToOne
-	@JoinColumn(name = "report_id") // This should match the Report entity
-	private Report report;
+
+	public BigDecimal getPaid() {
+		return paid;
+	}
+
+	public void setPaid(BigDecimal paid) {
+		this.paid = paid;
+	}
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
 
 	public String getCustomerEmail() {
 		return customerEmail;
@@ -177,20 +185,6 @@ public class Invoice implements Serializable {
 	
 	 @Column(name="deleted")
 	    private Boolean deleted;
-	 
-	  @PrePersist
-	    public void generateInvoiceNumber() {
-	        if (this.invoiceNumber == null) {
-	            this.invoiceNumber = "INV-" + id; 
-	        }
-	    }
-
-	    @PostPersist
-	    public void updateInvoiceNumber() {
-	        if (this.invoiceNumber.equals("INV-null")) {
-	            this.invoiceNumber = "INV-" + id;
-	        }
-	    }
 	   
 	public Boolean getDeleted() {
 			return deleted;
@@ -217,14 +211,6 @@ public class Invoice implements Serializable {
 		this.pdfPath = pdfPath;
 	}
 
-	public Report getReport() {
-		return report;
-	}
-
-	public void setReport(Report report) {
-		this.report = report;
-	}
-
 	public int getId() {
 		return this.id;
 	}
@@ -232,21 +218,13 @@ public class Invoice implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public BigDecimal getBalance() {
-		return this.balance;
+	
+	public String getNote() {
+		return note;
 	}
 
-	public void setBalance(BigDecimal balance) {
-		this.balance = balance;
-	}
-
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
+	public void setNote(String note) {
+		this.note = note;
 	}
 
 	public BigDecimal getDiscount() {
@@ -257,18 +235,6 @@ public class Invoice implements Serializable {
 		this.discount = discount;
 	}
 
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
-
-	public BigDecimal getGrandTotal() {
-		return this.grandTotal;
-	}
-
-	public void setGrandTotal(BigDecimal grandTotal) {
-		this.grandTotal = grandTotal;
-	}
-
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;
 	}
@@ -276,23 +242,7 @@ public class Invoice implements Serializable {
 	public void setInvoiceNumber(String invoiceNumber) {
 		this.invoiceNumber = invoiceNumber;
 	}
-
-	public Date getIssueDate() {
-		return this.issueDate;
-	}
-
-	public void setIssueDate(Date issueDate) {
-		this.issueDate = issueDate;
-	}
-
-	public BigDecimal getPaid() {
-		return this.paid;
-	}
-
-	public void setPaid(BigDecimal paid) {
-		this.paid = paid;
-	}
-
+	
 	public List<Transaction> getTransactions() {
 		return transactions;
 	}
@@ -304,14 +254,7 @@ public class Invoice implements Serializable {
 	public Date getDueDate() {
 		return dueDate;
 	}
-
-	public String getProductCode() {
-		return this.productCode;
-	}
-
-	public void setProductCode(String productCode) {
-		this.productCode = productCode;
-	}
+	
 	public int getQuantity() {
 		return this.quantity;
 	}
@@ -320,12 +263,20 @@ public class Invoice implements Serializable {
 		this.quantity = quantity;
 	}
 
-	public BigDecimal getShipping() {
-		return this.shipping;
+	public Category getCategory() {
+		return category;
 	}
 
-	public void setShipping(BigDecimal shipping) {
-		this.shipping = shipping;
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public String getProductCode() {
+		return productCode;
+	}
+
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
 	}
 
 	public BigDecimal getSubTotal() {
@@ -351,12 +302,43 @@ public class Invoice implements Serializable {
 	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
+	
+	 @PrePersist
+	    protected void onCreate() {
+	        this.createdAt = LocalDateTime.now();
+	        this.updatedAt = LocalDateTime.now();
+	    }
+	 public void generateInvoiceNumber() {
+	        if (this.invoiceNumber == null) {
+	            this.invoiceNumber = "INV-" + id; 
+	        }
+	    }
 
-	public Timestamp getUpdatedAt() {
-		return this.updatedAt;
+	    @PostPersist
+	    public void updateInvoiceNumber() {
+	        if (this.invoiceNumber == null || this.invoiceNumber.equals("INV-null")) {
+	            this.invoiceNumber = "INV-" + id;
+	        }
+	    }
+
+	    @PreUpdate
+	    protected void onUpdate() {
+	        this.updatedAt = LocalDateTime.now();
+	    }
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setUpdatedAt(Timestamp updatedAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
 
@@ -436,22 +418,6 @@ public class Invoice implements Serializable {
 		this.company = company;
 	}
 
-	public InvoiceItem getInvoiceItem() {
-		return this.invoiceItem;
-	}
-
-	public void setInvoiceItem(InvoiceItem invoiceItem) {
-		this.invoiceItem = invoiceItem;
-	}
-
-	public InvoiceType getInvoiceType() {
-		return this.invoiceType;
-	}
-
-	public void setInvoiceType(InvoiceType invoiceType) {
-		this.invoiceType = invoiceType;
-	}
-
 	public List<InvoiceLog> getInvoiceLogs() {
 		return this.invoiceLogs;
 	}
@@ -524,6 +490,10 @@ public class Invoice implements Serializable {
 
 	public void setReports(List<Report> reports) {
 		this.reports = reports;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
 	}
 
 	public List<TaxDetail> getTaxDetails() {

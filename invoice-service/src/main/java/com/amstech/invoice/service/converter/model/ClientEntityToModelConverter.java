@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.amstech.invoice.service.entity.Client;
-
+import com.amstech.invoice.service.response.model.ClientEmailResponseModel;
 import com.amstech.invoice.service.response.model.ClientResponseModel;
 
 
@@ -48,7 +48,15 @@ public class ClientEntityToModelConverter {
 //       
 	return responseModel;
 
+
 }
+//	public ClientEmailResponseModel getDetailsUser(Client client) {
+//		ClientEmailResponseModel emailResponseModel=new ClientEmailResponseModel();
+//		
+//		emailResponseModel.setClientId(client.getId());
+//		emailResponseModel.setCompanyId(client.getCompanies().get());
+//		
+//	}
 
 
 }

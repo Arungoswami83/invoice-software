@@ -1,6 +1,7 @@
 package com.amstech.invoice.service.request.model;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import com.amstech.invoice.service.entity.Client;
@@ -12,22 +13,23 @@ public class InvoiceRequest {
 	
 	private Integer clientId;
 	private Integer companyId;
-	private Integer invoiceItemsId;
-	private Integer invoiceTypeId;
-	private String invoiceNumber;
-	private String gender;
-	private Date issueDate;
-	private Date dueDate;
 	private BigDecimal totalAmount;
 	private BigDecimal subTotal;
 	private BigDecimal discount;
 	private BigDecimal tax;
-	private BigDecimal shipping;
 	private BigDecimal grandTotal;
-	private BigDecimal balance;
 	private int quantity;
-	private String productCode;
+	private String customerEmail;
+	private String customerPhone;
+	private String customerName;
+	private BigDecimal paid;
+	private BigDecimal balance;
+	private String category; // Service, Product, Other
+    private String productCode;
 	private String paymentStatus;
+    private String paymentMethod;
+
+	
 	
 	
 }

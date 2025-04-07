@@ -9,7 +9,5 @@ public enum PaymentMethod {
     UPI, 
     BANK_TRANSFER,
     CHEQUE;
-
-	
 }
 

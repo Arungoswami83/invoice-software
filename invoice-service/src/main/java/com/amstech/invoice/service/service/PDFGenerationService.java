@@ -38,15 +38,12 @@ public class PDFGenerationService {
 
             document.add(new Paragraph("Invoice Number: " + invoice.getInvoiceNumber()));
             document.add(new Paragraph("Client: " + invoice.getClient().getFirstName() + " " + invoice.getClient().getLastName()));
-            document.add(new Paragraph("Issue Date: " + invoice.getIssueDate()));
+            document.add(new Paragraph("Issue Date: " + invoice.getCreatedAt()));
             document.add(new Paragraph("Due Date: " + invoice.getDueDate()));
             document.add(new Paragraph("Quantity:"+invoice.getQuantity()));
             document.add(new Paragraph("Tax:"+invoice.getTax()));
             document.add(new Paragraph("Payment Status:"+invoice.getPaymentStatus()));
             document.add(new Paragraph("Company Name:"+invoice.getCompany()));
-            document.add(new Paragraph("Invoice Type:"+invoice.getInvoiceType()));
-            document.add(new Paragraph("Product Code:"+invoice.getProductCode()));
-            document.add(new Paragraph("Invoice item:"+invoice.getInvoiceItem()));
             document.add(new Paragraph("Total Amount: $" + invoice.getTotalAmount()));
             document.add(new Paragraph("\n"));
 

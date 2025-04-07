@@ -1,18 +1,17 @@
 package com.amstech.invoice.service.response.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class InvoiceResponseModel  {
-	
+public class InvoiceCreateResponseModel {
+
 	private int id;
 	private String invoiceNumber;
-	private LocalDateTime createdAt;
+	private Date issueDate;
 	private Date dueDate;
 	private BigDecimal totalAmount;
 	private String status;
@@ -25,12 +24,7 @@ public class InvoiceResponseModel  {
 	private String productCode;
 	private String paymentMethod;
 	private String paymentStatus;
-	private BigDecimal balance;
-	private BigDecimal paid;
-	private String category;
-
-
+	
+	private List<ClientResponseModel>clientResponseMosdels;
+	private List<CompanyResponseModel>companyResponseModels;
 }
-
-
-

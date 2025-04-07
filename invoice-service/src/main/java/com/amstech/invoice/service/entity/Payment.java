@@ -46,7 +46,7 @@ public class Payment implements Serializable {
 	    private BigDecimal amountPaid;
 
 	    @Column(name = "payment_date")
-	    private LocalDateTime paymentDate;
+	    private LocalDate paymentDate;
 	    
 	    @Column(name = "created_at")
 	    private LocalDateTime createdAt = LocalDateTime.now();
@@ -130,11 +130,11 @@ public class Payment implements Serializable {
 			this.amountPaid = amountPaid;
 		}
 
-		public LocalDateTime getPaymentDate() {
+		public LocalDate getPaymentDate() {
 			return paymentDate;
 		}
 
-		public void setPaymentDate(LocalDateTime paymentDate) {
+		public void setPaymentDate(LocalDate paymentDate) {
 			this.paymentDate = paymentDate;
 		}
 
