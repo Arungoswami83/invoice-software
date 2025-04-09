@@ -22,14 +22,20 @@ public class Analytic implements Serializable {
 	@ManyToOne
 	private Invoice invoice;
 
-	//bi-directional many-to-one association to SalesInvoice
-	@ManyToOne
-	@JoinColumn(name="sales_invoices")
-	private SalesInvoice salesInvoice;
+//	//bi-directional many-to-one association to SalesInvoice
+//	@ManyToOne
+//	@JoinColumn(name="sales_invoices")
+//	private SalesInvoice salesInvoice;
 	
+
+		@ManyToOne
+	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
+	    private SalesInvoice salesInvoice; 
+
 	@ManyToOne
-	@JoinColumn(name = "sales_invoice_id")
+	@JoinColumn(name = "sales_invoices_id")
 	private SalesInvoices salesInvoices;
+
 
 
 	//bi-directional many-to-one association to Dashboard
