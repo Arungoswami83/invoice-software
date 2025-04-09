@@ -120,7 +120,7 @@ public class InvoiceEntityToModelConverter {
         responseModel.setPaid(invoice.getPaid());
         responseModel.setCategory(invoice.getCategory().name());
         responseModel.setProductCode(invoice.getProductCode());
-
+        
         return responseModel;
     }
     

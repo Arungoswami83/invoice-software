@@ -24,15 +24,6 @@ public class Analytic implements Serializable {
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
 	private Invoice invoice;
-
-	//bi-directional many-to-one association to SalesInvoice
-	@ManyToOne
-	@JoinColumn(name="sales_invoices")
-	private SalesInvoice salesInvoice;
-	
-	@ManyToOne
-	@JoinColumn(name = "sales_invoice_id")
-	private SalesInvoices salesInvoices;
 	
 	 @Column(name = "total_amount")
 	    private BigDecimal totalAmount;
@@ -67,22 +58,6 @@ public class Analytic implements Serializable {
 		this.invoice = invoice;
 	}
 
-	public SalesInvoice getSalesInvoice() {
-		return this.salesInvoice;
-	}
-
-	public void setSalesInvoice(SalesInvoice salesInvoice) {
-		this.salesInvoice = salesInvoice;
-	}
-
-	public SalesInvoices getSalesInvoices() {
-		return salesInvoices;
-	}
-
-	public void setSalesInvoices(SalesInvoices salesInvoices) {
-		this.salesInvoices = salesInvoices;
-	}
-	
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}

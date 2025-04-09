@@ -48,7 +48,7 @@ public class PDFGenerationService {
             document.add(new Paragraph("\n"));
 
             document.close();
-            return pdfFilePath; 
+            return "http://localhost:2061/files/" + pdfFileName;
 
         } catch (DocumentException | IOException e) {
             e.printStackTrace();

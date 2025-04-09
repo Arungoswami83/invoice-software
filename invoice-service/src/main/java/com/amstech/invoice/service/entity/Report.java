@@ -47,10 +47,6 @@ public class Report implements Serializable {
         private String remarks;
 
         @ManyToOne
-        @JoinColumn(name = "sales_invoices_id")
-        private SalesInvoices salesInvoices;
-
-        @ManyToOne
         @JoinColumn(name = "payment_id")
         private Payment payment;
 
@@ -117,15 +113,7 @@ public class Report implements Serializable {
         public void setRemarks(String remarks) {
             this.remarks = remarks;
         }
-
-        public SalesInvoices getSalesInvoices() {
-			return salesInvoices;
-		}
-
-		public void setSalesInvoices(SalesInvoices salesInvoices) {
-			this.salesInvoices = salesInvoices;
-		}
-
+        
 		public void setId(int id) {
 			this.id = id;
 		}

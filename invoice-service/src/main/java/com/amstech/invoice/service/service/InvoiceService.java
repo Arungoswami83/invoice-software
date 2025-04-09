@@ -93,20 +93,18 @@ public class InvoiceService {
 		    payment.setAmountPaid(invoiceRequest.getPaid() != null ? invoiceRequest.getPaid() : BigDecimal.ZERO);
 		    payment.setPaymentDate(LocalDate.now());
 
-		    //  Safe Payment Method Setting
 		    payment.setPaymentMethod(getPaymentMethodSafe(invoiceRequest.getPaymentMethod()));
 
-		    //  Set Payment Status and Timestamps
+		    // Set Payment Status and Timestamps
 		    payment.setPaymentStatus(PaymentStatus.PAID);
 		    payment.setCreatedAt(LocalDateTime.now());
 		    payment.setUpdatedAt(LocalDateTime.now());
-		    paymentRepo.save(payment);
+		    paymentRepo.save(payment); 
 
 		    // Update Invoice with Paid and Balance Amount
 		    savedInvoice.setPaid(payment.getAmountPaid());
 		    savedInvoice.setBalance(savedInvoice.getSubTotal().subtract(payment.getAmountPaid()));
-		    invoiceRepo.save(savedInvoice);
-
+ 
 		    // Generate PDF and Save Path
 		    String pdfPath = pdfGenerationService.generateInvoicePDF(savedInvoice);
 		    savedInvoice.setPdfPath(pdfPath);
@@ -114,7 +112,8 @@ public class InvoiceService {
 
 		    //  Convert to Response Model
 		    InvoiceResponseModel responseModel = invoiceEntityToModelConverter.convertEntityToModel(savedInvoice);
-		    responseModel.setPdfUrl(pdfPath);
+		    responseModel.setPdfUrl(savedInvoice.getPdfPath());
+		    LOGGER.info("Invoice Created with PDF URL: {}", responseModel.getPdfUrl());
 
 		    return responseModel;
 		}

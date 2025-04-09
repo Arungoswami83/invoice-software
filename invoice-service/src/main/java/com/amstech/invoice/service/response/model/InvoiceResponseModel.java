@@ -16,7 +16,7 @@ public class InvoiceResponseModel  {
 	private Date dueDate;
 	private BigDecimal totalAmount;
 	private String status;
-	private String PdfUrl;
+	private String PdfUrl;  
 	private BigDecimal subTotal;
 	private BigDecimal discount;
 	private BigDecimal tax;
