@@ -26,9 +26,11 @@ public class ClientModelToEntityConverter {
         client.setMobileNumber(clientSignupRequestModel.getMobileNumber());
         client.setUserName(clientSignupRequestModel.getUsername());
         client.setPassword(clientSignupRequestModel.getPassword());
+
         client.setPanNumber(clientSignupRequestModel.getPanNumber());
         client.setPhoneNumber(clientSignupRequestModel.getPhoneNumber());
         client.setSpecificRegistrationDetails(clientSignupRequestModel.getSpecificRegistrationDetails());
+
         
         return client;
 
@@ -42,10 +44,12 @@ public class ClientModelToEntityConverter {
         client.setAddress(clientUpdateRequestModel.getAddress());
         client.setMobileNumber(clientUpdateRequestModel.getMobileNumber());
         client.setCompanyName(clientUpdateRequestModel.getCompanyName());
+
         client.setPanNumber(clientUpdateRequestModel.getPanNumber());
         client.setPhoneNumber(clientUpdateRequestModel.getPhoneNumber());
         client.setEmail(clientUpdateRequestModel.getEmail());
        
+
         
         return client;
 	}

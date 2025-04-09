@@ -16,6 +16,7 @@ public class ClientSignupRequestModel {
 	    private String email;
 	    private String linkedinProfileUrl;
 	    private String billingAddress;
+	    private String gender;
 	    private String specificRegistrationDetails;
 	    private Date registrationDate;
 	    private String firstName;

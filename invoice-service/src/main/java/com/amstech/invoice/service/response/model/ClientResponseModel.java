@@ -1,6 +1,7 @@
 package com.amstech.invoice.service.response.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import lombok.Data;
@@ -24,8 +25,5 @@ public class ClientResponseModel {
     private String PanNumber;
     private String  specificRegistrationDetails;  
     
-    
-   
-   
-   
+
 }

@@ -34,12 +34,6 @@ public class InvoiceItem implements Serializable {
 
 	private BigDecimal total;
 
-	private String type;
-
-	//bi-directional many-to-one association to Invoice
-	@OneToMany(mappedBy="invoiceItem")
-	private List<Invoice> invoices;
-
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoiceItem")
 	private List<TaxDetail> taxDetails;
@@ -109,36 +103,6 @@ public class InvoiceItem implements Serializable {
 
 	public void setTotal(BigDecimal total) {
 		this.total = total;
-	}
-
-	public String getType() {
-		return this.type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public List<Invoice> getInvoices() {
-		return this.invoices;
-	}
-
-	public void setInvoices(List<Invoice> invoices) {
-		this.invoices = invoices;
-	}
-
-	public Invoice addInvoice(Invoice invoice) {
-		getInvoices().add(invoice);
-		invoice.setInvoiceItem(this);
-
-		return invoice;
-	}
-
-	public Invoice removeInvoice(Invoice invoice) {
-		getInvoices().remove(invoice);
-		invoice.setInvoiceItem(null);
-
-		return invoice;
 	}
 
 	public List<TaxDetail> getTaxDetails() {

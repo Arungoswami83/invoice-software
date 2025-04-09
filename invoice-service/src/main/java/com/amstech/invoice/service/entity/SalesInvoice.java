@@ -11,24 +11,18 @@ import java.util.List;
  * The persistent class for the sales_invoices database table.
  */
 @Entity
-@Table(name="sales_invoices") // ✅ Database में सही नाम check करें
+@Table(name="sales_invoices") 
 @NamedQuery(name="SalesInvoice.findAll", query="SELECT s FROM SalesInvoice s")
 public class SalesInvoice implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ अब Hibernate के लिए सही है
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private int id;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false) 
     private Client client;
-
-    @Column(name="created_at")
-    private Timestamp createdAt;
-    
-    @Column(name="is_deleted")
-    private int isDeleted;
 
     private BigDecimal discount;
 
@@ -105,6 +99,7 @@ public class SalesInvoice implements Serializable {
 
     public String getStatus() { return this.status; }
     public void setStatus(String status) { this.status = status; }
+
 
     public BigDecimal getSubtotal() { return this.subtotal; }
     public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }

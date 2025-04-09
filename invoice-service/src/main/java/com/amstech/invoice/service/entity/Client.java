@@ -70,6 +70,9 @@ public class Client implements Serializable {
 
 	@Column(name="mobile_number")
 	private String mobileNumber;
+	
+	@Column(name="gender")
+	private String gender;
 
 	@Column(name="pan_number")
 	private String panNumber;
@@ -91,6 +94,10 @@ public class Client implements Serializable {
 	//bi-directional many-to-one association to City
 	@ManyToOne
 	private City city;
+	
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Dashboard> dashboard; 
+
 
 	//bi-directional many-to-one association to Company
 	@OneToMany(mappedBy="client")
@@ -188,6 +195,14 @@ public class Client implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public List<Dashboard> getDashboard() {
+		return dashboard;
+	}
+
+	public void setDashboard(List<Dashboard> dashboard) {
+		this.dashboard = dashboard;
 	}
 
 	public String getLinkedinProfileUrl() {
@@ -340,5 +355,14 @@ public class Client implements Serializable {
 
 		return report;
 	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
 
 }

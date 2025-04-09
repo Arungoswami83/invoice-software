@@ -49,7 +49,7 @@ public class SalesController {
   
   public SalesController() {
 	  
-	  System.out.println("SalesController : object created");
+	  logger.info("SalesController : object created");
   }
 
   @Operation(summary = "you can use this method for SalesInvoice/signup",description = "this is SalesInvoice signup")

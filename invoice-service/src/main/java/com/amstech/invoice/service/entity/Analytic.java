@@ -1,6 +1,9 @@
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -35,14 +38,21 @@ public class Analytic implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "sales_invoices_id")
 	private SalesInvoices salesInvoices;
+	
+	 @Column(name = "total_amount")
+	    private BigDecimal totalAmount;
 
+	    @Column(name = "tax_amount")
+	    private BigDecimal taxAmount;
 
-
-	//bi-directional many-to-one association to Dashboard
-	@OneToMany(mappedBy="analytic")
-	private List<Dashboard> dashboards;
-
-	public Analytic() {
+	    @Enumerated(EnumType.STRING)
+	    @Column(name = "payment_status", nullable = false)
+	    private PaymentStatus paymentStatus;
+	    
+	    @Column(name = "created_at", updatable = false)
+	    private LocalDateTime createdAt = LocalDateTime.now();
+	    
+	    public Analytic() {
 	}
 
 	public int getId() {
@@ -69,14 +79,6 @@ public class Analytic implements Serializable {
 		this.salesInvoice = salesInvoice;
 	}
 
-	public List<Dashboard> getDashboards() {
-		return this.dashboards;
-	}
-
-	public void setDashboards(List<Dashboard> dashboards) {
-		this.dashboards = dashboards;
-	}
-
 	public SalesInvoices getSalesInvoices() {
 		return salesInvoices;
 	}
@@ -84,20 +86,43 @@ public class Analytic implements Serializable {
 	public void setSalesInvoices(SalesInvoices salesInvoices) {
 		this.salesInvoices = salesInvoices;
 	}
-
-
-	public Dashboard addDashboard(Dashboard dashboard) {
-		getDashboards().add(dashboard);
-		dashboard.setAnalytic(this);
-
-		return dashboard;
+	
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
 	}
-
-	public Dashboard removeDashboard(Dashboard dashboard) {
-		getDashboards().remove(dashboard);
-		dashboard.setAnalytic(null);
-
-		return dashboard;
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
 	}
+	public BigDecimal getTaxAmount() {
+		return taxAmount;
+	}
+	public void setTaxAmount(BigDecimal taxAmount) {
+		this.taxAmount = taxAmount;
+	}
+	public PaymentStatus getPaymentStatus() {
+		return paymentStatus;
+	}
+	public void setPaymentStatus(PaymentStatus paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+//	public Dashboard addDashboard(Dashboard dashboard) {
+//		getDashboards().add(dashboard);
+//		dashboard.setAnalytic(this);
+//
+//		return dashboard;
+//	}
+//
+//	public Dashboard removeDashboard(Dashboard dashboard) {
+//		getDashboards().remove(dashboard);
+//		dashboard.setAnalytic(null);
+//
+//		return dashboard;
+//	}
 
 }

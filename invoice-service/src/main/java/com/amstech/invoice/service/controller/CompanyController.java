@@ -66,15 +66,12 @@ import java.nio.file.*;
 public class CompanyController {
 	
 	  private static final Logger logger = LoggerFactory.getLogger(CompanyController.class);
-
 	    
 	@Autowired
 	private  CompanyService companyService;
-
     
     public CompanyController() {
-        
-        System.out.println("InvoiceCompanyController: Object Created");
+    	logger.info("CompanyController: Object Created");
 }
     @CrossOrigin(origins = "http://localhost:4200") // ✅ Method level par use karein
 

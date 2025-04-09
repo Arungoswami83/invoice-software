@@ -23,7 +23,7 @@ public class ProductInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	@Lob
@@ -33,30 +33,7 @@ public class ProductInvoice implements Serializable {
 	@Column(name="buyer_details")
 	private String buyerDetails;
 
-	
-	@Column(name = "invoice_number")
-	private String invoiceNumber;
-
-	@Column(name = "pdf_path")
-	private String pdfPath;
-
-
-	public String getInvoiceNumber() {
-		return invoiceNumber;
-	}
-
-	public void setInvoiceNumber(String invoiceNumber) {
-		this.invoiceNumber = invoiceNumber;
-	}
-
-	public String getPdfPath() {
-		return pdfPath;
-	}
-
-	public void setPdfPath(String pdfPath) {
-		this.pdfPath = pdfPath;
-	}
-	@Temporal(TemporalType.DATE)
+@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
 	private Date dueDate;
 

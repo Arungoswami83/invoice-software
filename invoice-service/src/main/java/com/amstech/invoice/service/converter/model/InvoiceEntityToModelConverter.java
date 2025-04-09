@@ -4,13 +4,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
 
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Invoice;
+import com.amstech.invoice.service.entity.Payment;
 import com.amstech.invoice.service.request.model.InvoiceRequest;
 import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.InvoiceResponseModel;
+import com.amstech.invoice.service.response.model.PaymentResponseMoodel;
 
 @Component
 public class InvoiceEntityToModelConverter {
@@ -23,21 +27,12 @@ public class InvoiceEntityToModelConverter {
 	        
 	        response.setInvoiceNumber(invoice.getInvoiceNumber());
 	        invoice.getClient();
-	        invoice.getPayment();
-	        invoice.getInvoiceType();
-	        invoice.getInvoiceItem();
 	        response.setDiscount(invoice.getDiscount());
 	        response.setDueDate(invoice.getDueDate());
-	        response.setIssueDate(invoice.getIssueDate());
-	        response.setGrandTotal(invoice.getGrandTotal());
-	        response.setBalance(invoice.getBalance());
-	        response.setPaid(invoice.getPaid());
-	        response.setProductCode(invoice.getProductCode());
+	        response.setCreatedAt(invoice.getCreatedAt());
 	        response.setQuantity(invoice.getQuantity());
 	        response.setTax(invoice.getTax());
 	        response.setTotalAmount(invoice.getTotalAmount());
-	        response.setStatus(invoice.getStatus());
-	        response.setId(invoice.getId());
 	        invoiceResponse.add(response);
 	        }
 	    return invoiceResponse;
@@ -49,19 +44,13 @@ public class InvoiceEntityToModelConverter {
 
         responseModel.setId(invoice.getId());
         responseModel.setInvoiceNumber(invoice.getInvoiceNumber());
-        responseModel.setIssueDate(invoice.getIssueDate());
+        responseModel.setCreatedAt(invoice.getCreatedAt());
         responseModel.setDueDate(invoice.getDueDate());
         responseModel.setTotalAmount(invoice.getTotalAmount());
-        responseModel.setStatus(invoice.getStatus());
         responseModel.setSubTotal(invoice.getSubTotal());
         responseModel.setDiscount(invoice.getDiscount());
         responseModel.setTax(invoice.getTax());
-        responseModel.setShipping(invoice.getShipping());
-        responseModel.setGrandTotal(invoice.getGrandTotal());
-        responseModel.setPaid(invoice.getPaid());
-        responseModel.setBalance(invoice.getBalance());
         responseModel.setQuantity(invoice.getQuantity());
-        responseModel.setProductCode(invoice.getProductCode());
         
         return responseModel;
     }
@@ -72,45 +61,69 @@ public class InvoiceEntityToModelConverter {
 
         responseModel.setId(invoice.getId());
         responseModel.setInvoiceNumber(invoice.getInvoiceNumber());
-        responseModel.setIssueDate(invoice.getIssueDate());
+        responseModel.setCreatedAt(invoice.getCreatedAt());
         responseModel.setDueDate(invoice.getDueDate());
         responseModel.setTotalAmount(invoice.getTotalAmount());
-        responseModel.setStatus(invoice.getStatus());
         responseModel.setSubTotal(invoice.getSubTotal());
         responseModel.setDiscount(invoice.getDiscount());
         responseModel.setTax(invoice.getTax());
-        responseModel.setShipping(invoice.getShipping());
-        responseModel.setGrandTotal(invoice.getGrandTotal());
-        responseModel.setPaid(invoice.getPaid());
-        responseModel.setBalance(invoice.getBalance());
         responseModel.setQuantity(invoice.getQuantity());
-        responseModel.setProductCode(invoice.getProductCode());
         
         return responseModel;
     }
-//    public ClientResponseModel getfindByClientId(Invoice invoice) {
-//        ClientResponseModel clientResponseModel = new ClientResponseModel();
-//
-//        Client client = invoice.getClient(); 
-//        if (client == null) {
-//            throw new IllegalArgumentException("Client information is missing for this invoice.");
-//        }
-//        clientResponseModel.setClientId(client.getId());
-//        clientResponseModel.setClientFirstName(client.getFirstName());
-//        clientResponseModel.setClientLastName(client.getLastName());
-//
-//        clientResponseModel.setInvoiceNumber(invoice.getInvoiceNumber());
-//        clientResponseModel.setIssueDate(invoice.getIssueDate());
-//        clientResponseModel.setDueDate(invoice.getDueDate());
-//        clientResponseModel.setTotalAmount(invoice.getTotalAmount());
-//        clientResponseModel.setStatus(invoice.getStatus());
-//        clientResponseModel.setDiscount(invoice.getDiscount());
-//        clientResponseModel.setTax(invoice.getTax());
-//        clientResponseModel.setQuantity(invoice.getQuantity());
-//        clientResponseModel.setProductCode(invoice.getProductCode());
-//
-//        return clientResponseModel;
-//    }
+    public List<ClientResponseModel> mapInvoiceToClientResponse(List<Invoice> invoices) throws Exception {
+        if (invoices == null || invoices.isEmpty()) {
+            throw new IllegalArgumentException("Invoice list is empty or null.");
+        }
 
+        List<ClientResponseModel> responseList = new ArrayList<>();
+
+        for (Invoice invoice : invoices) {
+            if (invoice.getClient() == null) {
+                throw new Exception("Client information is missing for invoice: " + invoice.getInvoiceNumber());
+            }
+
+            Client client = invoice.getClient();
+            ClientResponseModel clientResponseModel = new ClientResponseModel();
+
+            clientResponseModel.setClientId(client.getId());
+            clientResponseModel.setFirstName(client.getFirstName());
+            clientResponseModel.setLastName(client.getLastName());
+            clientResponseModel.setCreatedAt(invoice.getCreatedAt());
+            clientResponseModel.setDueDate(invoice.getDueDate());
+            clientResponseModel.setTotalAmount(invoice.getTotalAmount());
+            clientResponseModel.setQuantity(invoice.getQuantity());
+            clientResponseModel.setTax(invoice.getTax());
+
+            responseList.add(clientResponseModel);
+        }
+
+        return responseList;
+    }
+    public InvoiceResponseModel convertEntityToModel(Invoice invoice) {
+        if (invoice == null) {
+            return null;
+        }
+
+        InvoiceResponseModel responseModel = new InvoiceResponseModel();
+        responseModel.setId(invoice.getId()); 
+        responseModel.setInvoiceNumber(invoice.getInvoiceNumber());
+        responseModel.setCreatedAt(invoice.getCreatedAt());
+        responseModel.setDueDate(invoice.getDueDate());
+        responseModel.setTotalAmount(invoice.getTotalAmount());
+        responseModel.setSubTotal(invoice.getSubTotal());
+        responseModel.setDiscount(invoice.getDiscount());
+        responseModel.setTax(invoice.getTax());
+        responseModel.setQuantity(invoice.getQuantity());
+        responseModel.setPdfUrl(invoice.getPdfPath());
+        responseModel.setBalance(invoice.getBalance());
+        responseModel.setPaid(invoice.getPaid());
+        responseModel.setCategory(invoice.getCategory().name());
+        responseModel.setProductCode(invoice.getProductCode());
+
+        return responseModel;
+    }
+    
     
 }
+      

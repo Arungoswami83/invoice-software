@@ -23,10 +23,6 @@ public class InvoiceType implements Serializable {
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	//bi-directional many-to-one association to Invoice
-	@OneToMany(mappedBy="invoiceType")
-	private List<Invoice> invoices;
-
 	//bi-directional many-to-one association to ProductInvoice
 	@ManyToOne
 	@JoinColumn(name="product_invoices_id")
@@ -74,29 +70,6 @@ public class InvoiceType implements Serializable {
 	public void setCreatedAt(Timestamp createdAt) {
 		this.createdAt = createdAt;
 	}
-
-	public List<Invoice> getInvoices() {
-		return this.invoices;
-	}
-
-	public void setInvoices(List<Invoice> invoices) {
-		this.invoices = invoices;
-	}
-
-	public Invoice addInvoice(Invoice invoice) {
-		getInvoices().add(invoice);
-		invoice.setInvoiceType(this);
-
-		return invoice;
-	}
-
-	public Invoice removeInvoice(Invoice invoice) {
-		getInvoices().remove(invoice);
-		invoice.setInvoiceType(null);
-
-		return invoice;
-	}
-
 	public ProductInvoice getProductInvoice() {
 		return this.productInvoice;
 	}
