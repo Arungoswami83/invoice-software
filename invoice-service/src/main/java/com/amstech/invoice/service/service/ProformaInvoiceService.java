@@ -1,6 +1,8 @@
 package com.amstech.invoice.service.service;
-
-import java.sql.Date;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,11 @@ public class ProformaInvoiceService {
 	private ProformaInvoiceModelToEntityConverter proformaInvoiceModelToEntityConverter;
 	@Autowired
 	private ProformaInvoiceEntityToModelConverter proformaInvoiceEntityToModelConverter;
+	@Autowired
+	private ProformaInvoicePdfService pdfService;
 
+
+	  
 	 public ProformaInvoiceResponseModel signup(ProformaInvoiceSignupRequestModel requestModel) throws Exception {
 		  Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
 	        if (!companyOptional.isPresent()) {
@@ -57,11 +63,17 @@ public class ProformaInvoiceService {
 	        }
 
 	        ProformaInvoice proformaInvoice = proformaInvoiceModelToEntityConverter.getSignupConverter(requestModel);
+	        proformaInvoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());;
 	        proformaInvoice.setCompany(companyOptional.get());
 	        proformaInvoice.setClient(clientOptional.get());
 	        ProformaInvoice savedInvoice = proformaInvoiceRepo.save(proformaInvoice);
-
-	        return proformaInvoiceEntityToModelConverter.getfindbyid(savedInvoice);
+	        
+	        String pdfPath = pdfService.generateProformaInvoicePDF(savedInvoice);
+	        savedInvoice.setPdfPath(pdfPath);
+	        proformaInvoiceRepo.save(savedInvoice); 
+	        
+	        ProformaInvoiceResponseModel response = proformaInvoiceEntityToModelConverter.getfindbyid(savedInvoice);
+	        return response;
 	    }
 
 	 
@@ -162,5 +174,7 @@ public class ProformaInvoiceService {
 	        proformaInvoice.setIsDeleted(status);
 	        proformaInvoiceRepo.save(proformaInvoice);
 	    }
+	
+	  
 
 }

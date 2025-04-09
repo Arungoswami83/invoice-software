@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class ProductInvoiceModelToEntityConverter {
 
 		    productInvoice.setAccountDetails(productInvoiceSignupRequestModel.getAccountDetails());
 		    productInvoice.setBuyerDetails(productInvoiceSignupRequestModel.getBuyerDetails());
-		    productInvoice.setDueDate(new Date(productInvoiceSignupRequestModel.getDueDate()));
+		    productInvoice.setDueDate(productInvoiceSignupRequestModel.getDueDate());
             productInvoice.setHandlingCosts(productInvoiceSignupRequestModel.getHandlingCosts());
 		    productInvoice.setOrderNumber(productInvoiceSignupRequestModel.getOrderNumber());
 		    productInvoice.setPaymentMethod(productInvoiceSignupRequestModel.getPaymentMethod());
@@ -32,6 +33,11 @@ public class ProductInvoiceModelToEntityConverter {
 		    productInvoice.setSupplier(productInvoiceSignupRequestModel.getSupplier());
 		    productInvoice.setTaxCalculation(productInvoiceSignupRequestModel.getTaxCalculation());
 		    productInvoice.setTotalPayable(productInvoiceSignupRequestModel.getTotalPayable());
+		    if (productInvoiceSignupRequestModel.getInvoiceNumber() == null || productInvoiceSignupRequestModel.getInvoiceNumber().isEmpty()) {
+		    	productInvoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+	        } else {
+	        	productInvoice.setInvoiceNumber(productInvoiceSignupRequestModel.getInvoiceNumber());
+	        }
 		return productInvoice;
 		
 	}

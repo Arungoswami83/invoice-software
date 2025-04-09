@@ -8,7 +8,7 @@ import lombok.Data;
 public class ProductInvoiceSignupRequestModel {
 	private String accountDetails;
 	private String buyerDetails;
-	private long dueDate;
+	private Date dueDate;
 	private BigDecimal handlingCosts;
 	private String orderNumber;
 	private String paymentMethod;
@@ -17,6 +17,10 @@ public class ProductInvoiceSignupRequestModel {
 	private String supplier;
 	private BigDecimal taxCalculation;
 	private BigDecimal totalPayable;
+    private String invoiceNumber;
+
+
+		
 
 
 

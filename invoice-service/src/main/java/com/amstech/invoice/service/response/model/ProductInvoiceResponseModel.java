@@ -11,6 +11,8 @@ public class ProductInvoiceResponseModel {
 	private String orderNumber;
 	private String paymentMethod;
 	private String supplier;
+	private String invoiceNumber;
+	private String pdfPath;
 	
 
 

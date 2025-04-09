@@ -12,5 +12,11 @@ public class ProformaInvoiceResponseModel {
     private String status;
 	private BigDecimal totalAmount;
 	private String validityPeriod;
+	private String pdfUrl;  // This should be present in the model
+
+	public String getPdfUrl() {
+	    return pdfUrl;
+	}
+
 
 }

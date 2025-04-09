@@ -17,18 +17,19 @@ public class ProformaInvoiceEntityToModelConverter {
     private String status;
 	private BigDecimal totalAmount;
 	private String validityPeriod;
+	public ProformaInvoiceResponseModel getfindbyid(ProformaInvoice proformaInvoice) {
+	    ProformaInvoiceResponseModel responseModel = new ProformaInvoiceResponseModel();
+	    responseModel.setInvoiceNumber(proformaInvoice.getInvoiceNumber());
+	    responseModel.setTotalAmount(proformaInvoice.getTotalAmount());
+	    responseModel.setValidityPeriod(proformaInvoice.getValidityPeriod());
+	    responseModel.setPaymentInstructions(proformaInvoice.getPaymentInstructions());
+	    responseModel.setStatus(proformaInvoice.getStatus());
+	    responseModel.setPdfUrl(proformaInvoice.getPdfPath()); // Set PDF path
 
-	public ProformaInvoiceResponseModel getfindbyid(ProformaInvoice proformaInvoice) throws Exception {
-
-		 ProformaInvoiceResponseModel response = new ProformaInvoiceResponseModel();
-		    response.setId(proformaInvoice.getId());
-		    response.setPaymentInstructions(proformaInvoice.getPaymentInstructions());
-		    response.setStatus(proformaInvoice.getStatus());
-		    response.setTotalAmount(proformaInvoice.getTotalAmount());
-		    response.setValidityPeriod(proformaInvoice.getValidityPeriod());
-		    response.setInvoiceNumber(proformaInvoice.getInvoiceNumber());
-		    return response;
+	    return responseModel;
 	}
+
+
 	public List<ProformaInvoiceResponseModel> getfindAllConverter(List<ProformaInvoice> proformaInvoiceList) {
 	    List<ProformaInvoiceResponseModel> responseList = new ArrayList<>();
 
