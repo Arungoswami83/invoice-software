@@ -1,3 +1,4 @@
+
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
@@ -6,6 +7,8 @@ import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -19,7 +22,11 @@ public class Client implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private int id;
+
+	@Lob
+	private String address;
 	
 	@JsonProperty
 	@Column(name="username")
@@ -28,9 +35,6 @@ public class Client implements Serializable {
 	@JsonProperty
 	@Column(name="password",nullable = false)
 	private String password;
-
-	@Lob
-	private String address;
 
 	@Lob
 	@Column(name="billing_address")
@@ -45,14 +49,13 @@ public class Client implements Serializable {
 	@Column(name="created_at")
 	private Timestamp createdAt;
 
-	
 	private String email;
 
 	@Column(name="first_name")
 	private String firstName;
 
 	@Column(name="is_deleted")
-	private byte isDeleted;
+	private boolean isDeleted;
 
 	@Column(name="last_name")
 	private String lastName;
@@ -84,9 +87,13 @@ public class Client implements Serializable {
 	@OneToMany(mappedBy="client")
 	private List<Company> companies;
 
-	
+	//bi-directional many-to-one association to GenerateInvoice
+//	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
+//	private List<GenerateInvoice> generateInvoices;
+
 	//bi-directional many-to-one association to Invoice
 	@OneToMany(mappedBy="client")
+	@JsonBackReference
 	private List<Invoice> invoices;
 
 	//bi-directional many-to-one association to Report
@@ -160,27 +167,12 @@ public class Client implements Serializable {
 		this.firstName = firstName;
 	}
 
-	public byte getIsDeleted() {
-		return this.isDeleted;
+	public boolean getIsDeleted() {
+		return this.getIsDeleted();
 	}
-
-	public void setIsDeleted(byte isDeleted) {
+	
+	public void setIsDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
-	}
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getLastName() {
@@ -213,6 +205,26 @@ public class Client implements Serializable {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 
 	public String getPostalZipCode() {
@@ -268,9 +280,14 @@ public class Client implements Serializable {
 
 		return company;
 	}
-
-	
-
+//
+//	public List<GenerateInvoice> getGenerateInvoices() {
+//		return this.generateInvoices;
+//	}
+//
+//	public void setGenerateInvoices(List<GenerateInvoice> generateInvoices) {
+//		this.generateInvoices = generateInvoices;
+//	}
 	public List<Invoice> getInvoices() {
 		return this.invoices;
 	}

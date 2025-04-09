@@ -1,6 +1,5 @@
 package com.amstech.invoice.service.entity;
 
-
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -131,6 +130,11 @@ public class Invoice implements Serializable {
 	//bi-directional many-to-one association to Report
 	@OneToMany(mappedBy="invoice")
 	private List<Report> reports;
+	
+	@ManyToOne
+	@JoinColumn(name = "report_id") // This should match the Report entity
+	private Report report;
+
 
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoice")
@@ -162,8 +166,6 @@ public class Invoice implements Serializable {
 		public void setDeleted(Boolean deleted) {
 			this.deleted = deleted;
 		}
-		
-
 
 	public Invoice() {
 	}
@@ -408,7 +410,7 @@ public class Invoice implements Serializable {
 	public void setClient(Client client) {
 		this.client = client;
 	}
-
+	
 	public Company getCompany() {
 		return this.company;
 	}
@@ -503,8 +505,8 @@ public class Invoice implements Serializable {
 		return this.reports;
 	}
 
-	public void setReports(Report reports) {
-		this.reports = (List<Report>) reports;
+	public void setReports(List<Report> reports) {
+		this.reports = reports;
 	}
 
 	public List<TaxDetail> getTaxDetails() {
@@ -529,6 +531,13 @@ public class Invoice implements Serializable {
 		return taxDetail;
 	}
 
-	 
+	 public boolean isDeleted() {
+	        return deleted;
+	    }
+
+	    public void setDeleted(boolean deleted) {
+	        this.deleted = deleted;
+	    }
+	    
 
 }

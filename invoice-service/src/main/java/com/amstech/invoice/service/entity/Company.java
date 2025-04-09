@@ -5,104 +5,20 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
 
-
 /**
  * The persistent class for the company database table.
- * 
  */
 @Entity
 @NamedQuery(name="Company.findAll", query="SELECT c FROM Company c")
 public class Company implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	private int id;
+    @Id
+    
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+    private int id;
 
-	@Column(name = "is_email_update")
-	private Boolean isEmailUpdate;
-
-
-	@Lob
-	private String address;
-
-	@Column(name="admin_username")
-	private String adminUsername;
-
-	@Column(name="cin_no")
-	private String cinNo;
-
-	@Column(name="company_phone")
-	private String companyPhone;
-
-	@Column(name="created_at")
-	private Timestamp createdAt;
-
-	private String email;
-
-	@Column(name="is_deleted")
-	private byte isDeleted;
-
-	@Column(name="is_email_verified")
-	private byte isEmailVerified;
-
-	@Lob
-	private String logo;
-
-	private String name;
-
-	private String password;
-
-	@Column(name="registration_no")
-	private String registrationNo;
-
-	
-	@Column(name="tax_identification_number")
-	private String taxIdentificationNumber;
-
-	@Column(name="tax_payer")
-	private String taxPayer;
-
-	@Column(name="updated_at")
-	private Timestamp updatedAt;
-
-	private String website;
-
-	//bi-directional many-to-one association to BusinessType
-	@ManyToOne
-	@JoinColumn(name="business_type_id")
-	private BusinessType businessType;
-
-	//bi-directional many-to-one association to Client
-	@ManyToOne
-	private Client client;
-
-	//bi-directional many-to-one association to Currency
-	//bi-directional many-to-one association to Invoice
-	@OneToMany(mappedBy="company")
-	private List<Invoice> invoices;
-
-	//bi-directional many-to-one association to ProformaInvoice
-	@OneToMany(mappedBy="company")
-	private List<ProformaInvoice> proformaInvoices;
-
-	//bi-directional many-to-one association to StandardInvoice
-	@OneToMany(mappedBy="company")
-	private List<StandardInvoice> standardInvoices;
-
-	public Company() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	
-
-	public Boolean getIsEmailUpdate() {
+    public Boolean getIsEmailUpdate() {
 		return isEmailUpdate;
 	}
 
@@ -110,217 +26,246 @@ public class Company implements Serializable {
 		this.isEmailUpdate = isEmailUpdate;
 	}
 
-	public String getAddress() {
-		return this.address;
-	}
+	@Column(name = "is_email_update", nullable = false)
+    private Boolean isEmailUpdate = false;
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    @Lob
+    private String address;
 
-	public String getAdminUsername() {
-		return this.adminUsername;
-	}
+    @Column(name = "admin_username", nullable = false, unique = true)
+    private String adminUserName;
 
-	public void setAdminUsername(String adminUsername) {
-		this.adminUsername = adminUsername;
-	}
+    @Column(name = "password", nullable = false)
+    private String password;
 
-	public String getCinNo() {
-		return this.cinNo;
-	}
+    @ManyToOne
+    @JoinColumn(name="business_types_id", nullable = false)
+    private BusinessTypes businessTypes;
 
-	public void setCinNo(String cinNo) {
-		this.cinNo = cinNo;
-	}
+    @Column(name="cin_no")
+    private String cinNo;
 
-	public String getCompanyPhone() {
-		return this.companyPhone;
-	}
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 
-	public void setCompanyPhone(String companyPhone) {
-		this.companyPhone = companyPhone;
-	}
+    @Column(name="company_phone")
+    private String companyPhone;
 
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
+    @Column(name="created_at")
+    private Timestamp createdAt;
 
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
+    private String email;
 
-	public String getEmail() {
-		return this.email;
-	}
+    @Column(name = "is_deleted", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Byte isDeleted = 0;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    @Column(name="is_email_verified")
+    private byte isEmailVerified;
 
-	public byte getIsDeleted() {
-		return this.isDeleted;
-	}
+    @Lob
+    private String logo;
 
-	public void setIsDeleted(byte isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+    private String name;
 
-	public byte getIsEmailVerified() {
-		return this.isEmailVerified;
-	}
+    @Column(name="registration_no")
+    private String registrationNo;
 
-	public void setIsEmailVerified(byte isEmailVerified) {
-		this.isEmailVerified = isEmailVerified;
-	}
+    @Column(name="tax_identification_number")
+    private String taxIdentificationNumber;
 
-	public String getLogo() {
-		return this.logo;
-	}
+    @Column(name="tax_payer")
+    private String taxPayer;
 
-	public void setLogo(String logo) {
-		this.logo = logo;
-	}
+    @Column(name="updated_at")
+    private Timestamp updatedAt;
 
-	
-	public String getName() {
-		return this.name;
-	}
+    private String website;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @OneToMany(mappedBy="company")
+    private List<Invoice> invoices;
 
-	public String getPassword() {
-		return this.password;
-	}
+    // Constructor
+    public Company() {}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    // Getters and Setters
+    public int getId() {
+        return this.id;
+    }
 
-	public String getRegistrationNo() {
-		return this.registrationNo;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setRegistrationNo(String registrationNo) {
-		this.registrationNo = registrationNo;
-	}
+    public boolean isEmailUpdate() {
+        return isEmailUpdate;
+    }
 
+    public void setEmailUpdate(boolean isEmailUpdate) {
+        this.isEmailUpdate = isEmailUpdate;
+    }
 
-	public String getTaxIdentificationNumber() {
-		return this.taxIdentificationNumber;
-	}
+    public Byte getIsDeleted() {
+        return isDeleted;
+    }
 
-	public void setTaxIdentificationNumber(String taxIdentificationNumber) {
-		this.taxIdentificationNumber = taxIdentificationNumber;
-	}
+    public void setIsDeleted(Byte isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
-	public String getTaxPayer() {
-		return this.taxPayer;
-	}
+    public String getAddress() {
+        return this.address;
+    }
 
-	public void setTaxPayer(String taxPayer) {
-		this.taxPayer = taxPayer;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public Timestamp getUpdatedAt() {
-		return this.updatedAt;
-	}
+    public String getAdminUserName() {
+        return this.adminUserName;
+    }
 
-	public void setUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+    public void setAdminUserName(String adminUserName) {
+        this.adminUserName = adminUserName;
+    }
 
-	public String getWebsite() {
-		return this.website;
-	}
+    public BusinessTypes getBusinessTypes() {
+        return businessTypes;
+    }
 
-	public void setWebsite(String website) {
-		this.website = website;
-	}
+    public void setBusinessTypes(BusinessTypes businessTypes) {
+        this.businessTypes = businessTypes;
+    }
 
-	public BusinessType getBusinessType() {
-		return this.businessType;
-	}
+    public String getCinNo() {
+        return this.cinNo;
+    }
 
-	public void setBusinessType(BusinessType businessType) {
-		this.businessType = businessType;
-	}
+    public void setCinNo(String cinNo) {
+        this.cinNo = cinNo;
+    }
 
-	public Client getClient() {
-		return this.client;
-	}
+    public Client getClient() {
+        return client;
+    }
 
-	public void setClient(Client client) {
-		this.client = client;
-	}
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
+    public String getCompanyPhone() {
+        return this.companyPhone;
+    }
 
-	public List<Invoice> getInvoices() {
-		return this.invoices;
-	}
+    public void setCompanyPhone(String companyPhone) {
+        this.companyPhone = companyPhone;
+    }
 
-	public void setInvoices(List<Invoice> invoices) {
-		this.invoices = invoices;
-	}
+    public Timestamp getCreatedAt() {
+        return this.createdAt;
+    }
 
-	public Invoice addInvoice(Invoice invoice) {
-		getInvoices().add(invoice);
-		invoice.setCompany(this);
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 
-		return invoice;
-	}
+    public String getEmail() {
+        return this.email;
+    }
 
-	public Invoice removeInvoice(Invoice invoice) {
-		getInvoices().remove(invoice);
-		invoice.setCompany(null);
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-		return invoice;
-	}
+    public byte getIsEmailVerified() {
+        return this.isEmailVerified;
+    }
 
-	public List<ProformaInvoice> getProformaInvoices() {
-		return this.proformaInvoices;
-	}
+    public void setIsEmailVerified(byte isEmailVerified) {
+        this.isEmailVerified = isEmailVerified;
+    }
 
-	public void setProformaInvoices(List<ProformaInvoice> proformaInvoices) {
-		this.proformaInvoices = proformaInvoices;
-	}
+    public String getLogo() {
+        return this.logo;
+    }
 
-	public ProformaInvoice addProformaInvoice(ProformaInvoice proformaInvoice) {
-		getProformaInvoices().add(proformaInvoice);
-		proformaInvoice.setCompany(this);
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
 
-		return proformaInvoice;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public ProformaInvoice removeProformaInvoice(ProformaInvoice proformaInvoice) {
-		getProformaInvoices().remove(proformaInvoice);
-		proformaInvoice.setCompany(null);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-		return proformaInvoice;
-	}
+    public String getPassword() {
+        return this.password;
+    }
 
-	public List<StandardInvoice> getStandardInvoices() {
-		return this.standardInvoices;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setStandardInvoices(List<StandardInvoice> standardInvoices) {
-		this.standardInvoices = standardInvoices;
-	}
+    public String getRegistrationNo() {
+        return this.registrationNo;
+    }
 
-	public StandardInvoice addStandardInvoice(StandardInvoice standardInvoice) {
-		getStandardInvoices().add(standardInvoice);
-		standardInvoice.setCompany(this);
+    public void setRegistrationNo(String registrationNo) {
+        this.registrationNo = registrationNo;
+    }
 
-		return standardInvoice;
-	}
+    public String getTaxIdentificationNumber() {
+        return this.taxIdentificationNumber;
+    }
 
-	public StandardInvoice removeStandardInvoice(StandardInvoice standardInvoice) {
-		getStandardInvoices().remove(standardInvoice);
-		standardInvoice.setCompany(null);
+    public void setTaxIdentificationNumber(String taxIdentificationNumber) {
+        this.taxIdentificationNumber = taxIdentificationNumber;
+    }
 
-		return standardInvoice;
-	}
+    public String getTaxPayer() {
+        return this.taxPayer;
+    }
 
+    public void setTaxPayer(String taxPayer) {
+        this.taxPayer = taxPayer;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Timestamp updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getWebsite() {
+        return this.website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public List<Invoice> getInvoices() {
+        return this.invoices;
+    }
+
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    public Invoice addInvoice(Invoice invoice) {
+        getInvoices().add(invoice);
+        invoice.setCompany(this);
+        return invoice;
+    }
+
+    public Invoice removeInvoice(Invoice invoice) {
+        getInvoices().remove(invoice);
+        invoice.setCompany(null);
+        return invoice;
+    }
 }

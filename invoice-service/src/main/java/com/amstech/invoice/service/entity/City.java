@@ -1,8 +1,11 @@
+
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 
 /**
@@ -21,6 +24,8 @@ public class City implements Serializable {
 
 	//bi-directional many-to-one association to State
 	@ManyToOne
+	 @JoinColumn(name = "state_id")
+    @JsonBackReference
 	private State state;
 
 	//bi-directional many-to-one association to Client

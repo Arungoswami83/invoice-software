@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,28 +41,39 @@ public class RecurringInvoiceService {
 	private ClientRepo clientRepo;
 	@Autowired
 	private CompanyRepo companyRepo;
+	@Autowired
+	private RecurringInvoicePdfService PdfService;
 
-	 public RecurringInvoiceResponseModel signup(RecurringInvoiceSignupRequestModel requestModel) throws Exception {
-	        Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
-	        if (!companyOptional.isPresent()) {
-	            throw new Exception("Company does not exist");
-	        }
-
-	        Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
-	        if (!clientOptional.isPresent()) {
-	            throw new Exception("Client does not exist");
-	        }
-
-	        RecurringInvoice recurringInvoice = recurringInvoiceModelToEntityConverter.getsaveConverter(requestModel);
-	        recurringInvoice.setCompany(companyOptional.get());
-	        recurringInvoice.setClient(clientOptional.get());
-
-	        recurringInvoice = recurringInvoiceRepo.save(recurringInvoice);
-	        LOGGER.info("Recurring Invoice created successfully!");
-
-	        return recurringInvoiceEntityToModelConverter.getFindByIdConverter(recurringInvoice);
+	public RecurringInvoiceResponseModel signup(RecurringInvoiceSignupRequestModel requestModel) throws Exception {
+	    Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
+	    if (!companyOptional.isPresent()) {
+	        throw new Exception("Company does not exist");
 	    }
 
+	    Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
+	    if (!clientOptional.isPresent()) {
+	        throw new Exception("Client does not exist");
+	    }
+
+	    LOGGER.debug("Converting request model to entity for user: {}", requestModel.getCompanyId());
+
+	    RecurringInvoice recurringInvoice = recurringInvoiceModelToEntityConverter.getsaveConverter(requestModel);
+	    recurringInvoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+	    recurringInvoice.setCompany(companyOptional.get());
+	    recurringInvoice.setClient(clientOptional.get());
+
+	    RecurringInvoice savedInvoice = recurringInvoiceRepo.save(recurringInvoice);
+
+	    String pdfPath = PdfService.generateInvoicePDF(savedInvoice);
+	    savedInvoice.setPdfPath(pdfPath);
+	    recurringInvoiceRepo.save(savedInvoice);
+	    System.out.println(" Generated Path: " + pdfPath);
+
+	    RecurringInvoiceResponseModel response = recurringInvoiceEntityToModelConverter.getFindByIdConverter(savedInvoice);
+	    response.setPdfPath(pdfPath);
+
+	    return response;
+	}
 	    public RecurringInvoiceResponseModel update(RecurringInvoiceUpdateRequestModel requestModel) {
 	        LOGGER.info("Attempting to update recurring invoice with ID: {}", requestModel.getId());
 

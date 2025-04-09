@@ -23,6 +23,8 @@ public class RecurringInvoiceEntityToModelConverter {
 	    responseModel.setPaymentTerm(recurringInvoice.getPaymentTerm());
 	    responseModel.setEndDate(recurringInvoice.getEndDate());
 	    responseModel.setTotalPayable(recurringInvoice.getTotalPayable());
+	    responseModel.setInvoiceNumber(recurringInvoice.getInvoiceNumber());
+	    responseModel.setPdfPath(recurringInvoice.getPdfPath());
 	    return responseModel;
     
 
@@ -37,7 +39,8 @@ public class RecurringInvoiceEntityToModelConverter {
   	    responseModel.setPaymentTerm(invoice.getPaymentTerm());
   	    responseModel.setEndDate(invoice.getEndDate());
   	    responseModel.setTotalPayable(invoice.getTotalPayable());
-         responseList.add(responseModel);
+  	  responseModel.setInvoiceNumber(invoice.getInvoiceNumber());  
+  	  responseList.add(responseModel);
       }
       return responseList;
 	}

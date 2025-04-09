@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -27,10 +28,7 @@ public class StandardInvoice implements Serializable {
 	@JoinColumn(name = "client_id", referencedColumnName = "id")
 	private Client client;
 
-
-	@Column(name="created_at")
-	private Timestamp createdAt;
-
+	
 	@Column(name="is_deleted")
 	private int isDeleted;
 
@@ -47,8 +45,35 @@ public class StandardInvoice implements Serializable {
 	private String invoiceNumber;
 
 	@Column(name="is_recurring")
-	private boolean isRecurring;
 
+	private byte isRecurring;
+
+	@Column(name = "created_at", updatable = false, insertable = false)
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at", insertable = false)
+	private LocalDateTime updatedAt;
+
+	@PrePersist
+	protected void onCreate() {
+	    this.createdAt = LocalDateTime.now();
+	    this.updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+	    this.updatedAt = LocalDateTime.now();
+	}
+
+
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
 	@Lob
 	private String notes;
 
@@ -67,13 +92,11 @@ public class StandardInvoice implements Serializable {
 
 	private BigDecimal tax;
 
-	@Column(name="updated_at")
-	private Timestamp updatedAt;
+	
 
 	//bi-directional many-to-one association to InvoiceType
 	@OneToMany(mappedBy="standardInvoice")
 	private List<InvoiceType> invoiceTypes;
-
 	//bi-directional many-to-one association to Company
 	@ManyToOne
 	@JoinColumn(name = "company_id", nullable = false)
@@ -90,15 +113,7 @@ public class StandardInvoice implements Serializable {
 		this.id = id;
 	}
 
-	
 
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
 
 	
 
@@ -126,6 +141,7 @@ public class StandardInvoice implements Serializable {
 		this.dueDate = dueDate;
 	}
 
+
 	public int getIsDeleted() {
 		return isDeleted;
 	}
@@ -133,6 +149,7 @@ public class StandardInvoice implements Serializable {
 	public void setIsDeleted(int isDeleted) {
 		this.isDeleted = isDeleted;
 	}
+
 
 	public BigDecimal getGrandTotal() {
 		return this.grandTotal;
@@ -142,7 +159,6 @@ public class StandardInvoice implements Serializable {
 		this.grandTotal = grandTotal;
 	}
 
-
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;
 	}
@@ -151,12 +167,11 @@ public class StandardInvoice implements Serializable {
 		this.invoiceNumber = invoiceNumber;
 	}
 
-
-	public boolean isRecurring() {
-		return isRecurring;
+	public byte getIsRecurring() {
+		return this.isRecurring;
 	}
 
-	public void setRecurring(boolean isRecurring) {
+	public void setIsRecurring(byte isRecurring) {
 		this.isRecurring = isRecurring;
 	}
 
@@ -216,14 +231,7 @@ public class StandardInvoice implements Serializable {
 		this.tax = tax;
 	}
 
-	public Timestamp getUpdatedAt() {
-		return this.updatedAt;
-	}
-
-	public void setUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
+	
 	public List<InvoiceType> getInvoiceTypes() {
 		return this.invoiceTypes;
 	}
@@ -252,6 +260,16 @@ public class StandardInvoice implements Serializable {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+	@Column(name = "pdf_path")
+	private String pdfPath;
+
+	public String getPdfPath() {
+		return pdfPath;
+	}
+
+	public void setPdfPath(String pdfPath) {
+		this.pdfPath = pdfPath;
 	}
 
 }

@@ -15,6 +15,8 @@ public class StandardInvoiceResponseModel {
     private String status;
 	private BigDecimal subtotal;
     private BigDecimal tax;
+    private String pdfPath;
+    private String invoiceNumber;
     
     
     

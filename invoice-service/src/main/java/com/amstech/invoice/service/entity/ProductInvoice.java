@@ -3,12 +3,13 @@ package com.amstech.invoice.service.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+
 
 
 /**
@@ -22,8 +23,8 @@ public class ProductInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;
 
 	@Lob
 	@Column(name="account_details")
@@ -33,7 +34,28 @@ public class ProductInvoice implements Serializable {
 	private String buyerDetails;
 
 	
+	@Column(name = "invoice_number")
+	private String invoiceNumber;
 
+	@Column(name = "pdf_path")
+	private String pdfPath;
+
+
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+
+	public String getPdfPath() {
+		return pdfPath;
+	}
+
+	public void setPdfPath(String pdfPath) {
+		this.pdfPath = pdfPath;
+	}
 	@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
 	private Date dueDate;
@@ -64,7 +86,33 @@ public class ProductInvoice implements Serializable {
 	@OneToMany(mappedBy="productInvoice")
 	private List<InvoiceType> invoiceTypes;
 
-	//bi-directional many-to-one association to ProductInvoiceItem
+//	//bi-directional many-to-one association to ProductInvoiceItem
+//	@ManyToOne
+//	//
+//	@JoinColumn(name="company_id", nullable = false)
+//	private Company company;
+//	
+//
+//
+//	public Company getCompany() {
+//		return company;
+//	}
+//
+//	public void setCompany(Company company) {
+//		this.company = company;
+//	}
+//
+//	public Client getClient() {
+//		return client;
+//	}
+//
+//	public void setClient(Client client) {
+//		this.client = client;
+//	}
+//	@ManyToOne
+//	@JoinColumn(name="client_id", nullable = false)
+//	private Client client;
+
 	@OneToMany(mappedBy="productInvoice")
 	private List<ProductInvoiceItem> productInvoiceItems;
 	
@@ -81,7 +129,7 @@ public class ProductInvoice implements Serializable {
 
 	public ProductInvoice() {
 	}
-	   @CreationTimestamp
+       @CreationTimestamp
 	    @Column(updatable = false, nullable = false)
 	    private LocalDateTime createdAt;
 
@@ -89,6 +137,7 @@ public class ProductInvoice implements Serializable {
 	    @Column(nullable = false)
 	    private LocalDateTime updatedAt;
 
+	
 	public int getId() {
 		return this.id;
 	}
@@ -122,9 +171,29 @@ public class ProductInvoice implements Serializable {
 		this.dueDate = dueDate;
 	}
 
-	public BigDecimal getHandlingCosts() {
-		return this.handlingCosts;
+	
+	
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public BigDecimal getHandlingCosts() {
+		return handlingCosts;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 
 	public void setHandlingCosts(BigDecimal handlingCosts) {
 		this.handlingCosts = handlingCosts;
@@ -208,6 +277,7 @@ public class ProductInvoice implements Serializable {
 		return invoiceType;
 	}
 
+
 	public List<ProductInvoiceItem> getProductInvoiceItems() {
 		return this.productInvoiceItems;
 	}
@@ -228,6 +298,7 @@ public class ProductInvoice implements Serializable {
 		productInvoiceItem.setProductInvoice(null);
 
 		return productInvoiceItem;
+
 	}
 
 }

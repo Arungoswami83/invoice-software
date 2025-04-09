@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,23 +39,36 @@ public class ServiceInvoiceService {
 	private ServiceInvoiceModelToEntityConverter serviceInvoiceModelToEntityConverter;
 	@Autowired
 	private ServiceInvoiceEntityToModelConverter serviceInvoiceEntityToModelConverter;
+   @Autowired
+   private ServiceInvoicePdfService pdfService;
+	public ServiceInvoiceResponseModel signup(ServiceInvoiceSignupRequestModel requestModel) throws Exception {
+	    LOGGER.info("Signup request received for Service Invoice");
 
-	 public ServiceInvoiceResponseModel signup(ServiceInvoiceSignupRequestModel requestModel) throws Exception {
-	        LOGGER.info("Signup request received for Service Invoice");
-
-	        Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
-	        if (!clientOptional.isPresent()) {
-	            throw new Exception("Client does not exist");
-	        }
-
-	        ServiceInvoice serviceInvoice = serviceInvoiceModelToEntityConverter.getsaveConverter(requestModel);
-	        serviceInvoice.setClient(clientOptional.get());
-
-	        serviceInvoice = serviceInvoiceRepo.save(serviceInvoice);
-	        LOGGER.info("Service Invoice created successfully!");
-
-	        return serviceInvoiceEntityToModelConverter.getFindByIdConverter(serviceInvoice);
+	    Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
+	    if (!clientOptional.isPresent()) {
+	        throw new Exception("Client does not exist");
 	    }
+
+	    LOGGER.debug("Converting request model to entity for client: {}", requestModel.getClientId());
+
+	    ServiceInvoice serviceInvoice = serviceInvoiceModelToEntityConverter.getsaveConverter(requestModel);
+
+	    // **Auto-generate Invoice Number**
+	    serviceInvoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+
+	    serviceInvoice.setClient(clientOptional.get());
+
+	    ServiceInvoice savedInvoice = serviceInvoiceRepo.save(serviceInvoice);
+
+	    // **Generate PDF Path**
+	    String pdfPath = pdfService.generateServiceInvoicePDF(savedInvoice);
+	    savedInvoice.setPdfPath(pdfPath);
+	    serviceInvoiceRepo.save(savedInvoice);
+
+	    LOGGER.info("Service Invoice created successfully!");
+
+	    return serviceInvoiceEntityToModelConverter.getFindByIdConverter(savedInvoice);
+	}
 
 	    // ✅ Update Service Invoice
 	    public ServiceInvoiceResponseModel update(ServiceInvoiceUpdateRequestModel requestModel) throws Exception {

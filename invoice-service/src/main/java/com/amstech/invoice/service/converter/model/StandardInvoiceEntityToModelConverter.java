@@ -12,7 +12,7 @@ import com.amstech.invoice.service.response.model.StandardInvoiceResponseModel;
 
 @Component
 public class StandardInvoiceEntityToModelConverter {
-	public StandardInvoiceResponseModel findInvoiceById(StandardInvoice standardInvoice) {
+	public StandardInvoiceResponseModel getfindInvoiceById(StandardInvoice standardInvoice) {
 		
 		  StandardInvoiceResponseModel responseModel = new StandardInvoiceResponseModel();
 		    responseModel.setId(standardInvoice.getId());
@@ -24,7 +24,7 @@ public class StandardInvoiceEntityToModelConverter {
 		    responseModel.setStatus(standardInvoice.getStatus());
 		    responseModel.setSubtotal(standardInvoice.getSubtotal());
 		    responseModel.setTax(standardInvoice.getTax());
-
+		    responseModel.setInvoiceNumber(standardInvoice.getInvoiceNumber());
 		    return responseModel;
 	}
 	
@@ -42,7 +42,7 @@ public class StandardInvoiceEntityToModelConverter {
 	        responseModel.setStatus(invoice.getStatus());
 	        responseModel.setSubtotal(invoice.getSubtotal());
 	        responseModel.setTax(invoice.getTax());
-
+	        responseModel.setInvoiceNumber(invoice.getInvoiceNumber());
 	        responseList.add(responseModel);
 	    }
 

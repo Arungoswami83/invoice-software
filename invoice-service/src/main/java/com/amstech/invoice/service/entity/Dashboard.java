@@ -39,8 +39,6 @@ public class Dashboard implements Serializable {
 	@JoinColumn(name="analytics_id")
 	private Analytic analytic;
 
-	
-
 	//bi-directional many-to-one association to Invoice
 	@ManyToOne
 	private Invoice invoice;
@@ -54,6 +52,11 @@ public class Dashboard implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="sales_invoices")
 	private SalesInvoice salesInvoice;
+	
+	@ManyToOne
+	@JoinColumn(name = "sales_invoice_id")  // Ensure this column name is correct
+	private SalesInvoices salesInvoices;
+
 
 	public Dashboard() {
 	}
@@ -102,6 +105,14 @@ public class Dashboard implements Serializable {
 		return this.totalIncome;
 	}
 
+	public SalesInvoices getSalesInvoices() {
+		return salesInvoices;
+	}
+
+	public void setSalesInvoices(SalesInvoices salesInvoices) {
+		this.salesInvoices = salesInvoices;
+	}
+
 	public void setTotalIncome(BigDecimal totalIncome) {
 		this.totalIncome = totalIncome;
 	}
@@ -121,7 +132,6 @@ public class Dashboard implements Serializable {
 	public void setAnalytic(Analytic analytic) {
 		this.analytic = analytic;
 	}
-
 
 	public Invoice getInvoice() {
 		return this.invoice;

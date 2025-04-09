@@ -1,3 +1,4 @@
+
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;

@@ -21,8 +21,9 @@ public class Currency implements Serializable {
 
 	private String name;
 
-	//bi-directional many-to-one association to Company
-	
+//	//bi-directional many-to-one association to Company
+//	@OneToMany(mappedBy="currency")
+//	private List<Company> companies;
 
 	public Currency() {
 	}
@@ -51,8 +52,11 @@ public class Currency implements Serializable {
 		this.name = name;
 	}
 
-	
-
-	
-
+//	public List<Company> getCompanies() {
+//		return this.companies;
+//	}
+//
+//	public void setCompanies(List<Company> companies) {
+//		this.companies = companies;
+//	}
 }

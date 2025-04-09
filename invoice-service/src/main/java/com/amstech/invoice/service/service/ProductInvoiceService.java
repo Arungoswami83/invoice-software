@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,23 +36,37 @@ public class ProductInvoiceService {
 	private ProductInvoiceModelToEntityConverter productInvoiceModelToEntityConverter;
 	@Autowired
 	private ProductInvoiceEntityToModelConverter productInvoiceEntityToModelConverter;
-
+    @Autowired
+    private ProductInvoicePdfService pdfService;
     private  final Logger LOGGER = LoggerFactory.getLogger(ProductInvoiceService.class);
 
-
-    public ProductInvoiceResponseModel signup(ProductInvoiceSignupRequestModel productInvoiceSignupRequestModel) throws Exception {
-        if (productInvoiceSignupRequestModel == null) {
+    public ProductInvoiceResponseModel signup(ProductInvoiceSignupRequestModel requestModel) throws Exception {
+        if (requestModel == null) {
             LOGGER.error("Signup request failed: Request Model is null");
             throw new Exception("Request Model cannot be null");
         }
+       
 
-        LOGGER.debug("Converting request model to entity for user: {}", productInvoiceSignupRequestModel.getOrderNumber());
 
-        ProductInvoice productInvoice = productInvoiceModelToEntityConverter.getSignupConverter(productInvoiceSignupRequestModel);
-        ProductInvoice save = productInvoiceRepo.save(productInvoice);
+        ProductInvoice productInvoice = productInvoiceModelToEntityConverter.getSignupConverter(requestModel);
+        
+        // **Auto-generate Invoice Number**
+        productInvoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
 
-       return  productInvoiceEntityToModelConverter.getfindByIdConverter(productInvoice);
-    		}
+
+
+        ProductInvoice savedInvoice = productInvoiceRepo.save(productInvoice);
+        
+
+        // **Generate PDF Path**
+        String pdfPath = pdfService.generateProductInvoicePDF(savedInvoice);
+        savedInvoice.setPdfPath(pdfPath);
+        productInvoiceRepo.save(savedInvoice);
+
+        LOGGER.info("Product Invoice created successfully!");
+
+        return productInvoiceEntityToModelConverter.getfindByIdConverter(savedInvoice);
+    }
 
 
 

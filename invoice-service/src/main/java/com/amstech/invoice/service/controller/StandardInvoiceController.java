@@ -1,6 +1,8 @@
 package com.amstech.invoice.service.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,8 +33,9 @@ public class StandardInvoiceController {
 	@Autowired
 	private StandardInvoiceService standardInvoiceService;
 	
-	
-	    // ✅ Signup API
+    @CrossOrigin(origins = "http://localhost:4200") // ✅ Method level par use karein
+
+	   
 	    @RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
 	    public RestResponse signup(@RequestBody StandardInvoiceSignupRequestModel requestModel) {
 	        LOGGER.info("Saving standard invoice data: {}", requestModel.getInvoiceNumber());
@@ -39,6 +43,9 @@ public class StandardInvoiceController {
 	        try {
 	            StandardInvoiceResponseModel responseModel = standardInvoiceService.signup(requestModel);
 	            LOGGER.info("Standard Invoice created Successfully!");
+	            Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("invoice", responseModel);
+                responseMap.put("pdfUrl", responseModel.getPdfPath());
 	            return RestResponse.build().withSuccess("Standard Invoice Created Successfully", responseModel);
 	        } catch (DataIntegrityViolationException e) {
 	            LOGGER.error("Duplicate Entry Error: {}", e.getMessage(), e);
