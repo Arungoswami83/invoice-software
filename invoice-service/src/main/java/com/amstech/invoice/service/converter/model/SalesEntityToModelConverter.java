@@ -22,13 +22,14 @@ public class SalesEntityToModelConverter {
         responseModel.setId(sales.getId());
         responseModel.setPaymentTerm(sales.getPaymentTerm());
         responseModel.setSignature(sales.getSignature());
-        responseModel.setStatusName(sales.getStatus());
         responseModel.setSubtotal(sales.getSubtotal());
         responseModel.setTax(sales.getTax());
         responseModel.setTotal(sales.getTotal());
         responseModel.setDiscount(sales.getDiscount());
         responseModel.setClientId(sales.getClient().getId());
-        
+        responseModel.setPrice(sales.getPrice());
+        responseModel.setStatus(sales.getStatus());
+        responseModel.setInvoiceNumber(sales.getInvoiceNumber());
         return responseModel;
     }
 
@@ -44,14 +45,15 @@ public class SalesEntityToModelConverter {
 	            responseModel.setDiscount(sales.getDiscount());
 	            responseModel.setPaymentTerm(sales.getPaymentTerm());
 	            responseModel.setSignature(sales.getSignature());
-	            responseModel.setStatusName(sales.getStatus());
 	            responseModel.setSubtotal(sales.getSubtotal());
 	            responseModel.setTax(sales.getTax());
 	            responseModel.setTotal(sales.getTotal());
 	            responseModel.setDiscount(sales.getDiscount());
-				
+	            responseModel.setPrice(sales.getPrice());
 	            responseModels.add(responseModel);
-	          
+	            responseModel.setStatus(sales.getStatus());
+	            responseModel.setInvoiceNumber(sales.getInvoiceNumber());
+
 	        }
 			return responseModels;
     }

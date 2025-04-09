@@ -18,11 +18,12 @@ public class SalesModelToEntityConverter {
 	        salesInvoices.setDiscount(salesSignupRequestModel.getDiscount());
 	        salesInvoices.setPaymentTerm(salesSignupRequestModel.getPaymentTerm());
 	        salesInvoices.setSignature(salesSignupRequestModel.getSignature());
-	        salesInvoices.setStatus(salesSignupRequestModel.getStatus());
 	        salesInvoices.setSubtotal(salesSignupRequestModel.getSubtotal());
 	        salesInvoices.setTax(salesSignupRequestModel.getTax());
 	        salesInvoices.setTotal(salesSignupRequestModel.getTotal());
 	        salesInvoices.setClient(salesInvoices.getClient());
+	        salesInvoices.setPrice(salesSignupRequestModel.getPrice());
+	        salesInvoices.setStatus(salesSignupRequestModel.getStatus());
 	  
 	        return salesInvoices;
 	  }

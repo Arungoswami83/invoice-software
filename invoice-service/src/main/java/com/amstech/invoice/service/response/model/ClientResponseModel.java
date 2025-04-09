@@ -11,16 +11,19 @@ import lombok.Data;
 public class ClientResponseModel {
 	
 	private int id;
-	private Integer clientId;
-	private String firstName;
-	private String lastName;
-	private String gender;
-	private LocalDateTime createdAt;
-	private Date dueDate;
-	private BigDecimal totalAmount;
-	private String status;
-	private BigDecimal tax;
-	private int quantity;
-	private String productCode;
+    private String firstName;
+    private String lastName;
+    private String mobileNumber;
+    private String companyName;
+    private String address;
+    private String phoneNumber;
+    private String email;
+    private int cityId;
+    private String businessName;
+    private String  postalZipCode;
+    private String linkedin_profile_url;
+    private String PanNumber;
+    private String  specificRegistrationDetails;  
     
+
 }

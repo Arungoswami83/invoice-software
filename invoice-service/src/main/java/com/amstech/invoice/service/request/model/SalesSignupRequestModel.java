@@ -9,14 +9,13 @@ public class SalesSignupRequestModel {
 	
 	  
     private String invoiceNumber;  
-    private int clientId; 
-    private Date date;  
-    private Date dueDate;  
+    private int clientId;   
     private String paymentTerm;  
     private BigDecimal subtotal; 
     private BigDecimal discount;  
     private BigDecimal tax;  
     private BigDecimal total;  
     private String signature;  
-    private String status;  
+   private double price;
+   private String status;
   }

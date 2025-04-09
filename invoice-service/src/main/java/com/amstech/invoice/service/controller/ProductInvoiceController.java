@@ -1,7 +1,9 @@
 package com.amstech.invoice.service.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 
 
-
 @RestController
 @RequestMapping("/productinvoice")
 public class ProductInvoiceController {
@@ -42,7 +44,8 @@ public class ProductInvoiceController {
 	    @Autowired
 	    private ProductInvoiceService productInvoiceService;
 
-	    
+	    @CrossOrigin(origins = "http://localhost:4200") // ✅ Method level par use karein
+
 	    @RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
 	    public RestResponse signup(@RequestBody ProductInvoiceSignupRequestModel productInvoiceSignupRequestModel) {
 	        LOGGER.info("Saving invoice data: {}", productInvoiceSignupRequestModel.getOrderNumber());
@@ -50,6 +53,9 @@ public class ProductInvoiceController {
 	        try {
 	        	ProductInvoiceResponseModel ResponseModel =productInvoiceService.signup(productInvoiceSignupRequestModel);
 	            LOGGER.info("Product Invoice created Successfully!");
+	            Map<String, Object> responseMap = new HashMap<>();
+	            responseMap.put("invoice", ResponseModel);
+	            responseMap.put("pdfUrl", ResponseModel.getPdfPath());
 
 	            return RestResponse.build().withSuccess("Product Invoice Created Successfully",ResponseModel );
 

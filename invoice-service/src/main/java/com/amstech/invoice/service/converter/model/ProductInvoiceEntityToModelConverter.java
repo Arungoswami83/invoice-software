@@ -20,6 +20,9 @@ public class ProductInvoiceEntityToModelConverter {
 		responseModel.setSupplier(productInvoice.getSupplier());
 		responseModel.setPaymentMethod(productInvoice.getPaymentMethod());
 		responseModel.setOrderNumber(productInvoice.getOrderNumber());
+	    responseModel.setInvoiceNumber(productInvoice.getInvoiceNumber());
+	    responseModel.setPdfPath(productInvoice.getPdfPath()); // Set PDF path
+
 		return responseModel;
 	}
 

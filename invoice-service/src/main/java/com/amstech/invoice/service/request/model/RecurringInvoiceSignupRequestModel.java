@@ -19,4 +19,6 @@ public class RecurringInvoiceSignupRequestModel {
     private Date endDate;
     private String paymentTerm;
     private BigDecimal totalPayable;
+	private String invoiceNumber;
+
     }

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -41,7 +41,16 @@ public class ServiceInvoice implements Serializable {
 	@Column(name="invoice_number")
 	private String invoiceNumber;
 
+	@Column(name = "pdf_path")
+	private String pdfPath;
 
+	public String getPdfPath() {
+		return pdfPath;
+	}
+
+	public void setPdfPath(String pdfPath) {
+		this.pdfPath = pdfPath;
+	}
 
 	@Lob
 	private String notes;
@@ -65,7 +74,7 @@ public class ServiceInvoice implements Serializable {
 	@Column(name="updated_at")
 	private Timestamp updatedAt;
 
-	
+
 
 	//bi-directional many-to-one association to InvoiceType
 	@OneToMany(mappedBy="serviceInvoice")

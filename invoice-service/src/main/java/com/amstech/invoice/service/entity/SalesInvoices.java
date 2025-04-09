@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -19,17 +23,19 @@ public class SalesInvoices implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToMany(mappedBy = "salesInvoice", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SalesInvoiceItem> salesInvoiceItems;
+
+    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SalesInvoiceItem> salesInvoiceItems; 
 
     @Column(name = "is_deleted")
     private int isDeleted;
 
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false) // Ensures NOT NULL
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
     private BigDecimal discount;
@@ -40,7 +46,7 @@ public class SalesInvoices implements Serializable {
     @Column(name = "payment_term")
     private String paymentTerm;
 
-    private BigDecimal price; // Changed from double to BigDecimal
+    private double price;
 
     @Lob
     private String signature;
@@ -53,15 +59,24 @@ public class SalesInvoices implements Serializable {
 
     private BigDecimal total;
 
-    @Column(name = "updated_at")
+    @UpdateTimestamp
+	 @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Analytic> analytics;
 
-    @OneToMany(mappedBy = "salesInvoices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @OneToMany(mappedBy = "salesInvoices")
+    @JsonIgnore
+    private List<Dashboard> dashboards;
+
+    @OneToMany(mappedBy = "salesInvoices")
+    @JsonIgnore
+
     private List<Report> reports;
-  
+
     public SalesInvoices() {}
 
 	public int getId() {
@@ -156,9 +171,9 @@ public class SalesInvoices implements Serializable {
 		return subtotal;
 	}
 
-	public void setSubtotal(BigDecimal subtotal) {
-		this.subtotal = subtotal;
-	}
+    public double getPrice() { return this.price; }
+    public void setPrice(double price) { this.price = price; }
+
 
 	public BigDecimal getTax() {
 		return tax;
@@ -196,9 +211,13 @@ public class SalesInvoices implements Serializable {
 		return reports;
 	}
 
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
 
-      
+    public List<SalesInvoiceItem> getSalesInvoiceItems() { return salesInvoiceItems; }
+    public void setSalesInvoiceItems(List<SalesInvoiceItem> salesInvoiceItems) {
+        this.salesInvoiceItems = salesInvoiceItems;
+    }
+
+    public int getIsDeleted() { return isDeleted; }
+    public void setIsDeleted(int isDeleted) { this.isDeleted = isDeleted; }
 }
+

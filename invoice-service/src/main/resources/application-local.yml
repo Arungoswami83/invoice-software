@@ -5,15 +5,15 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://localhost:3306/invoice_management_system
     username: root
-    password: prachi@123
+    password: root
     driverClassName: com.mysql.cj.jdbc.Driver
     hikari:
       minimumIdle: 5
       maximumPoolSize: 10
       idleTimeout: 30000
       poolName: invoice-service-pool-local
-      maxLifetime: 100000 
-      connectionTimeout: 20000 
+      maxLifetime: 100000
+      connectionTimeout: 20000
   jpa:
     hibernate:
       ddl-auto: update
@@ -24,6 +24,7 @@ spring:
         show_sql: false
         format_sql: false
         dialect: org.hibernate.dialect.MySQL8Dialect
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -35,17 +36,28 @@ spring:
       mail.smtp.connectiontimeout: 5000
       mail.smtp.timeout: 5000
       mail.smtp.writetimeout: 5000
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+
 server:
   servlet:
-    context-path: /invoice-service-local  
+    context-path: /invoice-service-local
   port: 2061
-  
+
 logging:
-  file.name: logs/invoice-service.log
+  file:
+    name: logs/invoice-service.log
   pattern:
     console: "%d %-5level [%thread] %logger : %msg%n"
     file: "%d %-5level [%thread] %logger : %msg%n"
   level:
     org.springframework.web: INFO
     org.hibernate: INFO
-    com.amstech.invoice.managment: INFO
+    com.amstech.invoice.service: INFO
+
+file:
+  upload-dir: D:/uploads/
+

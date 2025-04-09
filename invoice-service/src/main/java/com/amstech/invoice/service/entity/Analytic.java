@@ -25,13 +25,18 @@ public class Analytic implements Serializable {
 	@ManyToOne
 	private Invoice invoice;
 
-	//bi-directional many-to-one association to SalesInvoice
-	@ManyToOne
-	@JoinColumn(name="sales_invoices")
-	private SalesInvoice salesInvoice;
+//	//bi-directional many-to-one association to SalesInvoice
+//	@ManyToOne
+//	@JoinColumn(name="sales_invoices")
+//	private SalesInvoice salesInvoice;
 	
+
+		@ManyToOne
+	    @JoinColumn(name = "sales_invoice_id")  // Foreign Key
+	    private SalesInvoice salesInvoice; 
+
 	@ManyToOne
-	@JoinColumn(name = "sales_invoice_id")
+	@JoinColumn(name = "sales_invoices_id")
 	private SalesInvoices salesInvoices;
 	
 	 @Column(name = "total_amount")
@@ -46,7 +51,6 @@ public class Analytic implements Serializable {
 	    
 	    @Column(name = "created_at", updatable = false)
 	    private LocalDateTime createdAt = LocalDateTime.now();
-
 	    
 	    public Analytic() {
 	}

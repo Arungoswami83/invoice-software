@@ -23,10 +23,18 @@ public class ClientEntityToModelConverter {
 	            responseModel.setId(client.getId());
 	            responseModel.setFirstName(client.getFirstName());
 	            responseModel.setLastName(client.getLastName());
-//	            responseModel.setAddress(client.getAddress());
-//	            responseModel.setEmailAddress(client.getEmail());
-//	            responseModel.setMobileNumber(client.getMobileNumber());
-//	            responseModel.setCompanyName(client.getCompanyName());
+
+	            responseModel.setAddress(client.getAddress());
+	            responseModel.setMobileNumber(client.getMobileNumber());
+	            responseModel.setCompanyName(client.getCompanyName());
+	           responseModel.setPhoneNumber(client.getPhoneNumber());
+	           responseModel.setPanNumber(client.getPanNumber());
+	           responseModel.setBusinessName(client.getBusinessName());
+	           responseModel.setPostalZipCode(client.getPostalZipCode());
+	           responseModel.setLinkedin_profile_url(client.getLinkedinProfileUrl());
+	           responseModel.setCityId(client.getCity().getId());
+	           responseModel.setSpecificRegistrationDetails(client.getSpecificRegistrationDetails());
+	           responseModel.setEmail(client.getEmail());
 
 	            clientResponseModels.add(responseModel);
 	        }
@@ -41,11 +49,19 @@ public class ClientEntityToModelConverter {
 		responseModel.setId(client.getId());
         responseModel.setFirstName(client.getFirstName());
         responseModel.setLastName(client.getLastName());
-//        responseModel.setAddress(client.getAddress());
-//        responseModel.setEmailAddress(client.getEmail());
-//        responseModel.setMobileNumber(client.getMobileNumber());
-//        responseModel.setCompanyName(client.getCompanyName());
-//       
+
+        responseModel.setAddress(client.getAddress());
+        responseModel.setMobileNumber(client.getMobileNumber());
+        responseModel.setCompanyName(client.getCompanyName());
+        responseModel.setPhoneNumber(client.getPhoneNumber());
+        responseModel.setPanNumber(client.getPanNumber());
+        responseModel.setBusinessName(client.getBusinessName());
+        responseModel.setPostalZipCode(client.getPostalZipCode());
+        responseModel.setLinkedin_profile_url(client.getLinkedinProfileUrl());
+        responseModel.setCityId(client.getCity().getId());
+        responseModel.setEmail(client.getEmail());
+       responseModel.setSpecificRegistrationDetails(client.getSpecificRegistrationDetails());
+
 	return responseModel;
 
 

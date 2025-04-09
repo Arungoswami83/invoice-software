@@ -6,13 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import io.swagger.v3.oas.annotations.Operation;
-
-import org.springframework.web.bind.annotation.RestController;
 
 import com.amstech.invoice.service.request.model.ClientLoginRequestModel;
 import com.amstech.invoice.service.request.model.ClientSignupRequestModel;
@@ -23,7 +18,7 @@ import com.amstech.invoice.service.response.RestResponse;
 import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.CompanyResponseModel;
 import com.amstech.invoice.service.service.ClientService;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,6 +39,7 @@ public class ClientController {
 		public ClientController() {
 			logger.info("ClientController: Object Created");
 	    }
+	    @CrossOrigin(origins = "http://localhost:4200") // ✅ Method level par use karein
 
 
 		@Operation(summary = "you can use this method for client/signup",description = "this is client signup")

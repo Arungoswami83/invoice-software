@@ -2,6 +2,7 @@ package com.amstech.invoice.service.converter.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,11 @@ public class ServiceInvoiceModelToEntityConverter {
 	    serviceInvoice.setTax(serviceInvoiceSignupRequestModel.getTax());
 	    serviceInvoice.setStatus(serviceInvoiceSignupRequestModel.getStatus());
 	    serviceInvoice.setClient(serviceInvoice.getClient());
-
+	    if (serviceInvoiceSignupRequestModel.getInvoiceNumber() == null || serviceInvoiceSignupRequestModel.getInvoiceNumber().isEmpty()) {
+	    	serviceInvoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        } else {
+        	serviceInvoice.setInvoiceNumber(serviceInvoiceSignupRequestModel.getInvoiceNumber());
+        }
 	    return serviceInvoice;
 	
 

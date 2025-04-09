@@ -24,7 +24,7 @@ public interface CompanyRepo extends JpaRepository<Company, Integer> {
 	
 
 	    @Query("SELECT c FROM Company c WHERE c.id = :id")
-	    Company findByCompanyId(@Param("id") int id);
+	    Company findByCompanyId(@Param("id") Integer id);
 	    
 	    @Query("SELECT c FROM Company c WHERE c.name = :name")
 	    Company findByCompanyName(@Param("name") String name);  
