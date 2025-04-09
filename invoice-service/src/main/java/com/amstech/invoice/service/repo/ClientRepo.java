@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
-import com.amstech.invoice.service.entity.SalesInvoices;
 
 @Repository
 public interface ClientRepo extends JpaRepository<Client, Integer> {
