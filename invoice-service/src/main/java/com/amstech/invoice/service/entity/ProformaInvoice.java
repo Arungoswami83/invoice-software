@@ -2,61 +2,76 @@ package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
 
-
 import jakarta.annotation.Generated;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
-
 
 /**
  * The persistent class for the proforma_invoices database table.
  * 
  */
 @Entity
-@Table(name="proforma_invoices")
-@NamedQuery(name="ProformaInvoice.findAll", query="SELECT p FROM ProformaInvoice p")
+@Table(name = "proforma_invoices")
+@NamedQuery(name = "ProformaInvoice.findAll", query = "SELECT p FROM ProformaInvoice p")
 public class ProformaInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Temporal(TemporalType.DATE)
-	private Date date;
-	
-	
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private int id;
-	@Column(name="created_at")
-	private Timestamp createdAt;
 
-
-	@Column(name="invoice_number")
+	@Column(name = "invoice_number")
 	private String invoiceNumber;
 
+	@Column(name = "pdf_path")
+	private String pdfPath;
+
+	public String getPdfPath() {
+		return pdfPath;
+	}
+
+	public void setPdfPath(String pdfPath) {
+		this.pdfPath = pdfPath;
+	}
 
 	@Lob
-	@Column(name="payment_instructions")
+	@Column(name = "payment_instructions")
 	private String paymentInstructions;
 
 	private String status;
 
-	@Column(name="total_amount")
+	@Column(name = "total_amount")
 	private BigDecimal totalAmount;
 
-	@Column(name="updated_at")
-	private Timestamp updatedAt;
+	@Column(name = "created_at", updatable = false)
+	private LocalDateTime createdAt;
 
-	@Column(name="validity_period")
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
+
+//	@PrePersist
+//	protected void onCreate() {
+//		this.createdAt = LocalDateTime.now();
+//		this.updatedAt = LocalDateTime.now();
+//	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedAt = LocalDateTime.now();
+	}
+
+	@Column(name = "validity_period")
 	private String validityPeriod;
 
-	//bi-directional many-to-one association to InvoiceType
-	@OneToMany(mappedBy="proformaInvoice")
+	// bi-directional many-to-one association to InvoiceType
+	@OneToMany(mappedBy = "proformaInvoice")
 	private List<InvoiceType> invoiceTypes;
 
-	//bi-directional many-to-one association to ProformaInvoiceItem
-
+	// bi-directional many-to-one association to ProformaInvoiceItem
 
 	public ProformaInvoice() {
 	}
@@ -69,22 +84,16 @@ public class ProformaInvoice implements Serializable {
 		this.id = id;
 	}
 
-
-	@OneToMany(mappedBy="proformaInvoice")
+	@OneToMany(mappedBy = "proformaInvoice")
 	private List<ProformaInvoiceItem> proformaInvoiceItems;
 
-	//bi-directional many-to-one association to Company
 	@ManyToOne
-	//
-	@JoinColumn(name="company_id", nullable = false)
+	@JoinColumn(name = "company_id", nullable = false)
 	private Company company;
-	
-	
+
 	@ManyToOne
-	@JoinColumn(name="client_id", nullable = false)
+	@JoinColumn(name = "client_id", nullable = false)
 	private Client client;
-
-
 
 	public Client getClient() {
 		return client;
@@ -94,7 +103,7 @@ public class ProformaInvoice implements Serializable {
 		this.client = client;
 	}
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private int isDeleted;
 
 	public int getIsDeleted() {
@@ -105,24 +114,7 @@ public class ProformaInvoice implements Serializable {
 		this.isDeleted = isDeleted;
 	}
 
-
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
-
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
+	
 
 	public String getInvoiceNumber() {
 		return this.invoiceNumber;
@@ -156,13 +148,7 @@ public class ProformaInvoice implements Serializable {
 		this.totalAmount = totalAmount;
 	}
 
-	public Timestamp getUpdatedAt() {
-		return this.updatedAt;
-	}
-
-	public void setUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+	
 
 	public String getValidityPeriod() {
 		return this.validityPeriod;
@@ -223,5 +209,19 @@ public class ProformaInvoice implements Serializable {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
+
+	@PrePersist
+	public void prePersist() {
+	    LocalDateTime now = LocalDateTime.now();
+	    this.createdAt = now;
+	    this.updatedAt = now;
+
+	    // Generate invoice number only if it's null
+	    if (this.invoiceNumber == null) {
+	        this.invoiceNumber = "INV-" + System.currentTimeMillis(); // Unique invoice number
+	    }
+	}
+
+	
 
 }

@@ -9,10 +9,16 @@ import lombok.Data;
 public class UpdateRequest {
 
 	private int id;
+	private BigDecimal grandTotal;
+	private String customerEmail;
+	private String customerPhone;
+	private String customerName;
 	private BigDecimal totalAmount; 
 	private String note;
 	private BigDecimal subTotal;
 	private BigDecimal discount;
 	private int quantity;
+	private BigDecimal tax;
+	private BigDecimal balance;
 
 }

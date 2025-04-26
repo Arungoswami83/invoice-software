@@ -3,6 +3,7 @@ package com.amstech.invoice.service.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,26 +39,43 @@ public class StandardInvoiceService {
 	private StandardInvoiceModelToEntityConverter standardInvoiceModelToEntityConverter;
 	@Autowired
 	private StandardInvoiceEntityToModelConverter standardInvoiceEntityToModelConverter;
-	
-	 public StandardInvoiceResponseModel signup(StandardInvoiceSignupRequestModel requestModel) throws Exception {
-		 Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
-	        if (!companyOptional.isPresent()) {
-	            throw new Exception("Company does not exist");
-	        }
+	@Autowired
+	private StandardInvoicePdfService pdfService;
+	public StandardInvoiceResponseModel signup(StandardInvoiceSignupRequestModel requestModel) throws Exception {
+	    LOGGER.info("Signup request received for Standard Invoice");
 
-	        Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
-	        if (!clientOptional.isPresent()) {
-	            throw new Exception("Client does not exist");
-	        }
-	       
-	        StandardInvoice standardInvoice = standardInvoiceModelToEntityConverter.getsaveConverter(requestModel);
-	        standardInvoice.setCompany(companyOptional.get());
-	        standardInvoice.setClient(clientOptional.get());
-	        standardInvoiceRepo.save(standardInvoice);
-	        
-	        LOGGER.info("Standard Invoice Saved with ID: {}", standardInvoice.getId());
-	        return standardInvoiceEntityToModelConverter.findInvoiceById(standardInvoice);
+	    Optional<Company> companyOptional = companyRepo.findById(requestModel.getCompanyId());
+	    if (!companyOptional.isPresent()) {
+	        throw new Exception("Company does not exist");
 	    }
+
+	    Optional<Client> clientOptional = clientRepo.findById(requestModel.getClientId());
+	    if (!clientOptional.isPresent()) {
+	        throw new Exception("Client does not exist");
+	    }
+
+	    LOGGER.debug("Converting request model to entity for company: {}", requestModel.getCompanyId());
+
+	    StandardInvoice standardInvoice = standardInvoiceModelToEntityConverter.getsaveConverter(requestModel);
+
+	    // **Auto-generate Invoice Number**
+	    standardInvoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+
+	    standardInvoice.setCompany(companyOptional.get());
+	    standardInvoice.setClient(clientOptional.get());
+
+	    StandardInvoice savedInvoice = standardInvoiceRepo.save(standardInvoice);
+
+	    // **Generate PDF Path**
+	    String pdfPath = pdfService.generateStandardInvoicePDF(savedInvoice);
+	    savedInvoice.setPdfPath(pdfPath);
+	    standardInvoiceRepo.save(savedInvoice);
+
+	    LOGGER.info("Standard Invoice created successfully!");
+
+	    return standardInvoiceEntityToModelConverter.getfindInvoiceById(savedInvoice);
+	}
+
 
 	    public StandardInvoiceResponseModel update(StandardInvoiceUpdateRequestModel requestModel) throws Exception {
 	        Optional<StandardInvoice> existingInvoice = standardInvoiceRepo.findById(requestModel.getId());
@@ -71,7 +89,7 @@ public class StandardInvoiceService {
 	        standardInvoiceRepo.save(standardInvoice);
 
 	        LOGGER.info("Standard Invoice Updated with ID: {}", standardInvoice.getId());
-	        return standardInvoiceEntityToModelConverter.findInvoiceById(standardInvoice);
+	        return standardInvoiceEntityToModelConverter.getfindInvoiceById(standardInvoice);
 	    }
 
 	    public StandardInvoiceResponseModel findInvoiceById(Integer id) throws Exception {
@@ -88,7 +106,7 @@ public class StandardInvoiceService {
 	            throw new Exception("Invoice is deactivated.");
 	        }
 	        LOGGER.info("Invoice with ID {} found successfully", id);
-	        return standardInvoiceEntityToModelConverter.findInvoiceById(invoice);
+	        return standardInvoiceEntityToModelConverter.getfindInvoiceById(invoice);
 	    }
 
 	    public List<StandardInvoiceResponseModel> findAllInvoices(Integer page, Integer size) throws Exception {

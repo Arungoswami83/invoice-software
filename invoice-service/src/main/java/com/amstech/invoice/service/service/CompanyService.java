@@ -1,5 +1,7 @@
 package com.amstech.invoice.service.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -7,10 +9,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.amstech.invoice.service.converter.entity.CompanyModelToEntityConverter;
 import com.amstech.invoice.service.converter.model.CompanyEntityToModelConverter;
 import com.amstech.invoice.service.entity.BusinessTypes;
@@ -32,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.JpaSort.Path;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +57,9 @@ public class CompanyService {
 	
 	@Autowired
 	private CompanyEntityToModelConverter companyEntityToModelConverter;
+	
+	private static final String UPLOAD_DIR = "uploads/";
+	  
 	
 	    private static final Logger logger = LoggerFactory.getLogger(CompanyService.class);
 	    
@@ -225,6 +234,8 @@ public class CompanyService {
 	    public long countAllCompany() throws Exception {
 	        return companyRepo.countAllCompany();
 	    }
+	    
+	   
 }
 		
 	    

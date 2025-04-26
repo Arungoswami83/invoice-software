@@ -35,6 +35,7 @@ public class Invoice implements Serializable {
 	private LocalDateTime createdAt;
 
 	private BigDecimal discount;
+	private String status;
 
 	@Column(name = "invoice_number", unique = true)
     private String invoiceNumber;
@@ -61,6 +62,9 @@ public class Invoice implements Serializable {
 	@Column(name="sub_total")
 	private BigDecimal subTotal;
 	
+	@Column(name="grand_total")
+	private BigDecimal grandTotal;
+	
 	@Column(name = "note")
     private String note;  
 
@@ -85,11 +89,9 @@ public class Invoice implements Serializable {
 	private BigDecimal balance;
 
 	 @Enumerated(EnumType.STRING)
-	 @Column(name = "category", columnDefinition = "ENUM('Service', 'Product', 'Other') DEFAULT 'Service'")
-	 private Category category = Category.SERVICE;
+	 @Column(name = "category")
+	 private Category category;
 
-	 @Column(name = "product_code")
-	 private String productCode;
 	    
 	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<InvoiceHistory> invoiceHistories;
@@ -179,12 +181,21 @@ public class Invoice implements Serializable {
 		this.customerName = customerName;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
 	//bi-directional many-to-one association to TaxDetail
 	@OneToMany(mappedBy="invoice")
 	private List<TaxDetail> taxDetails;
 	
 	 @Column(name="deleted")
-	    private Boolean deleted;
+	 private Boolean deleted;
 	   
 	public Boolean getDeleted() {
 			return deleted;
@@ -246,6 +257,14 @@ public class Invoice implements Serializable {
 	public List<Transaction> getTransactions() {
 		return transactions;
 	}
+	public BigDecimal getGrandTotal() {
+		return grandTotal;
+	}
+
+	public void setGrandTotal(BigDecimal grandTotal) {
+		this.grandTotal = grandTotal;
+	}
+
 
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
@@ -271,14 +290,7 @@ public class Invoice implements Serializable {
 		this.category = category;
 	}
 
-	public String getProductCode() {
-		return productCode;
-	}
-
-	public void setProductCode(String productCode) {
-		this.productCode = productCode;
-	}
-
+	
 	public BigDecimal getSubTotal() {
 		return this.subTotal;
 	}

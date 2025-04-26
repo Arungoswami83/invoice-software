@@ -18,14 +18,15 @@ public class InvoiceRequest {
 	private BigDecimal discount;
 	private BigDecimal tax;
 	private BigDecimal grandTotal;
+	private Date dueDate;
 	private int quantity;
+	private String note;
 	private String customerEmail;
 	private String customerPhone;
 	private String customerName;
 	private BigDecimal paid;
 	private BigDecimal balance;
 	private String category; // Service, Product, Other
-    private String productCode;
 	private String paymentStatus;
     private String paymentMethod;
 

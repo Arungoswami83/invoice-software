@@ -26,6 +26,9 @@ public class ProductInvoice implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
+	@Column(name = "pdf_path")
+	private String pdfPath;
+	
 	@Lob
 	@Column(name="account_details")
 	private String accountDetails;
@@ -33,7 +36,7 @@ public class ProductInvoice implements Serializable {
 	@Column(name="buyer_details")
 	private String buyerDetails;
 
-	@Temporal(TemporalType.DATE)
+@Temporal(TemporalType.DATE)
 	@Column(name="due_date")
 	private Date dueDate;
 
@@ -63,8 +66,6 @@ public class ProductInvoice implements Serializable {
 	@OneToMany(mappedBy="productInvoice")
 	private List<InvoiceType> invoiceTypes;
 
-	//bi-directional many-to-one association to ProductInvoiceItem
-
 	@OneToMany(mappedBy="productInvoice")
 	private List<ProductInvoiceItem> productInvoiceItems;
 	
@@ -81,7 +82,7 @@ public class ProductInvoice implements Serializable {
 
 	public ProductInvoice() {
 	}
-	   @CreationTimestamp
+       @CreationTimestamp
 	    @Column(updatable = false, nullable = false)
 	    private LocalDateTime createdAt;
 
@@ -89,7 +90,9 @@ public class ProductInvoice implements Serializable {
 	    @Column(nullable = false)
 	    private LocalDateTime updatedAt;
 
-
+	    @Column(name = "invoice_number", unique = true)
+	    private String invoiceNumber;
+	
 	public int getId() {
 		return this.id;
 	}
@@ -145,7 +148,14 @@ public class ProductInvoice implements Serializable {
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+	
+	public String getPdfPath() {
+		return pdfPath;
+	}
 
+	public void setPdfPath(String pdfPath) {
+		this.pdfPath = pdfPath;
+	}
 
 	public void setHandlingCosts(BigDecimal handlingCosts) {
 		this.handlingCosts = handlingCosts;
@@ -236,6 +246,15 @@ public class ProductInvoice implements Serializable {
 
 	public void setProductInvoiceItems(List<ProductInvoiceItem> productInvoiceItems) {
 		this.productInvoiceItems = productInvoiceItems;
+	}
+	
+
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
 	}
 
 	public ProductInvoiceItem addProductInvoiceItem(ProductInvoiceItem productInvoiceItem) {

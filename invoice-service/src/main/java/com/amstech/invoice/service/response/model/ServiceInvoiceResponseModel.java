@@ -19,6 +19,7 @@ public class ServiceInvoiceResponseModel {
 	    private String status;
 	    private BigDecimal subTotal;
 	    private BigDecimal tax;
+	    private String pdfPath;
 	  
 
 }

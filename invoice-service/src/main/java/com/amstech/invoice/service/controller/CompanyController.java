@@ -1,13 +1,16 @@
 package com.amstech.invoice.service.controller;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.amstech.invoice.service.request.model.CompanyLoginRequestModel;
 import com.amstech.invoice.service.request.model.CompanySignupRequestModel;
@@ -28,6 +31,35 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.*;
+
 
 @RestController
 @RequestMapping("/company")
@@ -42,7 +74,52 @@ public class CompanyController {
     	logger.info("CompanyController: Object Created");
 }
 
-    @Operation(summary = "you can use this method for company/signup",description = "this is company signup")
+    private static final String UPLOAD_DIR = "D:/uploads/";  
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @CrossOrigin(origins = "http://localhost:4200") 
+
+    @PostMapping(value = "/signup", consumes = {"multipart/form-data"})
+    public ResponseEntity<String> registerCompany(
+            @RequestPart(value = "company") String companyJson,
+            @RequestPart(value = "logo", required = false) MultipartFile file) {
+
+        try {
+            System.out.println("🔹 Received JSON: " + companyJson);
+
+            
+            CompanySignupRequestModel company = objectMapper.readValue(companyJson, CompanySignupRequestModel.class);
+            System.out.println(" Parsed Company Object: " + company);
+
+            
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+                System.out.println(" Failed to create upload directory!");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(" Unable to create upload directory.");
+            }
+
+           
+            if (file != null && !file.isEmpty()) {
+                String uniqueFilename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                Path filePath = Paths.get(UPLOAD_DIR, uniqueFilename);
+                file.transferTo(filePath.toFile()); 
+                company.setLogo(uniqueFilename);
+                System.out.println("📂 File uploaded successfully: " + filePath.toAbsolutePath());
+            } else {
+                System.out.println("⚠️ No file uploaded.");
+            }
+
+            System.out.println("✅ Final Company Object with Logo: " + company);
+            return ResponseEntity.ok("✅ Company Registered Successfully with Logo: " + company.getLogo());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(" Error processing request: " + e.getMessage());
+        }
+    }
+
+  @Operation(summary = "you can use this method for company/signup",description = "this is company signup")
     @RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
     public RestResponse signup(@RequestBody CompanySignupRequestModel companySignupRequestModel) {
         logger.info("Saving Company data with name: {}", companySignupRequestModel.getName());

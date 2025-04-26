@@ -18,22 +18,22 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Integer> {
      @Query("SELECT e FROM Invoice e WHERE e.deleted = false") 
 	 List<Invoice>findAllInvoice(Pageable pageable);
 	      
-	 @Query("SELECT e FROM Invoice e WHERE e.id = :id AND e.deleted = false")
-	 Optional<Invoice>findById(@Param("id") Integer id);
 	 
-	 List<Invoice> findByClientId(Integer clientId);
+	 @Query("SELECT i FROM Invoice i WHERE i.client.id = :clientId")
+	 List<Invoice> findByClientId(@Param("clientId")Integer clientId);
 	 
   	 @Query("SELECT COUNT(e) FROM Invoice e WHERE e.deleted = false")  
   	 int countAllInvoice();
   	 
   	 int countByClientId(Integer clientId);
   	 
+  	 Optional<Invoice> findTopByClientIdOrderByCreatedAtDesc(Integer clientId);
+  	 
   	  @Query("SELECT i FROM Invoice i WHERE i.id = :id")
       Invoice findInvoiceById(@Param("id") Integer id);
   	 
-  	 @Query("SELECT e FROM Invoice e WHERE e.invoiceNumber = :invoiceNumber AND e.deleted=false")
-  	 Optional<Invoice>findByInvoiceNumber(@Param("invoiceNumber")String invoiceNumber);
-  
+      Optional<Invoice> findByInvoiceNumber(String invoiceNumber);
+
 //  	  @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.status = 'PAID'")
 //      BigDecimal getTotalSales();
 //

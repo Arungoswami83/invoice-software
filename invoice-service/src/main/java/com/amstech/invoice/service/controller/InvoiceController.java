@@ -34,9 +34,9 @@ public class InvoiceController {
     public InvoiceController(InvoiceService invoiceService) {
         this.invoiceService = invoiceService;
         LOGGER.info("InvoiceController: Object Created");
-    }
+    } 
     @CrossOrigin(origins = "http://localhost:4200")
-    
+
     @RequestMapping(method = RequestMethod.POST, value = "/create", consumes = "application/json", produces = "application/json")    
     public ResponseMessage createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
         LOGGER.info("Invoice created with Client ID: {}", invoiceRequest.getClientId());
@@ -53,17 +53,20 @@ public class InvoiceController {
             return ResponseMessage.build().withError(e.getMessage());
         }
     }
-    @RequestMapping(method = RequestMethod.PUT, value = "/update/{id}", consumes = "application/json", produces = "application/json")
+    @CrossOrigin(origins = "http://localhost:4200")
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateInvoice", consumes = "application/json", produces = "application/json")
     public ResponseMessage updateInvoice(@RequestBody UpdateRequest updateRequest) {
-	       LOGGER.info("Invoice Update with :{}",updateRequest.getId());
-    	try {
-    		InvoiceResponseModel updatedInvoice = invoiceService.updateInvoice(updateRequest);
-            return ResponseMessage.build().withSuccess("Invoice Update successfully",updatedInvoice);
+        LOGGER.info("Invoice Update with :{}", updateRequest.getId());
+        try {
+            InvoiceResponseModel updatedInvoice = invoiceService.updateInvoice(updateRequest);
+            return ResponseMessage.build().withSuccess("Invoice Updated Successfully", updatedInvoice);
         } catch (Exception e) {
-            LOGGER.error("Failed to Update user invoice due to: {}", e.getMessage(), e);
+            LOGGER.error("Failed to update invoice due to: {}", e.getMessage(), e);
             return ResponseMessage.build().withError(e.getMessage());
         }
     }
+
     @RequestMapping(method=RequestMethod.GET,value="/findById/{id}",produces="application/json")
     public ResponseMessage InvoiceById(@PathVariable("id") Integer id) {
         LOGGER.info("Fetching user detail by id: {}", id);
@@ -75,17 +78,21 @@ public class InvoiceController {
 			return ResponseMessage.build().withError(e.getMessage());
 		} 
     }
-    @RequestMapping(method=RequestMethod.GET,value="/findByInvoiceNumber/{invoiceNumber}",produces="application/json")
-    public ResponseMessage findByInvoiceNumber(@PathVariable("invoiceNumber") String invoiceNumber) {
-        LOGGER.info("Fetching invoice detail by id: {}",invoiceNumber);
-        try {
-        	InvoiceResponseModel FindInvoice = invoiceService.findByInvoiceNumber(invoiceNumber);
-        	return ResponseMessage.build().withSuccess("Invoice Found Successfully",FindInvoice);
-        }catch (Exception e) {
-			LOGGER.error("Failed to find Invoice due to :{}",e.getMessage(),e);
-			return ResponseMessage.build().withError(e.getMessage());
-		} 
-    }
+   
+    @CrossOrigin(origins = "http://localhost:4200")
+
+    @RequestMapping(method = RequestMethod.GET,value = "/findByInvoiceNumber/{invoiceNumber}",produces = "application/json")
+    	public ResponseMessage findByInvoiceNumber(@PathVariable("invoiceNumber") String invoiceNumber) {
+    	    LOGGER.info("Fetching invoice detail by invoiceNumber: {}", invoiceNumber);
+    	    try {
+    	        InvoiceResponseModel findInvoice = invoiceService.findByInvoiceNumber(invoiceNumber);
+    	        return ResponseMessage.build().withSuccess("Invoice Found Successfully", findInvoice);
+    	    } catch (Exception e) {
+    	        LOGGER.error("Failed to find invoice due to: {}", e.getMessage(), e);
+    	        return ResponseMessage.build().withError("Invoice Not Found: " + e.getMessage());
+    	    }
+    	}
+    
     @RequestMapping(method = RequestMethod.GET, value = "/findByClientId/{clientId}", produces = "application/json")
     public ResponseMessage findByClientId(@PathVariable("clientId") Integer clientId) {
         LOGGER.info("Fetching invoice details by clientId: {}", clientId);
@@ -112,7 +119,18 @@ public class InvoiceController {
         	LOGGER.error("Failed to find invoice list due to: {}", e.getMessage(), e);
             return ResponseMessage.build().withError(e.getMessage());
         }
-    }     
+    }  
+    @RequestMapping(method = RequestMethod.GET, value = "/{clientId}/invoices", produces = "application/json")
+    public ResponseMessage getInvoicesByClient(@RequestParam Integer clientId) {
+    	try {
+            List<InvoiceResponseModel> invoices = invoiceService.getInvoicesByClient(clientId);
+            return ResponseMessage.build().withSuccess("client found with invoice");
+    	}catch (Exception e) {
+        	LOGGER.error("Failed to find invoice list due to: {}", e.getMessage(), e);
+        	return ResponseMessage.build().withError(e.getMessage());
+		}
+    }
+    
     @RequestMapping(method=RequestMethod.DELETE,value=("/softDelete/{id}"),produces="application/json")
     public ResponseMessage softDeleteById(@RequestParam("id") int id) throws Exception {
         LOGGER.info("Deleting Invoice by invoiceId: {}", id);

@@ -49,6 +49,8 @@ public interface ClientRepo extends JpaRepository<Client, Integer> {
 		 @Query("SELECT COUNT(c) FROM Client c WHERE c.isDeleted = false")
 		 long countAllClient();
 
+		 Optional<Client> findByPhoneNumber(String mobileNumber);
+
 	 
 		 @Transactional
 		 @Modifying

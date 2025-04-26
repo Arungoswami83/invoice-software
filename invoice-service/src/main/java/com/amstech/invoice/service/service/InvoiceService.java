@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,7 @@ import com.amstech.invoice.service.request.model.InvoiceRequest;
 import com.amstech.invoice.service.request.model.UpdateRequest;
 import com.amstech.invoice.service.response.model.ClientResponseModel;
 import com.amstech.invoice.service.response.model.InvoiceResponseModel;
+import com.amstech.invoice.service.response.model.PaymentResponseMoodel;
 
 
 @Service
@@ -64,7 +68,6 @@ public class InvoiceService {
 	 private PDFGenerationService pdfGenerationService;
 	 
 	 public InvoiceResponseModel createInvoice(InvoiceRequest invoiceRequest) throws Exception {
-
 		    //  Check if Client exists
 		    Optional<Client> clientOptional = clientRepo.findById(invoiceRequest.getClientId());
 		    if (!clientOptional.isPresent()) {
@@ -78,9 +81,10 @@ public class InvoiceService {
 		        LOGGER.error("Company doesn't exist for ID: {}", invoiceRequest.getCompanyId());
 		        throw new Exception("Company does not exist");
 		    }
+	 				    
 
 		    //  Convert Request to Entity and Set Invoice Number
-		    Invoice invoice = invoiceModelToEntityConverter.getsaveconvertToInvoiceEntity(invoiceRequest, clientOptional, companyOptional);
+		   Invoice invoice = invoiceModelToEntityConverter.getsaveconvertToInvoiceEntity(invoiceRequest, clientOptional, companyOptional);
 		    invoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
 
 		    //  Save Invoice
@@ -91,7 +95,7 @@ public class InvoiceService {
 		    Payment payment = new Payment();
 		    payment.setInvoice(savedInvoice);
 		    payment.setAmountPaid(invoiceRequest.getPaid() != null ? invoiceRequest.getPaid() : BigDecimal.ZERO);
-		    payment.setPaymentDate(LocalDate.now());
+ 		    payment.setPaymentDate(LocalDate.now());
 
 		    payment.setPaymentMethod(getPaymentMethodSafe(invoiceRequest.getPaymentMethod()));
 
@@ -132,18 +136,18 @@ public class InvoiceService {
 		}
 
 	 
-	 	public InvoiceResponseModel updateInvoice(UpdateRequest updateRequest) throws Exception { 
-	    LOGGER.info("Updating invoice with ID");
-	    Optional<Invoice> OptionalInvoice = invoiceRepo.findById(updateRequest.getId());
-	    if (!OptionalInvoice.isPresent()) {
-	    	LOGGER.error("invoice doesn't Exist For These Id :{}",updateRequest.getId());
-        	throw new Exception("invoice does not exist ");
-        }
-	    Invoice invoice= OptionalInvoice.get();
-	    Invoice updateInvoice=invoiceModelToEntityConverter.updateInvoiceModel(invoice, updateRequest);
-	    updateInvoice= invoiceRepo.save(updateInvoice);
-	    return invoiceEntityToModelConverter.getfindById(updateInvoice);
-	}
+	 public InvoiceResponseModel updateInvoice(UpdateRequest updateRequest) throws Exception { 
+		    Optional<Invoice> optionalInvoice = invoiceRepo.findById(updateRequest.getId());
+
+		    if (optionalInvoice.isEmpty()) {
+		        throw new Exception("Invoice does not exist");
+		    }
+		    Invoice invoice = optionalInvoice.get();
+		     invoice = invoiceModelToEntityConverter.getupdateInvoiceModel(invoice, updateRequest);
+		     invoiceRepo.save(invoice);
+
+		    return invoiceEntityToModelConverter.getfindById(invoice);
+		}
 	
 		public InvoiceResponseModel findById(Integer id)  throws Exception {
 		Optional<Invoice>invoiceoptional=invoiceRepo.findById(id);
@@ -156,19 +160,16 @@ public class InvoiceService {
 		}
 	    return invoiceEntityToModelConverter.getfindById(invoice);
 	}
-	
+		
 		public InvoiceResponseModel findByInvoiceNumber(String invoiceNumber)  throws Exception {
-		Optional<Invoice>invoiceoptional=invoiceRepo.findByInvoiceNumber(invoiceNumber);
-		if (invoiceoptional.isEmpty()) {
-			throw new Exception("The invoice number does not exist.");
+			Optional<Invoice>invoiceoptional=invoiceRepo.findByInvoiceNumber(invoiceNumber);
+			if (invoiceoptional.isEmpty()) {
+				throw new Exception("The user account does not exist.");
+			}
+			Invoice invoice=invoiceoptional.get();
+		    return invoiceEntityToModelConverter.getfindByInvoiceNumber(invoice);
 		}
-		Invoice invoice=invoiceoptional.get();
-		if (invoice.getDeleted()) {
-            throw new Exception("Your account has been deactivated. Please contact the administrator for assistance.");
-		}
-	    return invoiceEntityToModelConverter.getfingByInvoiceNumber(invoice);
-	}
-	
+			
 		public List<InvoiceResponseModel>AllInvoices(Integer page, Integer size)throws Exception  {
 			List<Invoice>invoices=invoiceRepo.findAllInvoice(PageRequest.of(page, size));
 			return invoiceEntityToModelConverter.findAll(invoices);
@@ -178,6 +179,7 @@ public class InvoiceService {
 	        return invoiceRepo.countAllInvoice();
 	    }
 		
+		
 		public List<ClientResponseModel> findByClientId(Integer clientId) throws Exception{
 	        List<Invoice> invoices = invoiceRepo.findByClientId(clientId);
 	        if (invoices.isEmpty()) {
@@ -185,16 +187,14 @@ public class InvoiceService {
 	        }
 	        return invoiceEntityToModelConverter.mapInvoiceToClientResponse(invoices);
 		}
-//		public List<ClientResponseModel>getUserDetails(@RequestParam String email) throws Exception{
-//			 Optional<Client> clientOptional = clientRepo.findByEmail(email);
-//			    if (!clientOptional.isPresent()) {
-//			        LOGGER.error("Client doesn't Exist For These Id :{}", clientRepo.findByEmail(email));
-//			        throw new Exception("Client does not exist");
-//			    }
-//			   Client client=new Client();
-//			   c
-//		}
 		
+		public List<InvoiceResponseModel>getInvoicesByClient(Integer clientId){
+	        List<Invoice> invoices = invoiceRepo.findByClientId(clientId);
+	        
+	        return invoiceEntityToModelConverter.findAll(invoices);
+
+		}
+
 		public void softDeleteById(Integer id) throws Exception {
 	        Optional<Invoice> optionalInvoice = invoiceRepo.findById(id);
 	        if (optionalInvoice.isEmpty()) {

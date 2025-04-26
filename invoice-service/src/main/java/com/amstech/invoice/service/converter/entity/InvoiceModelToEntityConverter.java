@@ -34,28 +34,38 @@ public class InvoiceModelToEntityConverter {
         invoice.setCustomerName(invoiceRequest.getCustomerName());
         invoice.setCustomerPhone(invoiceRequest.getCustomerPhone());
         invoice.setTotalAmount(invoiceRequest.getTotalAmount());
+        invoice.setDueDate(invoiceRequest.getDueDate());
+        invoice.setNote(invoiceRequest.getNote());;
         invoice.setSubTotal(invoiceRequest.getSubTotal());
         invoice.setDiscount(invoiceRequest.getDiscount());
         invoice.setTax(invoiceRequest.getTax());
         invoice.setQuantity(invoiceRequest.getQuantity());
         invoice.setCategory(Category.OTHER);    
-        invoice.setPaymentStatus(PaymentStatus.PENDING);
         invoice.setPaid(invoiceRequest.getPaid() != null ? invoiceRequest.getPaid() : BigDecimal.ZERO);
-
+        invoice.setGrandTotal(invoiceRequest.getGrandTotal());
         BigDecimal total = invoice.getTotalAmount() != null ? invoice.getTotalAmount() : BigDecimal.ZERO;
         BigDecimal paid = invoice.getPaid() != null ? invoice.getPaid() : BigDecimal.ZERO;
         invoice.setBalance(total.subtract(paid));
-    	
+        invoice.setPaymentStatus(PaymentStatus.PENDING);
+
+              
+        
         return invoice;
     }
 
-    public static Invoice updateInvoiceModel(Invoice invoice, UpdateRequest updateRequest) {
-        
+    public  Invoice getupdateInvoiceModel(Invoice invoice, UpdateRequest updateRequest) {
+        invoice.setId(updateRequest.getId());
         invoice.setSubTotal(updateRequest.getSubTotal());
         invoice.setDiscount(updateRequest.getDiscount());
-        invoice.setNote(updateRequest.getNote());
+        invoice.setCustomerEmail(updateRequest.getCustomerEmail());   
+        invoice.setCustomerName(updateRequest.getCustomerName());
+        invoice.setCustomerPhone(updateRequest.getCustomerPhone());
+        invoice.setBalance(updateRequest.getBalance());
         invoice.setQuantity(updateRequest.getQuantity());
         invoice.setTotalAmount(updateRequest.getTotalAmount());
+        invoice.setGrandTotal(updateRequest.getGrandTotal());
+        invoice.setNote(updateRequest.getNote()); 
+        invoice.setTax(updateRequest.getTax());
         
         return invoice;
     }

@@ -90,33 +90,24 @@ public class ClientService {
 
 	        return clientEntityToModelConverter.getfindById(client);
 	    }
-
-
-public ClientResponseModel updateClient(ClientUpdateRequestModel clientUpdateRequestModel) throws Exception {
+	    
+	    public ClientResponseModel updateClient(ClientUpdateRequestModel clientUpdateRequestModel) throws Exception {
     
-	 Optional<Client> clientOptional = clientRepo.findById(clientUpdateRequestModel.getId());
+	    	Optional<Client> clientOptional = clientRepo.findById(clientUpdateRequestModel.getId());
 	 
-     if (clientOptional.isEmpty()) {
-         throw new Exception("The client account does not exist.");
-	     }
-    Client client = clientOptional.get();
-    try {
-        if (!client.getEmail().equals(clientUpdateRequestModel.getEmail()) &&
-            clientRepo.findByEmail(clientUpdateRequestModel.getEmail()).isPresent()) {
-            throw new Exception("Email is already taken.");
-        }
-    } catch (Exception e) {
-        throw new Exception("Error checking email.");
+	    	if (clientOptional.isEmpty()) {
+	    		throw new Exception("The client account does not exist.");
+	    	}
+	    	Client client = clientOptional.get();
+	    	try {
+	    		if (!client.getEmail().equals(clientUpdateRequestModel.getEmail()) &&
+	    				clientRepo.findByEmail(clientUpdateRequestModel.getEmail()).isPresent()) {
+	    			throw new Exception("Email is already taken.");
+	    		}
+	    	} catch (Exception e) {
+	    		throw new Exception("Error checking email.");
     }
 
-//    if (clientUpdateRequestModel.getCityId() != null && clientUpdateRequestModel.getCityId() != 0) {
-//        try {
-//            City city = cityRepo.findById(clientUpdateRequestModel.getCityId()).get();
-//            client.setCity(city);
-//        } catch (Exception e) {
-//            throw new Exception("City not found.");
-//        }
-//    }    
     client.setEmail(clientUpdateRequestModel.getEmail());
     client.setCompanyName(clientUpdateRequestModel.getCompanyName());
     

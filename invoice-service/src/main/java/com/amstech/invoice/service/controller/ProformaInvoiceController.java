@@ -1,6 +1,9 @@
 package com.amstech.invoice.service.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,9 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.amstech.invoice.service.request.model.ProformaInvoiceSignupRequestModel;
 import com.amstech.invoice.service.request.model.ProformaInvoiceUpdateRequestModel;
+import com.amstech.invoice.service.response.ResponseMessage;
 import com.amstech.invoice.service.response.RestResponse;
 import com.amstech.invoice.service.response.model.ProformaInvoiceResponseModel;
 import com.amstech.invoice.service.service.ProformaInvoiceService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,23 +38,38 @@ public class ProformaInvoiceController {
 	@Autowired
 	private  ProformaInvoiceService proformaInvoiceService;
 	
-	@RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
-    public RestResponse signup(@RequestBody ProformaInvoiceSignupRequestModel requestModel) {
-        LOGGER.info("Saving invoice data for Client ID: {}", requestModel.getClientId());
+	@PostMapping("/create")
+    public ResponseMessage createProformaInvoice(@Valid @RequestBody ProformaInvoiceSignupRequestModel requestModel) {
+        LOGGER.info("Creating Proforma Invoice for Client ID: {}", requestModel.getClientId());
 
         try {
             ProformaInvoiceResponseModel responseModel = proformaInvoiceService.signup(requestModel);
-            LOGGER.info("Proforma Invoice Created Successfully!");
 
-            return RestResponse.build().withSuccess("Proforma Invoice Created Successfully", responseModel);
+            if (responseModel == null) {
+                return ResponseMessage.build().withError("Proforma Invoice creation failed");
+            }
+
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("invoice", responseModel);
+            responseMap.put("pdfUrl", responseModel.getPdfUrl());
+
+            LOGGER.info("Proforma Invoice Created Successfully for Client ID: {}", requestModel.getClientId());
+            return ResponseMessage.build().withSuccess("Proforma Invoice Created Successfully", responseMap);
+
         } catch (DataIntegrityViolationException e) {
             LOGGER.error("Duplicate Entry Error: {}", e.getMessage(), e);
-            return RestResponse.build().error("Duplicate Entry: Invoice already exists");
+            return ResponseMessage.build().withError("Duplicate Entry: Invoice already exists");
+
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Invalid input: {}", e.getMessage(), e);
+            return ResponseMessage.build().withError("Invalid data provided");
+
         } catch (Exception e) {
-            LOGGER.error("Error occurred while signing up: {}", e.getMessage(), e);
-            return RestResponse.build().error("Failed to save invoice");
+            LOGGER.error("Error occurred while creating Proforma Invoice: {}", e.getMessage(), e);
+            return ResponseMessage.build().withError("Internal server error. Please try again later.");
         }
     }
+
 
     @RequestMapping(method = RequestMethod.PUT, value = "/update", consumes = "application/json", produces = "application/json")
     public RestResponse update(@RequestBody ProformaInvoiceUpdateRequestModel requestModel) {

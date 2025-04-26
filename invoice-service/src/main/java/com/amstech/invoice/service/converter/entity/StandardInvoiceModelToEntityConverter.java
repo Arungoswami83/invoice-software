@@ -2,6 +2,7 @@ package com.amstech.invoice.service.converter.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -33,6 +34,11 @@ public class StandardInvoiceModelToEntityConverter {
 	    standardInvoice.setRecurringFrequency(standardInvoiceSignupRequestModel.getRecurringFrequency());
 	    standardInvoice.setSendEmail(standardInvoiceSignupRequestModel.getSendEmail());
 	  //  standardInvoice.setIsRecurring("true".equalsIgnoreCase(standardInvoiceSignupRequestModel.getRecurringFrequency()));
+	    if (standardInvoiceSignupRequestModel.getInvoiceNumber() == null || standardInvoiceSignupRequestModel.getInvoiceNumber().isEmpty()) {
+	    	standardInvoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        } else {
+        	standardInvoice.setInvoiceNumber(standardInvoiceSignupRequestModel.getInvoiceNumber());
+        }
 	    return standardInvoice;
 	}
 	
@@ -49,7 +55,7 @@ public class StandardInvoiceModelToEntityConverter {
 	    standardInvoice.setStatus(requestModel.getStatus());
 	    standardInvoice.setSubtotal(requestModel.getSubtotal());
 	    standardInvoice.setTax(requestModel.getTax());
-
+      
 		return standardInvoice;
 		
 	}

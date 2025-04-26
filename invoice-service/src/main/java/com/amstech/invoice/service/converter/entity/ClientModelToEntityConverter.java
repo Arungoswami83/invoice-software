@@ -15,7 +15,7 @@ public class ClientModelToEntityConverter {
 		
         client.setFirstName(clientSignupRequestModel.getFirstName());
         client.setLastName(clientSignupRequestModel.getLastName());
-        client.setEmail(clientSignupRequestModel.getEmailAddress());
+        client.setEmail(clientSignupRequestModel.getEmail());
         client.setCompanyName(clientSignupRequestModel.getCompanyName());
         client.setBusinessName(clientSignupRequestModel.getBusinessName());
         client.setLinkedinProfileUrl(clientSignupRequestModel.getLinkedinProfileUrl());
@@ -26,8 +26,11 @@ public class ClientModelToEntityConverter {
         client.setMobileNumber(clientSignupRequestModel.getMobileNumber());
         client.setUserName(clientSignupRequestModel.getUsername());
         client.setPassword(clientSignupRequestModel.getPassword());
-        client.setGender(clientSignupRequestModel.getGender());
-        
+
+        client.setPanNumber(clientSignupRequestModel.getPanNumber());
+        client.setPhoneNumber(clientSignupRequestModel.getPhoneNumber());
+        client.setSpecificRegistrationDetails(clientSignupRequestModel.getSpecificRegistrationDetails());
+
         
         return client;
 
@@ -41,7 +44,11 @@ public class ClientModelToEntityConverter {
         client.setAddress(clientUpdateRequestModel.getAddress());
         client.setMobileNumber(clientUpdateRequestModel.getMobileNumber());
         client.setCompanyName(clientUpdateRequestModel.getCompanyName());
-       client.setGender(clientUpdateRequestModel.getGender());
+
+        client.setPanNumber(clientUpdateRequestModel.getPanNumber());
+        client.setPhoneNumber(clientUpdateRequestModel.getPhoneNumber());
+        client.setEmail(clientUpdateRequestModel.getEmail());
+       
 
         
         return client;

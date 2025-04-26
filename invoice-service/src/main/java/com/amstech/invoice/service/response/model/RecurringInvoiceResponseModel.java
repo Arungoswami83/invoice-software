@@ -8,8 +8,13 @@ import lombok.Data;
 public class RecurringInvoiceResponseModel {
 	private int id;
     private byte autoPaymentSetup;
-	private String paymentTerm;
+	private String paymentTerm;	
 	private Date endDate;
     private BigDecimal totalPayable;
+    private String pdfPath;
+	private String invoiceNumber;
 
+	public String getpdfPath() {
+	    return pdfPath;
+	}
 }
