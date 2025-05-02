@@ -1,18 +1,21 @@
 package com.amstech.invoice.service.service;
 
+import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -170,15 +173,55 @@ public class InvoiceService {
 		    return invoiceEntityToModelConverter.getfindByInvoiceNumber(invoice);
 		}
 			
-		public List<InvoiceResponseModel>AllInvoices(Integer page, Integer size)throws Exception  {
-			List<Invoice>invoices=invoiceRepo.findAllInvoice(PageRequest.of(page, size));
-			return invoiceEntityToModelConverter.findAll(invoices);
-      }
+		public Map<String, Object> allInvoices(Integer page, Integer size) throws Exception {
+
+			List<Invoice> invoices = invoiceRepo.findAll(PageRequest.of(page, size)).getContent();
+		    System.out.println("Invoices fetched: " + invoices.size());
+			List<InvoiceResponseModel> invoiceResponseModels = invoiceEntityToModelConverter.findAll(invoices);
+		    System.out.println("InvoiceResponseModels created: " + invoiceResponseModels.size());
+
+		    long totalRecord = invoiceRepo.count(); // Or your custom countAllInvoice()
+
+		    Map<String, Object> response = new HashMap<>();
+		    response.put("data", invoiceResponseModels);
+		    response.put("totalRecords", totalRecord);
+		    response.put("pageNumber", page);
+		    response.put("pageSize", size);
+
+		    return response;
+		}
+
 	
 		public long countAllInvoice() throws Exception {
 	        return invoiceRepo.countAllInvoice();
 	    }
 		
+		public Map<String, Object> filterInvoices(String customerName, String paymentStatus, Integer page, Integer size) throws Exception {
+		    Pageable pageable = PageRequest.of(page,size);
+		    
+		    Page<Invoice> invoicePage;
+		    
+		    if (customerName != null && paymentStatus != null) {
+		        invoicePage = invoiceRepo.findByCustomerNameContainingIgnoreCaseAndPaymentStatus(customerName, PaymentStatus.valueOf(paymentStatus.toUpperCase()), pageable);
+		    } else if (customerName != null) {
+		        invoicePage = invoiceRepo.findByCustomerNameContainingIgnoreCase(customerName, pageable);
+		    } else if (paymentStatus != null) {
+		        PaymentStatus status = PaymentStatus.valueOf(paymentStatus.toUpperCase());  // String → Enum
+		        invoicePage = invoiceRepo.findByPaymentStatus(status, pageable);
+		    } else {
+		        invoicePage = invoiceRepo.findAll(pageable);
+		    }
+
+		    List<InvoiceResponseModel> invoiceResponseModels = invoiceEntityToModelConverter.findAll(invoicePage.getContent());
+
+		    Map<String, Object> response = new HashMap<>();
+		    response.put("data", invoiceResponseModels);
+		    response.put("totalRecords", invoicePage.getTotalElements());
+		    response.put("pageNumber", page);
+		    response.put("pageSize", size);
+
+		    return response;
+		}
 		
 		public List<ClientResponseModel> findByClientId(Integer clientId) throws Exception{
 	        List<Invoice> invoices = invoiceRepo.findByClientId(clientId);

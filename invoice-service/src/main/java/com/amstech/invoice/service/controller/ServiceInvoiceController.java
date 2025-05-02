@@ -31,7 +31,7 @@ public class ServiceInvoiceController {
 
     @Autowired
     private ServiceInvoiceService serviceInvoiceService;
-    @CrossOrigin(origins = "http://localhost:4200") // ✅ Method level par use karein
+    @CrossOrigin(origins = "http://localhost:4200") 
 
         	@RequestMapping(method = RequestMethod.POST, value = "/signup", consumes = "application/json", produces = "application/json")
         public RestResponse signup(@RequestBody ServiceInvoiceSignupRequestModel requestModel) {

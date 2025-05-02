@@ -26,20 +26,13 @@ public class InvoiceEntityToModelConverter {
 	    	InvoiceResponseModel response = new InvoiceResponseModel();
 	        
 	        response.setInvoiceNumber(invoice.getInvoiceNumber());
-	        response.setId(invoice.getId());
-	        response.setStatus(invoice.getStatus());
-	        response.setDueDate(invoice.getDueDate());
 	        response.setCreatedAt(invoice.getCreatedAt());
-	        response.setQuantity(invoice.getQuantity());
 	        response.setTotalAmount(invoice.getTotalAmount());
-	        
-	        if (invoice.getClient() != null) {
-	        	response.setClientId(invoice.getClient().getId());
-	        	response.setCustomerName(invoice.getClient().getFirstName());
-		        invoiceResponse.add(response);;
-	        }
-	        
-	        }
+	        response.setCustomerName(invoice.getCustomerName());
+	        response.setPaymentStatus(invoice.getPaymentStatus().name()); 
+	        invoiceResponse.add(response);
+
+	}
 	    return invoiceResponse;
 	}
 

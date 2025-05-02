@@ -108,18 +108,45 @@ public class InvoiceController {
             return ResponseMessage.build().withError(e.getMessage());
         }
     }
+    @CrossOrigin(origins = "http://localhost:4200")
+
     @RequestMapping(method = RequestMethod.GET, value = "/findAll", produces = "application/json")
-    public ResponseMessage FindAll(@RequestParam("page")Integer page,@RequestParam("size")Integer size) {
-        LOGGER.info("Fetching all invoices.");
+    public ResponseMessage findAllInvoices(@RequestParam(name = "page", defaultValue = "0") Integer page,@RequestParam(name = "size", defaultValue = "10") Integer size) {
+        LOGGER.info("Fetching all invoices - Page: {}, Size: {}", page, size);
         try {
-            List<InvoiceResponseModel>invoiceResponse = invoiceService.AllInvoices(page, size); 
+            Map<String, Object> invoiceResponse = invoiceService.allInvoices(page, size);
             long totalRecord = invoiceService.countAllInvoice();
-            return ResponseMessage.build().withSuccess("User list found successfully").withTotalRecords(totalRecord).withPageNumber(page).withPageSize(size).withData(invoiceResponse);
+            return ResponseMessage.build().withSuccess("Invoice list found successfully.").withTotalRecords((Long) invoiceResponse.get("totalRecords")).withPageNumber((Integer) invoiceResponse.get("pageNumber")).withPageSize((Integer) invoiceResponse.get("pageSize")).withData(invoiceResponse.get("data"));
         } catch (Exception e) {
-        	LOGGER.error("Failed to find invoice list due to: {}", e.getMessage(), e);
+            LOGGER.error("Failed to fetch invoice list: {}", e.getMessage(), e);
             return ResponseMessage.build().withError(e.getMessage());
         }
-    }  
+    }
+    
+    @RequestMapping(method = RequestMethod.GET, value = "/filter", produces = "application/json")
+    public ResponseMessage filterInvoices(
+        @RequestParam(value = "customerName", required = false) String customerName,
+        @RequestParam(value = "paymentStatus", required = false) String paymentStatus,
+        @RequestParam(value = "page", defaultValue = "0") Integer page,
+        @RequestParam(value = "size", defaultValue = "10") Integer size) {
+
+        LOGGER.info("Filtering invoices with customerName: {}, paymentStatus: {}", customerName, paymentStatus);
+
+        try {
+            Map<String, Object> invoiceResponse = invoiceService.filterInvoices(customerName, paymentStatus, page, size);
+            return ResponseMessage.build()
+                    .withSuccess("Filtered invoices fetched successfully.")
+                    .withData(invoiceResponse.get("data"))
+                    .withTotalRecords((Long) invoiceResponse.get("totalRecords"))
+                    .withPageNumber(page)
+                    .withPageSize(size);
+        } catch (Exception e) {
+            LOGGER.error("Failed to filter invoices due to: {}", e.getMessage(), e);
+            return ResponseMessage.build().withError(e.getMessage());
+        }
+    }
+
+    
     @RequestMapping(method = RequestMethod.GET, value = "/{clientId}/invoices", produces = "application/json")
     public ResponseMessage getInvoicesByClient(@RequestParam Integer clientId) {
     	try {
