@@ -86,12 +86,10 @@ public class InvoiceEntityToModelConverter {
             Client client = invoice.getClient();
             ClientResponseModel clientResponseModel = new ClientResponseModel();
 
-            clientResponseModel.setClientId(client.getId());
+            clientResponseModel.setId((client.getId()));
             clientResponseModel.setFirstName(client.getFirstName());
             clientResponseModel.setLastName(client.getLastName());
-            clientResponseModel.setCreatedAt(invoice.getCreatedAt());
-            clientResponseModel.setDueDate(invoice.getDueDate());
-            clientResponseModel.setTotalAmount(invoice.getTotalAmount());
+            clientResponseModel.setTotalAmount(client.getTotalAmount());
             clientResponseModel.setQuantity(invoice.getQuantity());
             clientResponseModel.setTax(invoice.getTax());
 

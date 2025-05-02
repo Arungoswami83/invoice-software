@@ -32,6 +32,7 @@ public class ClientSignupRequestModel {
 	    private Date date;
 	    private String phoneNumber;
 	    private String panNumber;
+	    private int quantity; 
 	    
 	    
 		

@@ -54,6 +54,7 @@ public class Dashboard implements Serializable {
 	    	
 	    }
 
+
 		public Integer getId() {
 			return id;
 		}
@@ -116,6 +117,7 @@ public class Dashboard implements Serializable {
 			return totalRevenue;
 		}
 
+
 		public void setTotalRevenue(BigDecimal totalRevenue) {
 			this.totalRevenue = totalRevenue;
 		}
@@ -135,6 +137,10 @@ public class Dashboard implements Serializable {
 		public void setTotalSales(BigDecimal totalSales) {
 			this.totalSales = totalSales;
 		}
+
+
+
+
 
 		public BigDecimal getProfit() {
 			return profit;

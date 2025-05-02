@@ -48,9 +48,6 @@ public class InvoiceType implements Serializable {
 	@JoinColumn(name="standard_invoices_id")
 	private StandardInvoice standardInvoice;
 
-	//bi-directional many-to-one association to Report
-	@OneToMany(mappedBy="invoiceType")
-	private List<Report> reports;
 
 	public InvoiceType() {
 	}
@@ -108,28 +105,6 @@ public class InvoiceType implements Serializable {
 
 	public void setStandardInvoice(StandardInvoice standardInvoice) {
 		this.standardInvoice = standardInvoice;
-	}
-
-	public List<Report> getReports() {
-		return this.reports;
-	}
-
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
-
-	public Report addReport(Report report) {
-		getReports().add(report);
-		report.setInvoiceType(this);
-
-		return report;
-	}
-
-	public Report removeReport(Report report) {
-		getReports().remove(report);
-		report.setInvoiceType(null);
-
-		return report;
 	}
 
 }

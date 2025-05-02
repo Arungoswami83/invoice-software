@@ -17,10 +17,10 @@ public interface ProductInvoiceRepo extends JpaRepository <ProductInvoice, Integ
 	Optional<ProductInvoice> findById(Integer id);
 
 
-	@Query("SELECT s FROM ProductInvoice s WHERE s.isDeleted = 0 OR s.isDeleted IS NULL")
+	@Query("SELECT s FROM ProductInvoice s WHERE s.isDeleted = 1 OR s.isDeleted IS NULL")
 	Page<ProductInvoice> findAllActive(Pageable pageable);
 
-	@Query("SELECT COUNT(p) FROM ProductInvoice p WHERE p.isDeleted = 0 OR p.isDeleted IS NULL")
+	@Query("SELECT COUNT(p) FROM ProductInvoice p")
 	long countAllInvoice();
 
 }

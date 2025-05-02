@@ -135,10 +135,7 @@ public class Invoice implements Serializable {
 	  @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
 	  private List<Transaction> transactions;
 
-	//bi-directional many-to-one association to Report
-	@OneToMany(mappedBy="invoice")
-	private List<Report> reports;
-
+	
 	public BigDecimal getPaid() {
 		return paid;
 	}
@@ -484,14 +481,7 @@ public class Invoice implements Serializable {
 		return payment;
 	}
 
-	public List<Report> getReports() {
-		return this.reports;
-	}
-
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
-
+	
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
 	}

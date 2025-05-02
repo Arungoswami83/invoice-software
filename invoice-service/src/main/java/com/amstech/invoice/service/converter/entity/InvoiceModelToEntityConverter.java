@@ -16,7 +16,6 @@ import com.amstech.invoice.service.entity.InvoiceType;
 import com.amstech.invoice.service.entity.Payment;
 import com.amstech.invoice.service.entity.PaymentMethod;
 import com.amstech.invoice.service.entity.PaymentStatus;
-import com.amstech.invoice.service.entity.Report;
 import com.amstech.invoice.service.request.model.InvoiceRequest;
 import com.amstech.invoice.service.request.model.PaymentRequest;
 import com.amstech.invoice.service.request.model.UpdateRequest;

@@ -9,273 +9,443 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
-
-
 /**
  * The persistent class for the product_invoices database table.
  * 
  */
 @Entity
-@Table(name="product_invoices")
-@NamedQuery(name="ProductInvoice.findAll", query="SELECT p FROM ProductInvoice p")
+@Table(name = "product_invoices")
+@NamedQuery(name = "ProductInvoice.findAll", query = "SELECT p FROM ProductInvoice p")
 public class ProductInvoice implements Serializable {
+    public BigDecimal getGrandTotal() {
+		return grandTotal;
+	}
+
+	public void setGrandTotal(BigDecimal grandTotal) {
+		this.grandTotal = grandTotal;
+	}
+
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-
-	@Lob
-	@Column(name="account_details")
-	private String accountDetails;
-
-	@Column(name="buyer_details")
-	private String buyerDetails;
-
-@Temporal(TemporalType.DATE)
-	@Column(name="due_date")
-	private Date dueDate;
-
-	@Column(name="handling_costs")
-	private BigDecimal handlingCosts;
-
-	@Column(name="order_number")
-	private String orderNumber;
-
-	@Column(name="payment_method")
-	private String paymentMethod;
-
-	@Column(name="payment_term")
-	private String paymentTerm;
-
-	private BigDecimal shipping;
-
-	private String supplier;
-
-	@Column(name="tax_calculation")
-	private BigDecimal taxCalculation;
-
-	@Column(name="total_payable")
-	private BigDecimal totalPayable;
-
-	//bi-directional many-to-one association to InvoiceType
-	@OneToMany(mappedBy="productInvoice")
-	private List<InvoiceType> invoiceTypes;
-
-//	//bi-directional many-to-one association to ProductInvoiceItem
-//	@ManyToOne
-//	//
-//	@JoinColumn(name="company_id", nullable = false)
-//	private Company company;
-//	
-//
-//
-//	public Company getCompany() {
-//		return company;
-//	}
-//
-//	public void setCompany(Company company) {
-//		this.company = company;
-//	}
-//
-//	public Client getClient() {
-//		return client;
-//	}
-//
-//	public void setClient(Client client) {
-//		this.client = client;
-//	}
-//	@ManyToOne
-//	@JoinColumn(name="client_id", nullable = false)
-//	private Client client;
-
-	@OneToMany(mappedBy="productInvoice")
-	private List<ProductInvoiceItem> productInvoiceItems;
-	
-	@Column(name="is_deleted")
-	private int isDeleted;
-
-	public int getIsDeleted() {
-		return isDeleted;
-	}
-
-	public void setIsDeleted(int isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-
-	public ProductInvoice() {
-	}
-       @CreationTimestamp
-	    @Column(updatable = false, nullable = false)
-	    private LocalDateTime createdAt;
-
-	    @UpdateTimestamp
-	    @Column(nullable = false)
-	    private LocalDateTime updatedAt;
-
-	
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getAccountDetails() {
-		return this.accountDetails;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	public void setAccountDetails(String accountDetails) {
-		this.accountDetails = accountDetails;
-	}
+    @Lob
+    @Column(name = "account_details")
+    private String accountDetails;
 
-	public String getBuyerDetails() {
-		return this.buyerDetails;
-	}
+    @Column(name = "buyer_details")
+    private String buyerDetails;
 
-	public void setBuyerDetails(String buyerDetails) {
-		this.buyerDetails = buyerDetails;
-	}
+    @Temporal(TemporalType.DATE)
+    @Column(name = "due_date")
+    private Date dueDate;
 
+    @Column(name = "handling_costs")
+    private BigDecimal handlingCosts;
 
-	public Date getDueDate() {
-		return this.dueDate;
-	}
+    @Column(name = "order_number")
+    private String orderNumber;
 
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
+    @Column(name = "invoice_number")
+    private String invoiceNumber;
 
-	
-	
+    @Column(name = "payment_method")
+    private String paymentMethod;
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
+    private String pdfPath;
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+    @Column(name = "payment_term")
+    private String paymentTerm;
 
-	public BigDecimal getHandlingCosts() {
-		return handlingCosts;
-	}
+    private BigDecimal shipping;
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
+    private String supplier;
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+    @Column(name = "tax_calculation")
+    private BigDecimal taxCalculation;
 
+    @Column(name = "total_payable")
+    private BigDecimal totalPayable;
 
-	public void setHandlingCosts(BigDecimal handlingCosts) {
-		this.handlingCosts = handlingCosts;
-	}
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount;
+    
+    @Column(name = "grand_total")
+    private BigDecimal grandTotal;
 
-	public String getOrderNumber() {
-		return this.orderNumber;
-	}
 
-	public void setOrderNumber(String orderNumber) {
-		this.orderNumber = orderNumber;
-	}
+    @Column(name = "is_deleted")
+    private Integer isDeleted;
 
-	public String getPaymentMethod() {
-		return this.paymentMethod;
-	}
+    @Column(name = "status")
+    private String status;
 
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
+    @Column(name = "sub_total")
+    private BigDecimal subTotal;
 
-	public String getPaymentTerm() {
-		return this.paymentTerm;
-	}
+    @Column(name = "discount")
+    private BigDecimal discount;
 
-	public void setPaymentTerm(String paymentTerm) {
-		this.paymentTerm = paymentTerm;
-	}
+    @Column(name = "tax")
+    private BigDecimal tax;
 
-	public BigDecimal getShipping() {
-		return this.shipping;
-	}
+    @Column(name = "paid")
+    private BigDecimal paid;
 
-	public void setShipping(BigDecimal shipping) {
-		this.shipping = shipping;
-	}
+    @Column(name = "balance")
+    private BigDecimal balance;
 
-	public String getSupplier() {
-		return this.supplier;
-	}
+    @Column(name = "quantity")
+    private Integer quantity;
 
-	public void setSupplier(String supplier) {
-		this.supplier = supplier;
-	}
+    @Column(name = "customer_email")
+    private String customerEmail;
 
-	public BigDecimal getTaxCalculation() {
-		return this.taxCalculation;
-	}
+    @Column(name = "customer_name")
+    private String customerName;
 
-	public void setTaxCalculation(BigDecimal taxCalculation) {
-		this.taxCalculation = taxCalculation;
-	}
+    @Column(name = "customer_phone")
+    private String customerPhone;
 
-	public BigDecimal getTotalPayable() {
-		return this.totalPayable;
-	}
+    @Column(name = "category")
+    private String category;
 
-	public void setTotalPayable(BigDecimal totalPayable) {
-		this.totalPayable = totalPayable;
-	}
+    @Column(name = "note")
+    private String note;
 
-	public List<InvoiceType> getInvoiceTypes() {
-		return this.invoiceTypes;
-	}
+    @Column(name = "payment_status")
+    private String paymentStatus;
 
-	public void setInvoiceTypes(List<InvoiceType> invoiceTypes) {
-		this.invoiceTypes = invoiceTypes;
-	}
+    
 
-	public InvoiceType addInvoiceType(InvoiceType invoiceType) {
-		getInvoiceTypes().add(invoiceType);
-		invoiceType.setProductInvoice(this);
+    @Column(name = "created_at", updatable = false, nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-		return invoiceType;
-	}
+    @Column(name = "updated_at", nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
-	public InvoiceType removeInvoiceType(InvoiceType invoiceType) {
-		getInvoiceTypes().remove(invoiceType);
-		invoiceType.setProductInvoice(null);
+    @OneToMany(mappedBy = "productInvoice")
+    private List<InvoiceType> invoiceTypes;
 
-		return invoiceType;
-	}
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
+    @ManyToOne
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 
-	public List<ProductInvoiceItem> getProductInvoiceItems() {
-		return this.productInvoiceItems;
-	}
+    @OneToMany(mappedBy = "productInvoice")
+    private List<ProductInvoiceItem> productInvoiceItems;
 
-	public void setProductInvoiceItems(List<ProductInvoiceItem> productInvoiceItems) {
-		this.productInvoiceItems = productInvoiceItems;
-	}
+    // Getters and Setters
 
-	public ProductInvoiceItem addProductInvoiceItem(ProductInvoiceItem productInvoiceItem) {
-		getProductInvoiceItems().add(productInvoiceItem);
-		productInvoiceItem.setProductInvoice(this);
+    public int getId() {
+        return id;
+    }
 
-		return productInvoiceItem;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public ProductInvoiceItem removeProductInvoiceItem(ProductInvoiceItem productInvoiceItem) {
-		getProductInvoiceItems().remove(productInvoiceItem);
-		productInvoiceItem.setProductInvoice(null);
+    public String getAccountDetails() {
+        return accountDetails;
+    }
 
-		return productInvoiceItem;
+    public void setAccountDetails(String accountDetails) {
+        this.accountDetails = accountDetails;
+    }
 
-	}
+    public String getBuyerDetails() {
+        return buyerDetails;
+    }
 
+    public void setBuyerDetails(String buyerDetails) {
+        this.buyerDetails = buyerDetails;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public BigDecimal getHandlingCosts() {
+        return handlingCosts;
+    }
+
+    public void setHandlingCosts(BigDecimal handlingCosts) {
+        this.handlingCosts = handlingCosts;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPdfPath() {
+        return pdfPath;
+    }
+
+    public void setPdfPath(String pdfPath) {
+        this.pdfPath = pdfPath;
+    }
+
+    public String getPaymentTerm() {
+        return paymentTerm;
+    }
+
+    public void setPaymentTerm(String paymentTerm) {
+        this.paymentTerm = paymentTerm;
+    }
+
+    public BigDecimal getShipping() {
+        return shipping;
+    }
+
+    public void setShipping(BigDecimal shipping) {
+        this.shipping = shipping;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public BigDecimal getTaxCalculation() {
+        return taxCalculation;
+    }
+
+    public void setTaxCalculation(BigDecimal taxCalculation) {
+        this.taxCalculation = taxCalculation;
+    }
+
+    public BigDecimal getTotalPayable() {
+        return totalPayable;
+    }
+
+    public void setTotalPayable(BigDecimal totalPayable) {
+        this.totalPayable = totalPayable;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public Integer getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Integer isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public BigDecimal getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(BigDecimal subTotal) {
+        this.subTotal = subTotal;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public BigDecimal getTax() {
+        return tax;
+    }
+
+    public void setTax(BigDecimal tax) {
+        this.tax = tax;
+    }
+
+    public BigDecimal getPaid() {
+        return paid;
+    }
+
+    public void setPaid(BigDecimal paid) {
+        this.paid = paid;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public List<InvoiceType> getInvoiceTypes() {
+        return invoiceTypes;
+    }
+
+    public void setInvoiceTypes(List<InvoiceType> invoiceTypes) {
+        this.invoiceTypes = invoiceTypes;
+    }
+
+    public InvoiceType addInvoiceType(InvoiceType invoiceType) {
+        getInvoiceTypes().add(invoiceType);
+        invoiceType.setProductInvoice(this);
+        return invoiceType;
+    }
+
+    public InvoiceType removeInvoiceType(InvoiceType invoiceType) {
+        getInvoiceTypes().remove(invoiceType);
+        invoiceType.setProductInvoice(null);
+        return invoiceType;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public List<ProductInvoiceItem> getProductInvoiceItems() {
+        return productInvoiceItems;
+    }
+
+    public void setProductInvoiceItems(List<ProductInvoiceItem> productInvoiceItems) {
+        this.productInvoiceItems = productInvoiceItems;
+    }
+
+    public ProductInvoiceItem addProductInvoiceItem(ProductInvoiceItem productInvoiceItem) {
+        getProductInvoiceItems().add(productInvoiceItem);
+        productInvoiceItem.setProductInvoice(this);
+        return productInvoiceItem;
+    }
+
+    public ProductInvoiceItem removeProductInvoiceItem(ProductInvoiceItem productInvoiceItem) {
+        getProductInvoiceItems().remove(productInvoiceItem);
+        productInvoiceItem.setProductInvoice(null);
+        return productInvoiceItem;
+    }
 }

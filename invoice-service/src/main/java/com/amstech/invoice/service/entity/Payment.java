@@ -54,9 +54,7 @@ public class Payment implements Serializable {
 	    @Column(name = "updated_at")
 	    private LocalDateTime updatedAt = LocalDateTime.now();
 	    
-	    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL)
-	    private List<Report> reports;
-
+	  
 	    @PreUpdate
 	    public void setLastUpdate() {
 	    this.updatedAt = LocalDateTime.now();
@@ -70,13 +68,7 @@ public class Payment implements Serializable {
 			this.id = id;
 		}
 
-		public List<Report> getReports() {
-			return reports;
-		}
-
-		public void setReports(List<Report> reports) {
-			this.reports = reports;
-		}
+		
 
 		public void setId(int id) {
 			this.id = id;

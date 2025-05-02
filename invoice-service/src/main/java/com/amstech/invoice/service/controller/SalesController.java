@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.amstech.invoice.service.entity.Client;
-import com.amstech.invoice.service.entity.SalesInvoices;
 import com.amstech.invoice.service.repo.ClientRepo;
-import com.amstech.invoice.service.repo.SalesRepo;
 import com.amstech.invoice.service.request.model.ClientSignupRequestModel;
 import com.amstech.invoice.service.request.model.CompanySignupRequestModel;
 import com.amstech.invoice.service.request.model.CompanyUpdateRequestModel;
@@ -140,7 +138,3 @@ public class SalesController {
 
 		   
 		
-
-
-
-

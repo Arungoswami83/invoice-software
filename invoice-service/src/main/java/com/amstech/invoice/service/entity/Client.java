@@ -2,6 +2,8 @@
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import java.util.Date;
 import java.sql.Timestamp;
@@ -48,6 +50,18 @@ public class Client implements Serializable {
 
 	@Column(name="company_name")
 	private String companyName;
+	
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	@Column(name="total_amount")
+	private BigDecimal totalAmount;
+
 
 	@CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -55,6 +69,7 @@ public class Client implements Serializable {
 	
 	@Column(name="email")
 	private String email;
+	private int quantity;
 
 	@Column(name="first_name")
 	private String firstName;
@@ -107,10 +122,6 @@ public class Client implements Serializable {
 	@OneToMany(mappedBy="client")
 	@JsonBackReference
 	private List<Invoice> invoices;
-
-	//bi-directional many-to-one association to Report
-	@OneToMany(mappedBy="client")
-	private List<Report> reports;
 
 	public Client() {
 	}
@@ -334,28 +345,7 @@ public class Client implements Serializable {
 		return invoice;
 	}
 
-	public List<Report> getReports() {
-		return this.reports;
-	}
-
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
-
-	public Report addReport(Report report) {
-		getReports().add(report);
-		report.setClient(this);
-
-		return report;
-	}
-
-	public Report removeReport(Report report) {
-		getReports().remove(report);
-		report.setClient(null);
-
-		return report;
-	}
-
+	
 	public String getGender() {
 		return gender;
 	}

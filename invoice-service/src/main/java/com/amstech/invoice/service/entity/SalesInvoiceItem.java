@@ -26,11 +26,7 @@ public class SalesInvoiceItem implements Serializable {
     @Column(name="unit_price")
     private BigDecimal unitPrice;
 
-    // Bi-directional many-to-one association to SalesInvoices
-    @ManyToOne
-    @JoinColumn(name="invoice_id")
-    private SalesInvoices salesInvoices; // ✅ यह अब सही entity को refer कर रहा है
-
+ 
     public SalesInvoiceItem() {}
 
     public int getId() {
@@ -73,11 +69,4 @@ public class SalesInvoiceItem implements Serializable {
         this.unitPrice = unitPrice;
     }
 
-    public SalesInvoices getSalesInvoices() {
-        return this.salesInvoices;
-    }
-
-    public void setSalesInvoices(SalesInvoices salesInvoices) {
-        this.salesInvoices = salesInvoices;
-    }
 }

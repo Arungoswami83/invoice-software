@@ -73,7 +73,6 @@ public class CompanyController {
     public CompanyController() {
     	logger.info("CompanyController: Object Created");
 }
-    @CrossOrigin(origins = "http://localhost:4200") // ✅ Method level par use karein
 
     private static final String UPLOAD_DIR = "D:/uploads/";  
     private final ObjectMapper objectMapper = new ObjectMapper();

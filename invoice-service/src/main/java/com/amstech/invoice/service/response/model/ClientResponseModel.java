@@ -23,7 +23,12 @@ public class ClientResponseModel {
     private String  postalZipCode;
     private String linkedin_profile_url;
     private String PanNumber;
-    private String  specificRegistrationDetails;  
+    private String  specificRegistrationDetails; 
+	private BigDecimal totalAmount;
+	private BigDecimal tax;
+	private int quantity;
+
+ 
     
 
 }
