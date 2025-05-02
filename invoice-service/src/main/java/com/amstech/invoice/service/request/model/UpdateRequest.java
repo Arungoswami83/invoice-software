@@ -10,13 +10,9 @@ public class UpdateRequest {
 
 	private int id;
 	private BigDecimal totalAmount; 
-	private String status;
+	private String note;
 	private BigDecimal subTotal;
 	private BigDecimal discount;
-	private BigDecimal shipping;
-	private BigDecimal grandTotal;
-	private BigDecimal paid;
-	private BigDecimal balance;
 	private int quantity;
 
 }

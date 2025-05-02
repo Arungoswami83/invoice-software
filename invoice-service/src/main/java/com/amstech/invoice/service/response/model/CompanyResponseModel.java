@@ -23,8 +23,6 @@ public class CompanyResponseModel {
     private int clientId;
     
     
-    
-    
     public int getClientId() {
 		return clientId;
 	}

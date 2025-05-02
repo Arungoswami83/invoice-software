@@ -4,6 +4,7 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 
 /**
@@ -15,126 +16,138 @@ import java.sql.Timestamp;
 public class Dashboard implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	private int id;
+		@Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Integer id;
 
-	@Column(name="created_at")
-	private Timestamp createdAt;
+		@Column(name = "total_revenue")
+		private BigDecimal totalRevenue;
 
-	private BigDecimal inflow;
+		@Column(name = "total_expenditure")
+		private BigDecimal totalExpenditure;
 
-	private BigDecimal outflow;
+		 @Column(name = "total_receivables")
+		 private BigDecimal totalReceivables;
 
-	@Column(name="total_expense")
-	private BigDecimal totalExpense;
+		 @Column(name = "total_payments_received")
+		 private BigDecimal totalPaymentsReceived;
 
-	@Column(name="total_income")
-	private BigDecimal totalIncome;
+		 @Column(name = "total_sales")
+		 private BigDecimal totalSales;
 
-	@Column(name="updated_at")
-	private Timestamp updatedAt;
+		 @Column(name = "profit")
+		 private BigDecimal profit;
 
-	//bi-directional many-to-one association to Analytic
-	@ManyToOne
-	@JoinColumn(name="analytics_id")
-	private Analytic analytic;
+		 @ManyToOne
+		 @JoinColumn(name = "client_id", referencedColumnName = "id", nullable = false)
+		 private Client client; 
 
-	//bi-directional many-to-one association to Invoice
-	@ManyToOne
-	private Invoice invoice;
+	    @Column(name = "created_at", updatable = false)
+	    @Temporal(TemporalType.TIMESTAMP)
+	    private LocalDateTime createdAt;
+	    
+	    @Column(name = "updated_at")
+	    @Temporal(TemporalType.TIMESTAMP)
+	    private LocalDateTime updatedAt;
 
-	//bi-directional many-to-one association to Report
-	@ManyToOne
-	@JoinColumn(name="reports_id")
-	private Report report;
-
-	//bi-directional many-to-one association to SalesInvoice
-	
-
-
-	public Dashboard() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
-
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public BigDecimal getInflow() {
-		return this.inflow;
-	}
-
-	public void setInflow(BigDecimal inflow) {
-		this.inflow = inflow;
-	}
-
-	public BigDecimal getOutflow() {
-		return this.outflow;
-	}
-
-	public void setOutflow(BigDecimal outflow) {
-		this.outflow = outflow;
-	}
-
-	public BigDecimal getTotalExpense() {
-		return this.totalExpense;
-	}
-
-	public void setTotalExpense(BigDecimal totalExpense) {
-		this.totalExpense = totalExpense;
-	}
-
-	public BigDecimal getTotalIncome() {
-		return this.totalIncome;
-	}
+	    public Dashboard() {
+	    	
+	    }
 
 
-	public void setTotalIncome(BigDecimal totalIncome) {
-		this.totalIncome = totalIncome;
-	}
+		public Integer getId() {
+			return id;
+		}
 
-	public Timestamp getUpdatedAt() {
-		return this.updatedAt;
-	}
+		public void setId(Integer id) {
+			this.id = id;
+		}
+		 @PrePersist
+		    protected void onCreate() {
+		        this.createdAt = LocalDateTime.now();
+		        this.updatedAt = LocalDateTime.now();
+		    }
 
-	public void setUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
-	}
+		  @PreUpdate
+		    protected void onUpdate() {
+		        this.updatedAt = LocalDateTime.now();
+		    }
 
-	public Analytic getAnalytic() {
-		return this.analytic;
-	}
+		public BigDecimal getTotalReceivables() {
+			return totalReceivables;
+		}
 
-	public void setAnalytic(Analytic analytic) {
-		this.analytic = analytic;
-	}
+		public void setTotalReceivables(BigDecimal totalReceivables) {
+			this.totalReceivables = totalReceivables;
+		}
 
-	public Invoice getInvoice() {
-		return this.invoice;
-	}
+		public BigDecimal getTotalPaymentsReceived() {
+			return totalPaymentsReceived;
+		}
 
-	public void setInvoice(Invoice invoice) {
-		this.invoice = invoice;
-	}
+		public void setTotalPaymentsReceived(BigDecimal totalPaymentsReceived) {
+			this.totalPaymentsReceived = totalPaymentsReceived;
+		}
 
-	public Report getReport() {
-		return this.report;
-	}
+		public Client getClient() {
+			return client;
+		}
 
-	public void setReport(Report report) {
-		this.report = report;
-	}
+		public void setClient(Client client) {
+			this.client = client;
+		}
+
+		public LocalDateTime getCreatedAt() {
+			return createdAt;
+		}
+
+		public void setCreatedAt(LocalDateTime createdAt) {
+			this.createdAt = createdAt;
+		}
+
+		public LocalDateTime getUpdatedAt() {
+			return updatedAt;
+		}
+
+		public void setUpdatedAt(LocalDateTime updatedAt) {
+			this.updatedAt = updatedAt;
+		}
+
+		public BigDecimal getTotalRevenue() {
+			return totalRevenue;
+		}
 
 
+		public void setTotalRevenue(BigDecimal totalRevenue) {
+			this.totalRevenue = totalRevenue;
+		}
+
+		public BigDecimal getTotalExpenditure() {
+			return totalExpenditure;
+		}
+
+		public void setTotalExpenditure(BigDecimal totalExpenditure) {
+			this.totalExpenditure = totalExpenditure;
+		}
+
+		public BigDecimal getTotalSales() {
+			return totalSales;
+		}
+
+		public void setTotalSales(BigDecimal totalSales) {
+			this.totalSales = totalSales;
+		}
+
+
+
+
+
+		public BigDecimal getProfit() {
+			return profit;
+		}
+
+		public void setProfit(BigDecimal profit) {
+			this.profit = profit;
+		}
+		
 }

@@ -14,8 +14,7 @@ public class Company implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    
-@GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 
     public Boolean getIsEmailUpdate() {
@@ -84,11 +83,11 @@ public class Company implements Serializable {
 
     @OneToMany(mappedBy="company")
     private List<Invoice> invoices;
+    
+    public Company() {
+    	
+    }
 
-    // Constructor
-    public Company() {}
-
-    // Getters and Setters
     public int getId() {
         return this.id;
     }

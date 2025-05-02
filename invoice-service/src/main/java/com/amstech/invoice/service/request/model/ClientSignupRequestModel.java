@@ -13,9 +13,10 @@ public class ClientSignupRequestModel {
 		
 	    private String companyName;
 	    private String businessName;
-	    private String emailAddress;
+	    private String email;
 	    private String linkedinProfileUrl;
 	    private String billingAddress;
+	    private String gender;
 	    private String specificRegistrationDetails;
 	    private Date registrationDate;
 	    private String firstName;
@@ -29,6 +30,10 @@ public class ClientSignupRequestModel {
 	    private String username;
 	    private String password;
 	    private Date date;
+	    private String phoneNumber;
+	    private String panNumber;
+	    private int quantity; 
+	    
 	    
 		
 	    

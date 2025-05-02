@@ -21,4 +21,3 @@ public class CompanySignupRequestModel {
 	    private int clientId;
   	}
 
-

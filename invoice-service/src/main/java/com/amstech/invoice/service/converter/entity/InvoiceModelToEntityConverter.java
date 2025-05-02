@@ -1,65 +1,62 @@
 package com.amstech.invoice.service.converter.entity;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
+
+import com.amstech.invoice.service.entity.Category;
 import com.amstech.invoice.service.entity.Client;
 import com.amstech.invoice.service.entity.Company;
 import com.amstech.invoice.service.entity.Invoice;
 import com.amstech.invoice.service.entity.InvoiceItem;
 import com.amstech.invoice.service.entity.InvoiceType;
 import com.amstech.invoice.service.entity.Payment;
+import com.amstech.invoice.service.entity.PaymentMethod;
+import com.amstech.invoice.service.entity.PaymentStatus;
 import com.amstech.invoice.service.request.model.InvoiceRequest;
+import com.amstech.invoice.service.request.model.PaymentRequest;
 import com.amstech.invoice.service.request.model.UpdateRequest;
+import com.amstech.invoice.service.response.model.PaymentResponseMoodel;
 
 @Component
 public class InvoiceModelToEntityConverter {
 
-    public  Invoice getsaveconvertToInvoiceEntity(InvoiceRequest invoiceRequest,Optional <Client> clientOptional,Optional <Company> companyOptional,Optional <Payment> paymentOptional,Optional <InvoiceItem> invoiceItemOptional,Optional <InvoiceType> invoiceTypeOptional) {
+    public  Invoice getsaveconvertToInvoiceEntity(InvoiceRequest invoiceRequest,Optional <Client> clientOptional,Optional <Company> companyOptional ) {
         Invoice invoice = new Invoice();
 
         invoice.setClient(clientOptional.get());
-        invoice.setInvoiceType(invoiceTypeOptional.get());  
         invoice.setCompany(companyOptional.get());
-        invoice.setPayment(paymentOptional.get());
-        invoice.setInvoiceItem(invoiceItemOptional.get());
-        invoice.setIssueDate(invoiceRequest.getIssueDate());
-        invoice.setDueDate(invoiceRequest.getDueDate());
+        invoice.setCustomerEmail(invoiceRequest.getCustomerEmail());
+        invoice.setCustomerName(invoiceRequest.getCustomerName());
+        invoice.setCustomerPhone(invoiceRequest.getCustomerPhone());
         invoice.setTotalAmount(invoiceRequest.getTotalAmount());
-        invoice.setStatus(invoiceRequest.getStatus());
         invoice.setSubTotal(invoiceRequest.getSubTotal());
         invoice.setDiscount(invoiceRequest.getDiscount());
         invoice.setTax(invoiceRequest.getTax());
-        invoice.setShipping(invoiceRequest.getShipping());
-        invoice.setGrandTotal(invoiceRequest.getGrandTotal());
-        invoice.setPaid(invoiceRequest.getPaid());
-        invoice.setBalance(invoiceRequest.getBalance());
         invoice.setQuantity(invoiceRequest.getQuantity());
-        invoice.setProductCode(invoiceRequest.getProductCode());
+        invoice.setCategory(Category.OTHER);    
+        invoice.setPaymentStatus(PaymentStatus.PENDING);
+        invoice.setPaid(invoiceRequest.getPaid() != null ? invoiceRequest.getPaid() : BigDecimal.ZERO);
 
-        //  Auto-generate Invoice Number if missing
-        if (invoiceRequest.getInvoiceNumber() == null || invoiceRequest.getInvoiceNumber().isEmpty()) {
-            invoice.setInvoiceNumber("INV-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        } else {
-            invoice.setInvoiceNumber(invoiceRequest.getInvoiceNumber());
-        }
-
+        BigDecimal total = invoice.getTotalAmount() != null ? invoice.getTotalAmount() : BigDecimal.ZERO;
+        BigDecimal paid = invoice.getPaid() != null ? invoice.getPaid() : BigDecimal.ZERO;
+        invoice.setBalance(total.subtract(paid));
+    	
         return invoice;
     }
 
     public static Invoice updateInvoiceModel(Invoice invoice, UpdateRequest updateRequest) {
         
-    	invoice.setStatus(updateRequest.getStatus());
-        invoice.setGrandTotal(updateRequest.getGrandTotal());
         invoice.setSubTotal(updateRequest.getSubTotal());
         invoice.setDiscount(updateRequest.getDiscount());
-        invoice.setShipping(updateRequest.getShipping());
-        invoice.setPaid(updateRequest.getPaid());
-        invoice.setBalance(updateRequest.getBalance());
+        invoice.setNote(updateRequest.getNote());
         invoice.setQuantity(updateRequest.getQuantity());
         invoice.setTotalAmount(updateRequest.getTotalAmount());
         
         return invoice;
     }
     
-}
+  }

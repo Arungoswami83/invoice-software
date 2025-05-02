@@ -1,11 +1,13 @@
-
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 /**
@@ -18,85 +20,130 @@ import java.sql.Timestamp;
 public class Payment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private BigDecimal amount;
+	 	@Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private int id;
 
-	@Column(name="created_at")
-	private Timestamp createdAt;
+	 	 @ManyToOne
+	     @JoinColumn(name = "invoice_id", nullable = false)
+	     private Invoice invoice; 
+	 	 
+	 	 @Column(name = "payment_status", nullable = false)
+	     @Enumerated(EnumType.STRING)
+	     private PaymentStatus paymentStatus;
 
-	@Id
-	private int id;
+	    @Enumerated(EnumType.STRING)
+	    @Column(name = "payment_method")
+	    private PaymentMethod paymentMethod;
+	    
+	    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<Transaction> transactions;
 
-	@Lob
-	private String notes;
+	    @Column(name = "notes", columnDefinition = "TEXT")
+	    private String notes;
+	    
+	    @Column(name = "amount_paid")
+	    private BigDecimal amountPaid;
 
-	@Temporal(TemporalType.DATE)
-	@Column(name="payment_date")
-	private Date paymentDate;
+	    @Column(name = "payment_date")
+	    private LocalDate paymentDate;
+	    
+	    @Column(name = "created_at")
+	    private LocalDateTime createdAt = LocalDateTime.now();
 
-	@Column(name="payment_method")
-	private String paymentMethod;
+	    @Column(name = "updated_at")
+	    private LocalDateTime updatedAt = LocalDateTime.now();
+	    
+	  
+	    @PreUpdate
+	    public void setLastUpdate() {
+	    this.updatedAt = LocalDateTime.now();
+	    }
+	    
+		public Integer getId() {
+			return id;
+		}
 
-	//bi-directional many-to-one association to Invoice
-	@ManyToOne
-	private Invoice invoice;
+		public void setId(Integer id) {
+			this.id = id;
+		}
 
-	public Payment() {
-	}
+		
 
-	public BigDecimal getAmount() {
-		return this.amount;
-	}
+		public void setId(int id) {
+			this.id = id;
+		}
 
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
+		public Invoice getInvoice() {
+			return invoice;
+		}
 
-	public Timestamp getCreatedAt() {
-		return this.createdAt;
-	}
+		public void setInvoice(Invoice invoice) {
+			this.invoice = invoice;
+		}
 
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
+		public PaymentStatus getPaymentStatus() {
+			return paymentStatus;
+		}
 
-	public int getId() {
-		return this.id;
-	}
+		public void setPaymentStatus(PaymentStatus paymentStatus) {
+			this.paymentStatus = paymentStatus;
+		}
 
-	public void setId(int id) {
-		this.id = id;
-	}
+		public PaymentMethod getPaymentMethod() {
+			return paymentMethod;
+		}
 
-	public String getNotes() {
-		return this.notes;
-	}
+		public void setPaymentMethod(PaymentMethod paymentMethod) {
+			this.paymentMethod = paymentMethod;
+		}
 
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
+		public List<Transaction> getTransactions() {
+			return transactions;
+		}
 
-	public Date getPaymentDate() {
-		return this.paymentDate;
-	}
+		public void setTransactions(List<Transaction> transactions) {
+			this.transactions = transactions;
+		}
 
-	public void setPaymentDate(Date paymentDate) {
-		this.paymentDate = paymentDate;
-	}
+		public String getNotes() {
+			return notes;
+		}
 
-	public String getPaymentMethod() {
-		return this.paymentMethod;
-	}
+		public void setNotes(String notes) {
+			this.notes = notes;
+		}
 
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
+		public BigDecimal getAmountPaid() {
+			return amountPaid;
+		}
 
-	public Invoice getInvoice() {
-		return this.invoice;
-	}
+		public void setAmountPaid(BigDecimal amountPaid) {
+			this.amountPaid = amountPaid;
+		}
 
-	public void setInvoice(Invoice invoice) {
-		this.invoice = invoice;
-	}
+		public LocalDate getPaymentDate() {
+			return paymentDate;
+		}
 
+		public void setPaymentDate(LocalDate paymentDate) {
+			this.paymentDate = paymentDate;
+		}
+
+		public LocalDateTime getCreatedAt() {
+			return createdAt;
+		}
+
+		public void setCreatedAt(LocalDateTime createdAt) {
+			this.createdAt = createdAt;
+		}
+
+		public LocalDateTime getUpdatedAt() {
+			return updatedAt;
+		}
+
+		public void setUpdatedAt(LocalDateTime updatedAt) {
+			this.updatedAt = updatedAt;
+		}
 }
+	

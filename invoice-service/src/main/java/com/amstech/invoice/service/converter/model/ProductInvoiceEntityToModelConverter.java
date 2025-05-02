@@ -22,7 +22,7 @@ public class ProductInvoiceEntityToModelConverter {
 		responseModel.setOrderNumber(productInvoice.getOrderNumber());
 	    responseModel.setInvoiceNumber(productInvoice.getInvoiceNumber());
 	    responseModel.setPdfPath(productInvoice.getPdfPath()); // Set PDF path
-
+	    
 		return responseModel;
 	}
 

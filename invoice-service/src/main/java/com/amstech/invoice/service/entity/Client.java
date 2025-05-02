@@ -2,10 +2,15 @@
 package com.amstech.invoice.service.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -45,17 +50,32 @@ public class Client implements Serializable {
 
 	@Column(name="company_name")
 	private String companyName;
+	
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
 
-	@Column(name="created_at")
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	@Column(name="total_amount")
+	private BigDecimal totalAmount;
+
+
+	@CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
 	private Timestamp createdAt;
-
+	
+	@Column(name="email")
 	private String email;
+	private int quantity;
 
 	@Column(name="first_name")
 	private String firstName;
 
-	@Column(name="is_deleted")
-	private boolean isDeleted;
+	@Column(name = "is_deleted", nullable = false)
+	private Boolean isDeleted = false; // ✅ डिफ़ॉल्ट वैल्यू सेट करें
 
 	@Column(name="last_name")
 	private String lastName;
@@ -65,9 +85,15 @@ public class Client implements Serializable {
 
 	@Column(name="mobile_number")
 	private String mobileNumber;
+	
+	@Column(name="gender")
+	private String gender;
 
 	@Column(name="pan_number")
 	private String panNumber;
+	
+	@Column(name= "phone_number")
+	private String phoneNumber;
 
 	@Column(name="postal_zip_code")
 	private String postalZipCode;
@@ -76,29 +102,26 @@ public class Client implements Serializable {
 	@Column(name="specific_registration_details")
 	private String specificRegistrationDetails;
 
-	@Column(name="updated_at")
+	 @UpdateTimestamp
+	 @Column(name = "updated_at", nullable = false)
 	private Timestamp updatedAt;
 
 	//bi-directional many-to-one association to City
 	@ManyToOne
 	private City city;
+	
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Dashboard> dashboard; 
+
 
 	//bi-directional many-to-one association to Company
 	@OneToMany(mappedBy="client")
 	private List<Company> companies;
 
-	//bi-directional many-to-one association to GenerateInvoice
-//	@OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, orphanRemoval = true)
-//	private List<GenerateInvoice> generateInvoices;
-
 	//bi-directional many-to-one association to Invoice
 	@OneToMany(mappedBy="client")
 	@JsonBackReference
 	private List<Invoice> invoices;
-
-	//bi-directional many-to-one association to Report
-	@OneToMany(mappedBy="client")
-	private List<Report> reports;
 
 	public Client() {
 	}
@@ -167,13 +190,15 @@ public class Client implements Serializable {
 		this.firstName = firstName;
 	}
 
+
 	public boolean getIsDeleted() {
-		return this.getIsDeleted();
+	    return Boolean.TRUE.equals(isDeleted); // ✅ अगर isDeleted null होगा तो false लौटेगा
 	}
-	
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
+
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
 	public String getLastName() {
 		return this.lastName;
@@ -181,6 +206,14 @@ public class Client implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public List<Dashboard> getDashboard() {
+		return dashboard;
+	}
+
+	public void setDashboard(List<Dashboard> dashboard) {
+		this.dashboard = dashboard;
 	}
 
 	public String getLinkedinProfileUrl() {
@@ -205,6 +238,15 @@ public class Client implements Serializable {
 
 	public void setPanNumber(String panNumber) {
 		this.panNumber = panNumber;
+	}
+
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getUserName() {
@@ -280,14 +322,7 @@ public class Client implements Serializable {
 
 		return company;
 	}
-//
-//	public List<GenerateInvoice> getGenerateInvoices() {
-//		return this.generateInvoices;
-//	}
-//
-//	public void setGenerateInvoices(List<GenerateInvoice> generateInvoices) {
-//		this.generateInvoices = generateInvoices;
-//	}
+
 	public List<Invoice> getInvoices() {
 		return this.invoices;
 	}
@@ -310,26 +345,14 @@ public class Client implements Serializable {
 		return invoice;
 	}
 
-	public List<Report> getReports() {
-		return this.reports;
+	
+	public String getGender() {
+		return gender;
 	}
 
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
-
-	public Report addReport(Report report) {
-		getReports().add(report);
-		report.setClient(this);
-
-		return report;
-	}
-
-	public Report removeReport(Report report) {
-		getReports().remove(report);
-		report.setClient(null);
-
-		return report;
-	}
+	
 
 }
